@@ -9,24 +9,22 @@ class AdminOne extends StatefulWidget {
 class _AdminOneState extends State<AdminOne> {
   @override
   Widget build(BuildContext context) {
-    final String screenTitle = 'Admin One';
+    final String screenTitle = 'Admin';
+
     var boxDecoration = BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         gradient: LinearGradient(colors: [
           Color.fromRGBO(143, 148, 251, 1),
           Color.fromRGBO(143, 148, 251, .6),
         ]));
+
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   title: Text('Admin One'),
-      // ),
       body: Container(
         child: Column(
           children: [
             buildAnimatedBackground(screenTitle),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 children: [
                   //====================================
