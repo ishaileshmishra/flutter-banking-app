@@ -30,3 +30,10 @@ class FadeAnimation extends StatelessWidget {
     );
   }
 }
+
+var boxDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    gradient: LinearGradient(colors: [
+      Color.fromRGBO(143, 148, 251, 1),
+      Color.fromRGBO(143, 148, 251, .6),
+    ]));
