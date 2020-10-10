@@ -1,5 +1,5 @@
 import 'package:alok/src/ui/login/Components.dart';
-import 'package:alok/src/utils/FadeAnimation.dart';
+import 'package:alok/src/utils/fade_animation.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {

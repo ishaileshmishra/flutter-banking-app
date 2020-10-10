@@ -1,4 +1,4 @@
-import 'package:alok/src/utils/FadeAnimation.dart';
+import 'package:alok/src/utils/fade_animation.dart';
 import 'package:flutter/material.dart';
 
 Container buildAnimatedBackground(String textBold) {
@@ -10,9 +10,9 @@ Container buildAnimatedBackground(String textBold) {
     ),
     child: Stack(
       children: <Widget>[
-        _positionedLight1(),
-        _positionedLight2(),
-        _positionedClock(),
+        //_positionedLight1(),
+        //_positionedLight2(),
+        //_positionedClock(),
         _positionedLoginText(textBold),
       ],
     ),
@@ -21,6 +21,7 @@ Container buildAnimatedBackground(String textBold) {
 
 Positioned _positionedLoginText(String boldText) {
   return Positioned(
+    left: 100,
     child: FadeAnimation(
         1.6,
         Container(

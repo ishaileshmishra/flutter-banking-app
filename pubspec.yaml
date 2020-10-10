@@ -25,6 +25,12 @@ dependencies:
     sdk: flutter
   google_fonts: ^1.1.0
   simple_animations: ^1.3.3
+  http:
+  toast: ^0.1.5
+  flutter_realm: ^0.2.2
+  hive: ^1.4.1+1
+  hive_flutter: ^0.3.0+2
+  path_provider: ^1.3.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -34,6 +40,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^0.7.0+2
+  build_runner:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
