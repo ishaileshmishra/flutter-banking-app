@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'package:alok/src/models/LoginModel.dart';
 import 'package:alok/src/network/requests.dart';
+import 'package:alok/src/ui/dashboard/Dashboard.dart';
+import 'package:alok/src/ui/login/Components.dart';
+import 'package:alok/src/ui/registration/SignUpPage.dart';
+import 'package:alok/src/utils/fade_animation.dart';
 import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -29,9 +33,9 @@ class _LoginPageState extends State<LoginPage> {
     var response = await http.post(loginUrl,
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      final authToken = data["user"]['authtoken'];
-      var username = data['user']["first_name"];
+      //var data = json.decode(response.body);
+      //final authToken = data["user"]['authtoken'];
+      //var username = data['user']["first_name"];
 
       // Store Data to Hive Database
       // box.put(constant.csIsLoggedIn, true);
@@ -50,19 +54,19 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Widget _logoContainer() {
-    return Container(
-        height: 450,
-        width: double.infinity,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: getColorFromHex("#E7484A"),
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100))),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Image.asset('assets/images/light-1.png'),
-        ));
-  }
+  // Widget _logoContainer() {
+  //   return Container(
+  //       height: 450,
+  //       width: double.infinity,
+  //       alignment: Alignment.center,
+  //       decoration: BoxDecoration(
+  //           color: getColorFromHex("#E7484A"),
+  //           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100))),
+  //       child: Container(
+  //         padding: EdgeInsets.symmetric(horizontal: 20),
+  //         child: Image.asset('assets/images/light-1.png'),
+  //       ));
+  // }
 
   Widget _showLoginTextView() {
     return Text("Login",
@@ -111,14 +115,21 @@ class _LoginPageState extends State<LoginPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          //width: double.infinity,
-          child: Text(
-            'Sign up',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SignUpPage()),
+            );
+          },
+          child: Container(
+            child: Text(
+              'Sign Up',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18.0,
+                //fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
@@ -137,13 +148,21 @@ class _LoginPageState extends State<LoginPage> {
               textColor: Colors.white,
               child: Row(
                 children: [
-                  Container(
-                    child: Text(
-                      'Sign In',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Dashboard()),
+                      );
+                    },
+                    child: Container(
+                      child: Text(
+                        'Sign In',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -158,27 +177,6 @@ class _LoginPageState extends State<LoginPage> {
         )
       ],
     );
-
-    // RaisedButton(
-    //   onPressed: () {
-    //     FocusScope.of(context).requestFocus(new FocusNode());
-    //     _onBtnPressed();
-    //   },
-    //   padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-    //   color: getColorFromHex("#25BD9F"),
-    //   textColor: Colors.white,
-    //   child: Container(
-    //     width: double.infinity,
-    //     child: Text(
-    //       'LOGIN',
-    //       textAlign: TextAlign.center,
-    //       style: TextStyle(
-    //         fontSize: 18.0,
-    //         fontWeight: FontWeight.bold,
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Future<void> _onBtnPressed() async {
@@ -244,106 +242,135 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
-          backgroundColor: Colors.white,
-          body: Stack(
-            children: [
-              // background image container
-              Container(
-                decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                    image: new AssetImage("assets/images/background.png"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-
-              // background image container
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: SingleChildScrollView(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25),
-                          topRight: Radius.circular(25),
-                        )),
-                    //alignment: Alignment.topCenter,
-                    height: height * 2 / 3,
-                    padding: EdgeInsets.all(30),
+          //appBar: AppBar(),
+          backgroundColor: Colors.grey.shade200,
+          body: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  buildAnimatedBackground('Welcome\nBack'),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        //verticalSpace(),
-                        _showLoginTextView(),
-                        verticalSpace(),
-                        _textFieldEmail(),
-                        verticalSpace(),
-                        _textFieldPassword(),
-                        verticalSpace(),
-                        _loginButton(),
-                        verticalSpace(),
-                        verticalSpace(),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Did you forgot your password?',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        FadeAnimation(
+                            1.8,
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color:
+                                            Color.fromRGBO(143, 148, 251, .2),
+                                        blurRadius: 20.0,
+                                        offset: Offset(0, 10))
+                                  ]),
+                              child: Column(
+                                children: <Widget>[
+                                  ///////////////////////
+                                  ///  Mobile Number  ///
+                                  //////////////////////
+                                  ///
+                                  Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: Colors.grey[300]))),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "Mobile number",
+                                          hintStyle: TextStyle(
+                                              color: Colors.grey[400])),
+                                    ),
+                                  ),
+
+                                  ///////////////////////
+                                  ///    Password    ///
+                                  //////////////////////
+                                  ///
+                                  Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: TextField(
+                                      obscureText: true,
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "Password",
+                                          hintStyle: TextStyle(
+                                              color: Colors.grey[400])),
+                                    ),
+                                  ),
+
+                                  ///////////////////////
+                                  ///    Password    ///
+                                  //////////////////////
+                                ],
+                              ),
+                            )),
                         SizedBox(
-                          height: 10,
+                          height: 30,
                         ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Tap here to Reset?',
-                            style: TextStyle(
-                                color: Color.fromRGBO(143, 148, 251, .6),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15),
-                          ),
-                        ),
-                        Divider(
-                          color: Color.fromRGBO(143, 148, 251, .6),
-                          thickness: 2,
-                          endIndent: 110,
-                          indent: 110,
-                        )
+                        _loginButton()
                       ],
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
-
-              Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  color: Colors.transparent,
-                  width: double.infinity,
-                  height: 400,
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.all(30),
-                  child: Text(
-                    'Welcome\nBack',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              )
-            ],
+            ),
           )),
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   //final width = MediaQuery.of(context).size.width;
+  //   //final height = MediaQuery.of(context).size.height;
+  //   return GestureDetector(
+  //     onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+  //     child: Scaffold(
+  //         backgroundColor: Colors.white,
+  //         body: SingleChildScrollView(
+  //           child: Column(
+  //             children: [
+  //               buildAnimatedBackground('Welcome\nBack'),
+  //               // background image container
+
+  //               Container(
+  //                 padding: EdgeInsets.all(20),
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     _showLoginTextView(),
+  //                     verticalSpace(),
+  //                     _textFieldEmail(),
+  //                     verticalSpace(),
+  //                     _textFieldPassword(),
+  //                     verticalSpace(),
+  //                     _loginButton(),
+  //                     verticalSpace(),
+  //                   ],
+  //                 ),
+  //               ),
+  //               Align(
+  //                 alignment: Alignment.center,
+  //                 child: Text(
+  //                   'Forword Password?',
+  //                   style: TextStyle(
+  //                     color: Colors.black,
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         )),
+  //   );
+  // }
+
 }
