@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:alok/src/models/LoginModel.dart';
 import 'package:alok/src/network/requests.dart';
 import 'package:alok/src/ui/dashboard/Dashboard.dart';
+import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/ui/login/Components.dart';
 import 'package:alok/src/ui/registration/SignUpPage.dart';
 import 'package:alok/src/utils/fade_animation.dart';
@@ -152,7 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Dashboard()),
+                        MaterialPageRoute(
+                            builder: (context) => DashBoardScreen()),
                       );
                     },
                     child: Container(
