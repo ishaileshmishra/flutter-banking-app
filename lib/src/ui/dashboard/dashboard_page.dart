@@ -1,6 +1,9 @@
+import 'package:alok/res.dart';
+import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/options/AdmnOne.dart';
 import 'package:alok/src/ui/options/AdmnTwo.dart';
+import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/material.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -11,31 +14,36 @@ class DashBoardScreen extends StatefulWidget {
 class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
-    const color1 = Color.fromRGBO(143, 148, 251, 1);
-    const colorWhite = Colors.white;
     final categories = Reposit.getCategories();
 
     return Scaffold(
-      backgroundColor: color1,
+      backgroundColor: Res.color1,
       body: Container(
-        padding: EdgeInsets.only(top: 50),
+        padding: EdgeInsets.only(top: 30),
         child: Column(
           children: [
             // container appbar
             buildAppbar(),
             buildAccountStrip(),
-            Expanded(
-                child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: _listView(categories),
-            ))
+            SizedBox(height: 30),
+            buildExpanded(categories)
           ],
         ),
       ),
     );
+  }
+
+  Expanded buildExpanded(List<CatModel> categories) {
+    return Expanded(
+              child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30.0),
+                  topLeft: Radius.circular(30.0)),
+            ),
+            child: _listView(categories),
+          ));
   }
 
   ListView _listView(categories) {
@@ -58,11 +66,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             },
             child: Card(
               elevation: 1,
+              color: Colors.white,
               margin: EdgeInsets.symmetric(horizontal: 18, vertical: 5),
               child: ListTile(
                 title: Text(
                   categories[index].title,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
                 leading: categories[index].icon,
               ),
@@ -77,19 +89,20 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Your main balance',
-            style: TextStyle(fontSize: 14),
+            style: TextStyle(fontSize: 14, color: Colors.black),
           ),
           SizedBox(height: 20),
           Text(
             "45.500,12",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           SizedBox(height: 20),
           Row(
@@ -97,7 +110,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             children: [
               Text(
                 'Details >',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
               ),
               Text(
                 '4.5%',
@@ -113,6 +129,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Container buildAppbar() {
     return Container(
       padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Res.color1,
+        borderRadius: BorderRadius.circular(30),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -141,10 +161,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Icon(
-                Icons.notifications_outlined,
-                color: Colors.white,
-              ),
+              myAppBarIcon(),
               SizedBox(
                 width: 10,
               ),

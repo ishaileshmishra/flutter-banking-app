@@ -24,7 +24,6 @@ Positioned _positionedLoginText(String boldText) {
     child: FadeAnimation(
         1.6,
         Container(
-          //margin: EdgeInsets.only(top: 40),
           child: Center(
             child: Text(
               boldText,

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:alok/src/models/LoginModel.dart';
 import 'package:alok/src/network/requests.dart';
-import 'package:alok/src/ui/dashboard/Dashboard.dart';
 import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/ui/login/Components.dart';
 import 'package:alok/src/ui/registration/SignUpPage.dart';
@@ -124,13 +123,16 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
           child: Container(
+            padding: EdgeInsets.all(8),
             child: Text(
               'Sign Up',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18.0,
-                //fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 18.0,
+                  color: Colors.blueGrey,
+                  fontWeight: FontWeight.bold
+                  //fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
         ),
@@ -318,7 +320,14 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 30,
                         ),
-                        _loginButton()
+                        _loginButton(),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Text(
+                          'Forgot password',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ],
                     ),
                   )
