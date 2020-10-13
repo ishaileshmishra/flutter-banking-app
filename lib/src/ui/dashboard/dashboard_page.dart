@@ -3,7 +3,6 @@ import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/options/DepositeAmount.dart';
 import 'package:alok/src/ui/options/CreateAccountPage.dart';
-import 'package:alok/src/utils/fade_animation.dart';
 import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/material.dart';
 
