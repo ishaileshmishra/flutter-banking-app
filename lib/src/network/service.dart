@@ -1,44 +1,26 @@
+import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
 import 'package:flutter/material.dart';
 
 mixin Reposit {
   static List<CatModel> getCategories() {
     List<CatModel> categories = new List<CatModel>();
+
     categories.add(new CatModel(
         Icon(
-          Icons.group,
+          Icons.supervised_user_circle_outlined,
           size: 40,
-          color: Colors.grey.shade500,
+          color: Res.accentColor,
         ),
-        'Fund Transfer'));
+        'Create Account'));
     categories.add(new CatModel(
         Icon(
-          Icons.integration_instructions_outlined,
+          Icons.money,
           size: 40,
-          color: Colors.grey.shade500,
+          color: Res.accentColor,
         ),
-        'Standing Instructions'));
-    categories.add(new CatModel(
-        Icon(
-          Icons.arrow_circle_down,
-          size: 40,
-          color: Colors.grey.shade500,
-        ),
-        'POSB Sweep In'));
-    categories.add(new CatModel(
-        Icon(
-          Icons.arrow_circle_up,
-          size: 40,
-          color: Colors.grey.shade500,
-        ),
-        'POSB Sweep Out'));
-    categories.add(new CatModel(
-        Icon(
-          Icons.qr_code_outlined,
-          size: 40,
-          color: Colors.grey.shade500,
-        ),
-        'Pay By QR'));
+        'Deposite Amount'));
+
     return categories;
   }
 }

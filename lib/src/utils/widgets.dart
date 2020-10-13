@@ -170,3 +170,14 @@ BoxDecoration textFieldDec() {
   return BoxDecoration(
       border: Border(bottom: BorderSide(color: Colors.grey[300])));
 }
+
+String greeting() {
+  var hour = DateTime.now().hour;
+  if (hour < 12) {
+    return 'Morning';
+  }
+  if (hour < 17) {
+    return 'Afternoon';
+  }
+  return 'Evening';
+}

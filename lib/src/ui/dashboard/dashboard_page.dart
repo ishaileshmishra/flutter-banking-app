@@ -1,8 +1,9 @@
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/network/service.dart';
-import 'package:alok/src/ui/options/AdmnOne.dart';
-import 'package:alok/src/ui/options/AdmnTwo.dart';
+import 'package:alok/src/ui/options/DepositeAmount.dart';
+import 'package:alok/src/ui/options/CreateAccountPage.dart';
+import 'package:alok/src/utils/fade_animation.dart';
 import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     final categories = Reposit.getCategories();
 
     return Scaffold(
-      backgroundColor: Res.accentColor,
+      backgroundColor: Res.primaryColor,
       body: Container(
         padding: EdgeInsets.only(top: 30),
         child: Column(
@@ -59,27 +60,32 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 index == 0
                     ? Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AdminOne()),
+                        MaterialPageRoute(
+                            builder: (context) => CreateNewAccountPage()),
                       )
                     : Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AdminTwo()),
+                        MaterialPageRoute(
+                            builder: (context) => DepositeAmountScreen()),
                       )
               },
             },
             child: Card(
               elevation: 1,
               color: Colors.white,
-              margin: EdgeInsets.symmetric(horizontal: 18, vertical: 5),
-              child: ListTile(
-                title: Text(
-                  categories[index].title,
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: ListTile(
+                  title: Text(
+                    categories[index].title,
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                  leading: categories[index].icon,
                 ),
-                leading: categories[index].icon,
               ),
             ),
           );
@@ -99,13 +105,20 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         children: [
           Text(
             'Your main balance',
-            style: TextStyle(fontSize: 14, color: Colors.black),
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 20),
           Text(
             "45.500,12",
             style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
           SizedBox(height: 20),
           Row(
@@ -120,7 +133,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               Text(
                 '${widget.user['role']}',
-                style: TextStyle(fontSize: 14, color: Colors.green.shade400),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.green.shade400,
+                ),
               ),
             ],
           )
@@ -132,10 +148,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Container buildAppbar() {
     return Container(
       padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Res.accentColor,
-        borderRadius: BorderRadius.circular(30),
-      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -143,11 +155,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Good Morning',
+                'Good ${greeting()}',
                 style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade300,
-                ),
+                    fontSize: 14,
+                    color: Colors.grey.shade300,
+                    fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 4,
@@ -156,26 +168,37 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 '${widget.user['firstName']} ${widget.user['lastName']}',
                 style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    //fontWeight: FontWeight.bold,
                     color: Colors.white),
               )
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              myAppBarIcon(),
-              SizedBox(
-                width: 10,
-              ),
-              CircleAvatar(
-                child: Image.asset(
-                  'assets/images/user.png',
-                  fit: BoxFit.cover,
-                ),
-              )
-            ],
-          )
+
+          CircleAvatar(
+            child: Image.asset(
+              'assets/images/clock.png',
+              fit: BoxFit.cover,
+              width: 40,
+              height: 40,
+            ),
+          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //   children: [
+          //     myAppBarIcon(),
+          //     SizedBox(
+          //       width: 10,
+          //     ),
+          //     CircleAvatar(
+          //       child: Image.asset(
+          //         'assets/images/clock.png',
+          //         fit: BoxFit.cover,
+          //         width: 40,
+          //         height: 40,
+          //       ),
+          //     )
+          //   ],
+          // )
         ],
       ),
     );

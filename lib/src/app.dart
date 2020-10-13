@@ -9,7 +9,6 @@ class AlokApp extends StatelessWidget {
     Hive.openBox(constant.csHiveDB);
     return MaterialApp(
       title: 'Alok',
-      //debugShowCheckedModeBanner: false,
       home: FutureBuilder(
           future: Hive.openBox(constant.csHiveDB),
           builder: (BuildContext context, AsyncSnapshot snapshot) {

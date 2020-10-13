@@ -358,7 +358,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
                         //space
                         SizedBox(height: 30),
-
                         //login button
                         _loginButton()
                       ],

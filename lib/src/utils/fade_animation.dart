@@ -1,3 +1,4 @@
+import 'package:alok/res.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -34,6 +35,6 @@ class FadeAnimation extends StatelessWidget {
 var boxDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(10),
     gradient: LinearGradient(colors: [
-      Color.fromRGBO(143, 148, 251, 1),
-      Color.fromRGBO(143, 148, 251, .6),
+      Res.primaryColor,
+      Res.accentColor,
     ]));

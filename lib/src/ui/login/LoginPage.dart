@@ -212,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   child: Container(
-                    padding: EdgeInsets.all(30),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
