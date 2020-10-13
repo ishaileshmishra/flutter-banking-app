@@ -7,6 +7,10 @@ import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/material.dart';
 
 class DashBoardScreen extends StatefulWidget {
+  DashBoardScreen({Key key, this.user}) : super(key: key);
+
+  final Map user;
+
   @override
   _DashBoardScreenState createState() => _DashBoardScreenState();
 }
@@ -17,7 +21,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     final categories = Reposit.getCategories();
 
     return Scaffold(
-      backgroundColor: Res.color1,
+      backgroundColor: Res.accentColor,
       body: Container(
         padding: EdgeInsets.only(top: 30),
         child: Column(
@@ -35,15 +39,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   Expanded buildExpanded(List<CatModel> categories) {
     return Expanded(
-              child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(30.0),
-                  topLeft: Radius.circular(30.0)),
-            ),
-            child: _listView(categories),
-          ));
+        child: Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30.0), topLeft: Radius.circular(30.0)),
+      ),
+      child: _listView(categories),
+    ));
   }
 
   ListView _listView(categories) {
@@ -116,7 +119,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     color: Colors.black),
               ),
               Text(
-                '4.5%',
+                '${widget.user['role']}',
                 style: TextStyle(fontSize: 14, color: Colors.green.shade400),
               ),
             ],
@@ -130,7 +133,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Res.color1,
+        color: Res.accentColor,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
@@ -150,7 +153,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 height: 4,
               ),
               Text(
-                'David Kowaiski',
+                '${widget.user['firstName']} ${widget.user['lastName']}',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

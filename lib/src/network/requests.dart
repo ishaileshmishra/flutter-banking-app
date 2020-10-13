@@ -1,27 +1,31 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:alok/src/models/LoginModel.dart';
+import 'package:alok/res.dart';
+import 'package:alok/src/models/LoginResponse.dart';
+import 'package:alok/src/models/SignUpResponse.dart';
 import 'package:http/http.dart' as http;
-
-// Prod and Stag Endpoints
-const prodEndpoint = "https://api.contentstack.io/v3";
-const stagEndpoint = "https://stag-app.contentstack.com/v3";
-
-// Endpoint app is using currently
-const endpoint = prodEndpoint;
-
-// other urls
-const loginUrl = "$endpoint/user-session";
-const stackUrl = '$endpoint/stacks';
-const contentTypeUrl = '$endpoint/content_types?include_count=true';
 
 Future<LoginResponse> fetchLoginResponse(credentials) async {
   final body = json.encode(credentials);
-  final response = await http.post(loginUrl,
+  final response = await http.post(Res.loginAPI,
       headers: {"Content-Type": "application/json"}, body: body);
   if (response.statusCode == 200) {
     Map userMap = json.decode(response.body);
+    print("Login response: $userMap");
     return LoginResponse.fromJson(userMap['user']);
+  } else {
+    return null;
+  }
+}
+
+Future<SignUpResponse> fetchSignUpResponse(data) async {
+  //
+  //headers: {"Content-Type": "application/json"};
+  String body = json.encode(data);
+  final response = await http.post(Res.registerAPI, body: body);
+  if (response.statusCode == 200) {
+    Map userMap = json.decode(response.body);
+    return SignUpResponse.fromJson(userMap['data']);
   } else {
     return null;
   }
@@ -40,61 +44,6 @@ Future<LoginResponse> fetchLoginResponse(credentials) async {
 //   //var rest = data["error_message"];
 //   //}
 //   return null;
-// }
-
-// Future<List<ContentTypes>> getAllContentTypes(
-//     String apiKey, String authToken) async {
-//   var res = await http.get(Uri.encodeFull(contentTypeUrl), headers: {
-//     "Content-Type": "application/json",
-//     "api_key": apiKey,
-//     "authtoken": authToken
-//   });
-//   if (res.statusCode == 200) {
-//     var data = json.decode(res.body);
-//     var rest = data["content_types"] as List;
-//     return rest
-//         .map<ContentTypes>((json) => ContentTypes.fromJson(json))
-//         .toList();
-//   }
-//   return null;
-// }
-
-// Future<List<EntryModel>> getEntries(
-//     String contentTypeUid, String apiKey, String authToken) async {
-//   var url = "$endpoint/content_types/$contentTypeUid/entries";
-//   print("request time for Entries: ${getCurrentTime().toString()}");
-//   var res = await http.get(Uri.encodeFull(url), headers: {
-//     "Content-Type": "application/json",
-//     "api_key": apiKey,
-//     "authtoken": authToken
-//   });
-//   if (res.statusCode == 200) {
-//     print("response time for Entries: ${getCurrentTime().toString()}");
-//     var data = json.decode(res.body);
-//     var rest = data["entries"] as List;
-//     return rest.map<EntryModel>((json) => EntryModel.fromJson(json)).toList();
-//   }
-//   return null;
-// }
-
-// Future<dynamic> getEntry(
-//     String ctUid, String apiKey, String authToken, String uid) async {
-//   var entry;
-//   var url =
-//       "$endpoint/content_types/$ctUid/entries/$uid?include_content_type=true";
-//   print("request time for Entry Fields: ${getCurrentTime().toString()}");
-//   var res = await http.get(Uri.encodeFull(url), headers: {
-//     "Content-Type": "application/json",
-//     "api_key": apiKey,
-//     "authtoken": authToken
-//   });
-//   if (res.statusCode == 200) {
-//     print("response time for Entry Fields: ${getCurrentTime().toString()}");
-//     var data = json.decode(res.body);
-//     entry = data["entry"];
-//     entry['schema'] = data["content_type"]['schema'];
-//   }
-//   return entry;
 // }
 
 String getCurrentTime() {

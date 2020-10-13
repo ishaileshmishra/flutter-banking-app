@@ -9,12 +9,7 @@ class AlokApp extends StatelessWidget {
     Hive.openBox(constant.csHiveDB);
     return MaterialApp(
       title: 'Alok',
-      debugShowCheckedModeBanner: false,
-      darkTheme: ThemeData.dark(),
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-        fontFamily: 'sans',
-      ),
+      //debugShowCheckedModeBanner: false,
       home: FutureBuilder(
           future: Hive.openBox(constant.csHiveDB),
           builder: (BuildContext context, AsyncSnapshot snapshot) {

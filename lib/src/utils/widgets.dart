@@ -165,3 +165,8 @@ Widget myAppBarIcon() {
     ),
   );
 }
+
+BoxDecoration textFieldDec() {
+  return BoxDecoration(
+      border: Border(bottom: BorderSide(color: Colors.grey[300])));
+}
