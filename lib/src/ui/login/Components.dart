@@ -1,4 +1,4 @@
-import 'package:alok/src/utils/FadeAnimation.dart';
+import 'package:alok/src/utils/fade_animation.dart';
 import 'package:flutter/material.dart';
 
 Container buildAnimatedBackground(String textBold) {
@@ -10,9 +10,9 @@ Container buildAnimatedBackground(String textBold) {
     ),
     child: Stack(
       children: <Widget>[
-        _positionedLight1(),
-        _positionedLight2(),
-        _positionedClock(),
+        //_positionedLight1(),
+        //_positionedLight2(),
+        //_positionedClock(),
         _positionedLoginText(textBold),
       ],
     ),
@@ -24,7 +24,6 @@ Positioned _positionedLoginText(String boldText) {
     child: FadeAnimation(
         1.6,
         Container(
-          margin: EdgeInsets.only(top: 50),
           child: Center(
             child: Text(
               boldText,
@@ -38,48 +37,48 @@ Positioned _positionedLoginText(String boldText) {
   );
 }
 
-Positioned _positionedClock() {
-  return Positioned(
-    right: 40,
-    top: 40,
-    width: 80,
-    height: 150,
-    child: FadeAnimation(
-        1.5,
-        Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/clock.png'))),
-        )),
-  );
-}
+// Positioned _positionedClock() {
+//   return Positioned(
+//     right: 40,
+//     top: 40,
+//     width: 80,
+//     height: 150,
+//     child: FadeAnimation(
+//         1.5,
+//         Container(
+//           decoration: BoxDecoration(
+//               image: DecorationImage(
+//                   image: AssetImage('assets/images/clock.png'))),
+//         )),
+//   );
+// }
 
-Positioned _positionedLight2() {
-  return Positioned(
-    left: 140,
-    width: 80,
-    height: 150,
-    child: FadeAnimation(
-        1.3,
-        Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/light-2.png'))),
-        )),
-  );
-}
+// Positioned _positionedLight2() {
+//   return Positioned(
+//     left: 140,
+//     width: 80,
+//     height: 150,
+//     child: FadeAnimation(
+//         1.3,
+//         Container(
+//           decoration: BoxDecoration(
+//               image: DecorationImage(
+//                   image: AssetImage('assets/images/light-2.png'))),
+//         )),
+//   );
+// }
 
-Positioned _positionedLight1() {
-  return Positioned(
-    left: 30,
-    width: 80,
-    height: 200,
-    child: FadeAnimation(
-        1,
-        Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/light-1.png'))),
-        )),
-  );
-}
+// Positioned _positionedLight1() {
+//   return Positioned(
+//     left: 30,
+//     width: 80,
+//     height: 200,
+//     child: FadeAnimation(
+//         1,
+//         Container(
+//           decoration: BoxDecoration(
+//               image: DecorationImage(
+//                   image: AssetImage('assets/images/light-1.png'))),
+//         )),
+//   );
+// }

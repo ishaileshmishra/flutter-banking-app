@@ -1,3 +1,4 @@
+import 'package:alok/res.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -30,3 +31,10 @@ class FadeAnimation extends StatelessWidget {
     );
   }
 }
+
+var boxDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    gradient: LinearGradient(colors: [
+      Res.primaryColor,
+      Res.accentColor,
+    ]));

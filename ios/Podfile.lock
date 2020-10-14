@@ -1,21 +1,36 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_realm (0.0.1):
+    - Flutter
+    - Realm (~> 3.17.3)
   - path_provider (0.0.1):
     - Flutter
+  - Realm (3.17.3):
+    - Realm/Headers (= 3.17.3)
+  - Realm/Headers (3.17.3)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_realm (from `.symlinks/plugins/flutter_realm/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Realm
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_realm:
+    :path: ".symlinks/plugins/flutter_realm/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_realm: a977316966918fb608fe7c3e7f565ffc7b26dcdd
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  Realm: 5a1d9d47bfc101dd597668b1a8af4288a2557f6d
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
