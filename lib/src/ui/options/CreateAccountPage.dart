@@ -27,31 +27,22 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
   // TextEditingController
   String _errorIDCard;
-  String _errorIDCardNumber;
-  String _errorFirstName;
-  String _errorLastName;
-  String _errorAccountHolderName;
-  String _errorMobileNumber;
-  String _errorEmailAddress;
-  String _errorCity;
-  String _errorPIN;
 
   // TextEditingController
-  final _identityCardController = TextEditingController();
-  final _identityCardNumberController = TextEditingController();
+  final _filenameController = TextEditingController();
+  final _idNumberController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _accountHolderNameController = TextEditingController();
-  final _mobileNoController = TextEditingController();
+  final _mobileController = TextEditingController();
   final _emailAddressController = TextEditingController();
-  final _cityController = TextEditingController();
-  final _pinController = TextEditingController();
+  final _cityNameController = TextEditingController();
+  final _pinNumberController = TextEditingController();
 
   /// Initialised the state of the view
   @override
   void initState() {
     super.initState();
-    // Make a get request for the dropdown
     getAccountTypeDropDown();
     setState(() {
       errorField = '';
@@ -97,6 +88,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         // Make sure about the file's existance
         if (imageFile.existsSync()) {
           var stream =
+              // ignore: deprecated_member_use
               http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
           var length = await imageFile.length();
           setState(() {
@@ -108,7 +100,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             'identityCardFile', stream, length,
                             filename: basename(imageFile.path));
                         _fileName = basename(imageFile.path);
-                        _identityCardController.text = _fileName;
+                        _filenameController.text = _fileName;
                         print('filename: ${basename(imageFile.path)}');
                       })
                     })
@@ -125,15 +117,15 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       setState(() {
         errorField = '';
       });
-      if (_identityCardController.text.isEmpty) {
+      if (_filenameController.text.isEmpty) {
         setState(() {
           errorField = 'Please Provide Identity Card Filename';
           print(_errorIDCard);
         });
         return;
-      } else if (_identityCardNumberController.text.isEmpty) {
+      } else if (_idNumberController.text.isEmpty) {
         setState(() {
-          errorField = 'Provide ID card number';
+          errorField = 'Provide card number';
         });
         return;
       } else if (_firstNameController.text.isEmpty) {
@@ -151,7 +143,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           errorField = 'Please provide Account holder name';
         });
         return;
-      } else if (_mobileNoController.text.isEmpty) {
+      } else if (_mobileController.text.isEmpty) {
         setState(() {
           errorField = 'Please provide mobile number';
         });
@@ -161,30 +153,30 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           errorField = 'Please provide email address';
         });
         return;
-      } else if (_cityController.text.isEmpty) {
+      } else if (_cityNameController.text.isEmpty) {
         setState(() {
           errorField = 'Please provide city name';
         });
         return;
-      } else if (_pinController.text.isEmpty) {
+      } else if (_pinNumberController.text.isEmpty) {
         setState(() {
           errorField = 'Please provide PIN';
         });
         return;
       }
 
+      // clear all fields
       errorField = '';
-
       Map<String, String> data = {
         'accountTypeId': selectedAccountType.elementAt(0).id.toString(),
-        'identityCardNumber': _identityCardController.text,
+        'identityCardNumber': _filenameController.text,
         'firstName': _firstNameController.text,
         'lastName': _lastNameController.text,
         'accountHolderName': _accountHolderNameController.text,
         'email': _emailAddressController.text,
-        'mobileNumber': _mobileNoController.text,
-        'city': _cityController.text,
-        'pincode': _pinController.text
+        'mobileNumber': _mobileController.text,
+        'city': _cityNameController.text,
+        'pincode': _pinNumberController.text
       };
 
       // POST The fields and multipartFile
@@ -227,6 +219,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        //====================================
                         //Error and Text Success Field
                         Text(
                           '$errorField',
@@ -234,6 +227,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                               fontWeight: FontWeight.bold,
                               color: CupertinoColors.systemRed),
                         ),
+
+                        //====================================
+                        //Dropdown Field
                         DropDown(
                           items: selectedAccountType,
                           isExpanded: true,
@@ -248,7 +244,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         //====================================
                         SizedBox(height: 10),
                         CupertinoTextField(
-                          controller: _identityCardController,
+                          controller: _filenameController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           prefix: _buildPadding(),
                           padding: EdgeInsets.all(10),
@@ -261,6 +257,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           placeholder: "Identity card",
                           decoration: _buildBoxDecoration(),
                         ),
+
                         //====================================
                         SizedBox(height: 10),
                         Row(
@@ -288,34 +285,104 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField(
-                            'ID card number', _identityCardNumberController),
+                        CupertinoTextField(
+                          controller: _idNumberController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          prefix: _buildPadding(),
+                          placeholder: "ID card number",
+                          keyboardType: TextInputType.name,
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField(
-                            'First name', _firstNameController),
+                        CupertinoTextField(
+                          controller: _firstNameController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          prefix: _buildPadding(),
+                          placeholder: "First name",
+                          keyboardType: TextInputType.name,
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField(
-                            'Last name', _lastNameController),
+                        CupertinoTextField(
+                          controller: _lastNameController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          prefix: _buildPadding(),
+                          placeholder: "Last name",
+                          keyboardType: TextInputType.name,
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField('Account holder name',
-                            _accountHolderNameController),
+                        CupertinoTextField(
+                          controller: _accountHolderNameController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          prefix: _buildPadding(),
+                          placeholder: "Account holder name",
+                          keyboardType: TextInputType.name,
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField(
-                            'Mobile number', _mobileNoController),
+                        CupertinoTextField(
+                          controller: _mobileController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          prefix: _buildPadding(),
+                          placeholder: "Mobile number",
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField(
-                            'Email address', _emailAddressController),
+                        CupertinoTextField(
+                          controller: _emailAddressController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          prefix: _buildPadding(),
+                          placeholder: "E-Mail Id",
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField('City name', _cityController),
+                        CupertinoTextField(
+                          controller: _cityNameController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          prefix: _buildPadding(),
+                          placeholder: "City",
+                          keyboardType: TextInputType.name,
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 10),
-                        buildCupertinoTextField('PIN code', _pinController),
+                        CupertinoTextField(
+                          controller: _pinNumberController,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          padding: EdgeInsets.all(10),
+                          keyboardType: TextInputType.number,
+                          maxLength: 6,
+                          cursorColor: Res.accentColor,
+                          maxLengthEnforced: true,
+                          prefix: _buildPadding(),
+                          placeholder: "PIN code",
+                          decoration: _buildBoxDecoration(),
+                        ),
+
                         //====================================
                         SizedBox(height: 30),
                         Container(
@@ -338,25 +405,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  CupertinoTextField buildCupertinoTextField(
-      String _stringField, TextEditingController controller) {
-    return CupertinoTextField(
-      controller: controller,
-      clearButtonMode: OverlayVisibilityMode.editing,
-      padding: EdgeInsets.all(10),
-      prefix: Padding(padding: EdgeInsets.all(6.0)),
-      placeholder: _stringField,
-      keyboardType: TextInputType.number,
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1.0,
-          color: CupertinoColors.inactiveGray,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
       ),
     );
   }
