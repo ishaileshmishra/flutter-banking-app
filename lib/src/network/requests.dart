@@ -44,14 +44,14 @@ Future<List<AccountType>> getAllAccountType() async {
   return null;
 }
 
-// ignore: missing_return
-Future<String> uploadFileWithFields(data, multipartFileSign) async {
+Future uploadFileWithFields(data, multipartFileSign) async {
   var postUri = Uri.parse(Res.createAccount);
   var request = new http.MultipartRequest("POST", postUri);
   request.fields.addAll(data);
   print('KEYS ${request.fields.keys}\nValues ${request.fields.values}');
   request.files.add(multipartFileSign);
   print("Uploading in progress...");
+  //await request.send();
 
   request.send().then((response) {
     if (response.statusCode == 200) {
@@ -69,7 +69,6 @@ Future<String> uploadFileWithFields(data, multipartFileSign) async {
       print("Failed to Upload!");
     }
   });
-  return null;
 }
 
 String getCurrentTime() {

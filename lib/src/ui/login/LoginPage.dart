@@ -217,17 +217,17 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        //=======================
                         //mobile textField
                         _textFieldMobile(),
-
-                        //password textField
+                        //=======================
+                        //password textfield
                         _textFieldPassword(),
-
-                        //space
+                        //=======================
                         SizedBox(height: 30),
-
-                        //login button
+                        //login btn
                         _loginButton()
+                        //=======================
                       ],
                     ),
                   ),
@@ -290,7 +290,6 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(
             fontSize: 18.0,
             color: Res.accentColor,
-            //fontWeight: FontWeight.bold
           ),
         ),
       ),

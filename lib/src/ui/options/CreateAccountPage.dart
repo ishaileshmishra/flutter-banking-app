@@ -20,10 +20,16 @@ class CreateNewAccountPage extends StatefulWidget {
 
 class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   //
+  Pattern pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
   String _fileName = '';
   var multipartFileDocument;
   List<AccountType> selectedAccountType = new List<AccountType>();
+  var mapAccounts = Map<String, int>();
+  List<String> listAccountNames = new List<String>();
   var errorField = '';
+  int selectedAccountTypeInteger;
 
   // TextEditingController
   String _errorIDCard;
@@ -52,7 +58,14 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   /// Makes GET resuest to get all the availabe Account Types for the drop down field
   void getAccountTypeDropDown() async {
     selectedAccountType = await getAllAccountType();
-    print(selectedAccountType);
+    var listAccount = selectedAccountType.toList();
+    print('listAccount: $listAccount');
+    selectedAccountType.toList().forEach((element) {
+      setState(() {
+        mapAccounts[element.name] = element.id;
+        listAccountNames.add(element.name);
+      });
+    });
   }
 
   /// This build makes draws the conatains the view of the Screen
@@ -114,10 +127,16 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
     void _textFiledValidator() async {
       //validate the blank field
+      RegExp regex = new RegExp(pattern);
       setState(() {
         errorField = '';
       });
-      if (_filenameController.text.isEmpty) {
+      if (selectedAccountTypeInteger == null) {
+        setState(() {
+          errorField = 'Select Account Type';
+        });
+        return;
+      } else if (_filenameController.text.isEmpty) {
         setState(() {
           errorField = 'Please Provide Identity Card Filename';
           print(_errorIDCard);
@@ -143,14 +162,16 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           errorField = 'Please provide Account holder name';
         });
         return;
-      } else if (_mobileController.text.isEmpty) {
+      } else if (_mobileController.text.isEmpty ||
+          _mobileController.text.length < 10) {
         setState(() {
-          errorField = 'Please provide mobile number';
+          errorField = 'Please provide valid mobile number';
         });
         return;
-      } else if (_emailAddressController.text.isEmpty) {
+      } else if (_emailAddressController.text.isEmpty ||
+          !regex.hasMatch(_emailAddressController.text)) {
         setState(() {
-          errorField = 'Please provide email address';
+          errorField = 'Provide valid email address';
         });
         return;
       } else if (_cityNameController.text.isEmpty) {
@@ -158,9 +179,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           errorField = 'Please provide city name';
         });
         return;
-      } else if (_pinNumberController.text.isEmpty) {
+      } else if (_pinNumberController.text.isEmpty ||
+          _pinNumberController.text.length < 6) {
         setState(() {
-          errorField = 'Please provide PIN';
+          errorField = 'Please provide valid PIN';
         });
         return;
       }
@@ -168,7 +190,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       // clear all fields
       errorField = '';
       Map<String, String> data = {
-        'accountTypeId': selectedAccountType.elementAt(0).id.toString(),
+        'accountTypeId': selectedAccountTypeInteger.toString(),
         'identityCardNumber': _filenameController.text,
         'firstName': _firstNameController.text,
         'lastName': _lastNameController.text,
@@ -181,6 +203,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
       // POST The fields and multipartFile
       await uploadFileWithFields(data, multipartFileDocument);
+      // .catchError((onError) => {print('onError: ${onError.toString()}')})
+      // .then((onSucess) => {print('onSuccess: $onSucess')})
+      // .whenComplete(() => print("onComplete "));
     }
 
     return GestureDetector(
@@ -221,24 +246,33 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                       children: [
                         //====================================
                         //Error and Text Success Field
-                        Text(
-                          '$errorField',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: CupertinoColors.systemRed),
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            '$errorField',
+                            style: TextStyle(
+                                fontSize: 18, color: CupertinoColors.systemRed),
+                          ),
                         ),
 
                         //====================================
                         //Dropdown Field
-                        DropDown(
-                          items: selectedAccountType,
-                          isExpanded: true,
-                          showUnderline: true,
-                          dropDownType: DropDownType.Button,
-                          hint: Text('Account Type'),
-                          onChanged: (value) {
-                            print(value);
-                          },
+                        SizedBox(height: 10),
+                        Container(
+                          decoration: _buildBoxDecoration(),
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: DropDown(
+                            items: listAccountNames,
+                            isExpanded: true,
+                            showUnderline: true,
+                            dropDownType: DropDownType.Button,
+                            hint: Text('Account Type'),
+                            onChanged: (value) {
+                              print(value);
+                              selectedAccountTypeInteger = mapAccounts[value];
+                              print(selectedAccountTypeInteger);
+                            },
+                          ),
                         ),
 
                         //====================================
@@ -351,7 +385,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
                           prefix: _buildPadding(),
-                          placeholder: "E-Mail Id",
+                          placeholder: "Email Id",
                           keyboardType: TextInputType.emailAddress,
                           decoration: _buildBoxDecoration(),
                         ),
