@@ -4,6 +4,7 @@ import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/options/DepositeAmount.dart';
 import 'package:alok/src/ui/options/CreateAccountPage.dart';
 import 'package:alok/src/utils/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -97,11 +98,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Container(
         width: double.infinity,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -114,23 +116,47 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             ),
             SizedBox(height: 20),
             widget.user['isAccountCreated'] == 0
-                ? Text(
-                    'create account',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  )
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CreateNewAccountPage()),
+                      );
+                    },
+                    child: btnCreatAccount())
                 : Text("45.500,12",
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     )),
-            SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+
+  Container btnCreatAccount() {
+    return Container(
+      padding: EdgeInsets.all(4),
+      width: 150,
+      decoration: BoxDecoration(
+          border: Border.all(color: CupertinoColors.inactiveGray)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(CupertinoIcons.add_circled),
+          SizedBox(width: 6),
+          Text(
+            'Create Account',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          )
+        ],
       ),
     );
   }

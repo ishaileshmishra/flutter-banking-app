@@ -15,5 +15,6 @@ class Res {
   static const String registerAPI = baseURL + 'signup';
   static const String dashboardAPI = baseURL + 'dashboard';
   static const String createAccount = baseURL + 'createAccount';
+  static const String accountType = baseURL + 'accountTypeList';
   static const Map headers = {"Content-Type": "application/json"};
 }
