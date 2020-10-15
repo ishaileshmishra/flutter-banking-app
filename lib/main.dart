@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         accentColor: Res.accentColor,
         primarySwatch: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: GoogleFonts.latoTextTheme(
+        textTheme: GoogleFonts.ptSansTextTheme(
           Theme.of(context).textTheme,
         ),
       ),

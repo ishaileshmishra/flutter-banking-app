@@ -99,47 +99,38 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Your main balance',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            "45.500,12",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Details >',
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Your main balance',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
-              Text(
-                '${widget.user['role']}',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.green.shade400,
-                ),
-              ),
-            ],
-          )
-        ],
+            ),
+            SizedBox(height: 20),
+            widget.user['isAccountCreated'] == 0
+                ? Text(
+                    'create account',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  )
+                : Text("45.500,12",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    )),
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -173,31 +164,31 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             ],
           ),
 
-          CircleAvatar(
-            child: Image.asset(
-              'assets/images/clock.png',
-              fit: BoxFit.cover,
-              width: 40,
-              height: 40,
-            ),
-          ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     myAppBarIcon(),
-          //     SizedBox(
-          //       width: 10,
-          //     ),
-          //     CircleAvatar(
-          //       child: Image.asset(
-          //         'assets/images/clock.png',
-          //         fit: BoxFit.cover,
-          //         width: 40,
-          //         height: 40,
-          //       ),
-          //     )
-          //   ],
-          // )
+          // CircleAvatar(
+          //   child: Image.asset(
+          //     'assets/images/clock.png',
+          //     fit: BoxFit.cover,
+          //     width: 40,
+          //     height: 40,
+          //   ),
+          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              myAppBarIcon(),
+              SizedBox(
+                width: 10,
+              ),
+              CircleAvatar(
+                child: Image.asset(
+                  'assets/images/clock.png',
+                  fit: BoxFit.cover,
+                  width: 40,
+                  height: 40,
+                ),
+              )
+            ],
+          )
         ],
       ),
     );

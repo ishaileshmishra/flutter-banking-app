@@ -51,47 +51,27 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                       ),
                       child: Column(
                         children: [
+                          //Dropdown
                           //====================================
+                          DropdownButton(
+                              isExpanded: true,
+                              items: [
+                                new DropdownMenuItem(child: new Text("Abc")),
+                                new DropdownMenuItem(child: new Text("Xyz")),
+                              ],
+                              hint: new Text("Select Type"),
+                              onChanged: null),
+                          //====================================
+                          //Spaces
+                          SizedBox(height: 20),
+                          // TextField Remarks
                           CupertinoTextField(
                             clearButtonMode: OverlayVisibilityMode.editing,
                             prefix: Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                CupertinoIcons.search,
-                              ),
+                              child: Icon(Icons.edit_rounded),
                             ),
-                            placeholder: "Enter Email",
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.0,
-                                color: CupertinoColors.inactiveGray,
-                              ),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          CupertinoTextField(
-                            clearButtonMode: OverlayVisibilityMode.editing,
-                            //controller: _myPhoneField, // Add this
-                            prefix: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                CupertinoIcons.search,
-                              ),
-                            ),
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
-                            keyboardType: TextInputType.number,
-                            maxLength: 10,
-                            maxLines: 1,
-                            maxLengthEnforced: true,
-                            placeholder: 'Enter Phone',
-                            onChanged: (v) {
-                              print(v);
-                            },
+                            placeholder: "Remark",
                             decoration: BoxDecoration(
                               border: Border.all(
                                 width: 1.0,
@@ -102,11 +82,9 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                           ),
 
                           //====================================
-                          SizedBox(
-                            height: 30,
-                          ),
-                          //====================================
-                          //Button
+                          // Spaces
+                          SizedBox(height: 30),
+                          //Submit Button
                           CupertinoButton(
                             child: Text('Submit'),
                             color: Res.primaryColor,

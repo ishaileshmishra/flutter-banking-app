@@ -21,6 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   //
   // Error Fields
+  bool isLoading = false;
   String errorTextMobile;
   String errorTextPassword;
 
