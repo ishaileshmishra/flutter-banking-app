@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:alok/src/ui/user/Components.dart';
 import 'package:async/async.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _fileName = '';
   var multipartFileDocument;
   List<AccountType> selectedAccountType = new List<AccountType>();
@@ -30,9 +32,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   List<String> listAccountNames = new List<String>();
   var errorField = '';
   int selectedAccountTypeInteger;
-
-  // TextEditingController
-  String _errorIDCard;
 
   // TextEditingController
   final _filenameController = TextEditingController();
@@ -55,7 +54,8 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
     });
   }
 
-  /// Makes GET resuest to get all the availabe Account Types for the drop down field
+  /// Makes GET resuest to get all the availabe
+  /// Account Types for the drop down field
   void getAccountTypeDropDown() async {
     selectedAccountType = await getAllAccountType();
     var listAccount = selectedAccountType.toList();
@@ -73,23 +73,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   Widget build(BuildContext context) {
     //
     // TextInputField Decoration
-    BoxDecoration _buildBoxDecoration() {
-      return BoxDecoration(
-        border: Border.all(
-          width: 1.0,
-          color: CupertinoColors.inactiveGray,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      );
-    }
-
-    // _build padding for the textFields
-    Padding _buildPadding() {
-      return Padding(
-        padding: EdgeInsets.all(6.0),
-        //child: Icon(Icons.perm_identity_rounded, color: Res.primaryColor),
-      );
-    }
 
     // Browes file from the gallery
     Future<void> _pickFile() async {
@@ -139,7 +122,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       } else if (_filenameController.text.isEmpty) {
         setState(() {
           errorField = 'Please Provide Identity Card Filename';
-          print(_errorIDCard);
         });
         return;
       } else if (_idNumberController.text.isEmpty) {
@@ -202,7 +184,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       };
 
       // POST The fields and multipartFile
-      await uploadFileWithFields(data, multipartFileDocument);
+      await uploadFileWithFields(_scaffoldKey, data, multipartFileDocument);
       // .catchError((onError) => {print('onError: ${onError.toString()}')})
       // .then((onSucess) => {print('onSuccess: $onSucess')})
       // .whenComplete(() => print("onComplete "));
@@ -211,6 +193,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
           title: Text('Create Account'),
@@ -259,7 +242,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         //Dropdown Field
                         SizedBox(height: 10),
                         Container(
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                           padding: EdgeInsets.symmetric(horizontal: 6),
                           child: DropDown(
                             items: listAccountNames,
@@ -280,7 +263,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         CupertinoTextField(
                           controller: _filenameController,
                           clearButtonMode: OverlayVisibilityMode.editing,
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           padding: EdgeInsets.all(10),
                           keyboardType: TextInputType.name,
                           onChanged: (value) {
@@ -289,7 +272,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             });
                           },
                           placeholder: "Identity card",
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -323,10 +306,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _idNumberController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "ID card number",
                           keyboardType: TextInputType.name,
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -335,10 +318,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _firstNameController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "First name",
                           keyboardType: TextInputType.name,
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -347,10 +330,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _lastNameController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "Last name",
                           keyboardType: TextInputType.name,
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -359,10 +342,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _accountHolderNameController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "Account holder name",
                           keyboardType: TextInputType.name,
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -371,11 +354,11 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _mobileController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "Mobile number",
                           keyboardType: TextInputType.phone,
                           maxLength: 10,
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -384,10 +367,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _emailAddressController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "Email Id",
                           keyboardType: TextInputType.emailAddress,
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -396,10 +379,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _cityNameController,
                           clearButtonMode: OverlayVisibilityMode.editing,
                           padding: EdgeInsets.all(10),
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "City",
                           keyboardType: TextInputType.name,
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================
@@ -412,9 +395,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           maxLength: 6,
                           cursorColor: Res.accentColor,
                           maxLengthEnforced: true,
-                          prefix: _buildPadding(),
+                          prefix: buildPadding(),
                           placeholder: "PIN code",
-                          decoration: _buildBoxDecoration(),
+                          decoration: buildBoxDecoration(),
                         ),
 
                         //====================================

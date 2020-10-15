@@ -7,13 +7,11 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // find the path for the storage directory
+  // Find the path for the storage directory
   final appDocumentDirectory =
       await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
-  //await Hive.initFlutter();
-  //await Hive.openBox(constant.csHiveDB);
-  //runApp(ContentstackApp());
+  await Hive.openBox('alokDB');
   runApp(MyApp());
 }
 
@@ -30,7 +28,7 @@ class MyApp extends StatelessWidget {
         accentColor: Res.accentColor,
         primarySwatch: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: GoogleFonts.ptSansTextTheme(
+        textTheme: GoogleFonts.ptSansCaptionTextTheme(
           Theme.of(context).textTheme,
         ),
       ),

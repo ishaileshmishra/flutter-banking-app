@@ -18,3 +18,19 @@ CupertinoTextField buildCupertinoTextField(_stringField, controller) {
     ),
   );
 }
+
+Padding buildPadding() {
+  return Padding(
+    padding: EdgeInsets.all(6.0),
+  );
+}
+
+BoxDecoration buildBoxDecoration() {
+  return BoxDecoration(
+    border: Border.all(
+      width: 1.0,
+      color: CupertinoColors.inactiveGray,
+    ),
+    borderRadius: BorderRadius.circular(8.0),
+  );
+}

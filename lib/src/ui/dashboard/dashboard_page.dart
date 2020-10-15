@@ -1,8 +1,9 @@
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/network/service.dart';
-import 'package:alok/src/ui/options/DepositeAmount.dart';
-import 'package:alok/src/ui/options/CreateAccountPage.dart';
+import 'package:alok/src/ui/agent/DepositAmount.dart';
+import 'package:alok/src/ui/user/DepositeAmount.dart';
+import 'package:alok/src/ui/user/CreateAccountPage.dart';
 import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -121,7 +122,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CreateNewAccountPage()),
+                            builder: (context) =>
+                                DepositeAmount()), //CreateNewAccountPage()),
                       );
                     },
                     child: btnCreatAccount())
@@ -206,11 +208,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 width: 10,
               ),
               CircleAvatar(
-                child: Image.asset(
-                  'assets/images/clock.png',
-                  fit: BoxFit.cover,
-                  width: 40,
-                  height: 40,
+                backgroundColor: Colors.transparent,
+                child: Icon(
+                  CupertinoIcons.person,
+                  color: Colors.white,
+                  size: 30,
                 ),
               )
             ],

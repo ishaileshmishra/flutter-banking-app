@@ -4,6 +4,7 @@ import 'package:alok/res.dart';
 import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/models/SignUpResponse.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 Future<LoginResponse> fetchLoginResponse(credentials) async {
@@ -44,7 +45,7 @@ Future<List<AccountType>> getAllAccountType() async {
   return null;
 }
 
-Future uploadFileWithFields(data, multipartFileSign) async {
+Future uploadFileWithFields(_scaffoldKey, data, multipartFileSign) async {
   var postUri = Uri.parse(Res.createAccount);
   var request = new http.MultipartRequest("POST", postUri);
   request.fields.addAll(data);
@@ -58,7 +59,11 @@ Future uploadFileWithFields(data, multipartFileSign) async {
       response.stream.transform(utf8.decoder).listen((value) {
         var data = json.decode(value);
         print('data: ${data['message']}');
-        return data['message'];
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(data['message']),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 5),
+        ));
       });
       return 'Account create successfully done';
     } else {
@@ -66,7 +71,11 @@ Future uploadFileWithFields(data, multipartFileSign) async {
         print(onError.toString());
         return onError.toString();
       });
-      print("Failed to Upload!");
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Failed to Upload..!!'),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 5),
+      ));
     }
   });
 }
