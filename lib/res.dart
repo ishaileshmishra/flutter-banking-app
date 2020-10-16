@@ -13,6 +13,10 @@ class Res {
   static const String baseURL = 'http://asralokkalyan.in/user/';
   static const String loginAPI = baseURL + 'login';
   static const String registerAPI = baseURL + 'signup';
-  static const String dashboardAPI = baseURL + 'dashboard';
-  static const Map headers = {"Content-Type": "application/json"};
+  static const String createAccount = baseURL + 'createAccount';
+  static const String accountType = baseURL + 'accountTypeList';
+  static const String createDepositAPI = baseURL + 'createDepositRequest';
+  static const String depositAmountListAPI =
+      baseURL + 'depositAmountRequestList';
+  static const String depositAmountAPI = baseURL + 'depositAmount';
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:alok/res.dart';
+import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/models/SignUpResponse.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 Future<LoginResponse> fetchLoginResponse(credentials) async {
@@ -20,7 +22,6 @@ Future<LoginResponse> fetchLoginResponse(credentials) async {
 
 Future<SignUpResponse> fetchSignUpResponse(data) async {
   //
-  //headers: {"Content-Type": "application/json"};
   String body = json.encode(data);
   final response = await http.post(Res.registerAPI, body: body);
   if (response.statusCode == 200) {
@@ -31,24 +32,55 @@ Future<SignUpResponse> fetchSignUpResponse(data) async {
   }
 }
 
-// Future<List<StackModel>> getAllStacks(String authToken) async {
-//   var res = await http.get(Uri.encodeFull(stackUrl),
-//       headers: {"Content-Type": "application/json", "authtoken": authToken});
-//   if (res.statusCode == 200) {
-//     var data = json.decode(res.body);
-//     var rest = data["stacks"] as List;
-//     return rest.map<StackModel>((json) => StackModel.fromJson(json)).toList();
-//   }
-//   //else {
-//   //var data = json.decode(res.body);
-//   //var rest = data["error_message"];
-//   //}
-//   return null;
-// }
+Future<List<AccountType>> getAllAccountType() async {
+  var res = await http.get(
+    Uri.encodeFull(Res.accountType),
+  );
+  if (res.statusCode == 200) {
+    var data = json.decode(res.body);
+    print(data);
+    var rest = data["data"] as List;
+    return rest.map<AccountType>((json) => AccountType.fromJson(json)).toList();
+  }
+  return null;
+}
+
+Future uploadFileWithFields(_scaffoldKey, data, multipartFileSign) async {
+  var postUri = Uri.parse(Res.createAccount);
+  var request = new http.MultipartRequest("POST", postUri);
+  request.fields.addAll(data);
+  print('KEYS ${request.fields.keys}\nValues ${request.fields.values}');
+  request.files.add(multipartFileSign);
+  print("Uploading in progress...");
+  //await request.send();
+
+  request.send().then((response) {
+    if (response.statusCode == 200) {
+      response.stream.transform(utf8.decoder).listen((value) {
+        var data = json.decode(value);
+        print('data: ${data['message']}');
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text(data['message']),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 5),
+        ));
+      });
+      return 'Account create successfully done';
+    } else {
+      response.stream.bytesToString().catchError((onError) {
+        print(onError.toString());
+        return onError.toString();
+      });
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Failed to Upload..!!'),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 5),
+      ));
+    }
+  });
+}
 
 String getCurrentTime() {
   var now = new DateTime.now();
-  //var currentInMilliSecodn = now.millisecondsSinceEpoch;
-  //return now.toIso8601String();
   return now.millisecondsSinceEpoch.toString();
 }

@@ -1,9 +1,11 @@
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/network/service.dart';
-import 'package:alok/src/ui/options/DepositeAmount.dart';
-import 'package:alok/src/ui/options/CreateAccountPage.dart';
+import 'package:alok/src/ui/agent/DepositAmount.dart';
+import 'package:alok/src/ui/user/DepositeAmount.dart';
+import 'package:alok/src/ui/user/CreateAccountPage.dart';
 import 'package:alok/src/utils/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DashBoardScreen extends StatefulWidget {
@@ -70,7 +72,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               },
             },
             child: Card(
-              elevation: 1,
+              elevation: 4,
               color: Colors.white,
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Padding(
@@ -97,49 +99,74 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Your main balance',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            widget.user['isAccountCreated'] == 0
+                ? Text(
+                    'Number of deposites : ${widget.user['noOfDepositRequest'].toString()}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                : Text(
+                    'Your main balance',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+            SizedBox(height: 20),
+            widget.user['isAccountCreated'] == 0
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                DepositeAmount()), //CreateNewAccountPage()),
+                      );
+                    },
+                    child: btnCreatAccount())
+                : Text("45.500,12",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Card btnCreatAccount() {
+    return Card(
+      elevation: 8,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        width: 160,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.supervised_user_circle_outlined,
+              color: Res.accentColor,
             ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            "45.500,12",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Details >',
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
-              Text(
-                '${widget.user['role']}',
-                style: TextStyle(
+            SizedBox(width: 6),
+            Text(
+              'Create Account',
+              style: TextStyle(
                   fontSize: 14,
-                  color: Colors.green.shade400,
-                ),
-              ),
-            ],
-          )
-        ],
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -172,32 +199,23 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               )
             ],
           ),
-
-          CircleAvatar(
-            child: Image.asset(
-              'assets/images/clock.png',
-              fit: BoxFit.cover,
-              width: 40,
-              height: 40,
-            ),
-          ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     myAppBarIcon(),
-          //     SizedBox(
-          //       width: 10,
-          //     ),
-          //     CircleAvatar(
-          //       child: Image.asset(
-          //         'assets/images/clock.png',
-          //         fit: BoxFit.cover,
-          //         width: 40,
-          //         height: 40,
-          //       ),
-          //     )
-          //   ],
-          // )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              myAppBarIcon(),
+              SizedBox(
+                width: 10,
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: Icon(
+                  CupertinoIcons.person,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              )
+            ],
+          )
         ],
       ),
     );
