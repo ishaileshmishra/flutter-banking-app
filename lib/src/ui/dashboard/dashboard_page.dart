@@ -72,7 +72,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               },
             },
             child: Card(
-              elevation: 1,
+              elevation: 4,
               color: Colors.white,
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Padding(
@@ -107,14 +107,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Your main balance',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
+            widget.user['isAccountCreated'] == 0
+                ? Text(
+                    'Number of deposites : ${widget.user['noOfDepositRequest'].toString()}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                : Text(
+                    'Your main balance',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
             SizedBox(height: 20),
             widget.user['isAccountCreated'] == 0
                 ? GestureDetector(
@@ -139,26 +144,29 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Container btnCreatAccount() {
-    return Container(
-      padding: EdgeInsets.all(4),
-      width: 150,
-      decoration: BoxDecoration(
-          border: Border.all(color: CupertinoColors.inactiveGray)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Icon(CupertinoIcons.add_circled),
-          SizedBox(width: 6),
-          Text(
-            'Create Account',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+  Card btnCreatAccount() {
+    return Card(
+      elevation: 8,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        width: 160,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.supervised_user_circle_outlined,
+              color: Res.accentColor,
             ),
-          )
-        ],
+            SizedBox(width: 6),
+            Text(
+              'Create Account',
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -191,15 +199,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               )
             ],
           ),
-
-          // CircleAvatar(
-          //   child: Image.asset(
-          //     'assets/images/clock.png',
-          //     fit: BoxFit.cover,
-          //     width: 40,
-          //     height: 40,
-          //   ),
-          // ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

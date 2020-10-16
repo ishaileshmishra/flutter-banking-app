@@ -67,6 +67,7 @@ class _DepositeAmountState extends State<DepositeAmount> {
       postCall().then((value) {
         if (value.statusCode == 200) {
           print('onSuccess: $value');
+          showSnackBar('Successfully created done');
           Navigator.pop(context);
         } else {
           showSnackBar('Something went wrong, please try again');
@@ -74,6 +75,8 @@ class _DepositeAmountState extends State<DepositeAmount> {
         }
       }).catchError((onFailed) {
         print('onFailed: ${onFailed.toString()}');
+        showSnackBar('Something went wrong, please try again');
+        //Navigator.pop(context);
       });
     }
   }

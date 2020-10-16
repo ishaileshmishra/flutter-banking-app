@@ -34,7 +34,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   int selectedAccountTypeInteger;
 
   // TextEditingController
-  final _filenameController = TextEditingController();
   final _idNumberController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -96,7 +95,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             'identityCardFile', stream, length,
                             filename: basename(imageFile.path));
                         _fileName = basename(imageFile.path);
-                        _filenameController.text = _fileName;
                         print('filename: ${basename(imageFile.path)}');
                       })
                     })
@@ -117,11 +115,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       if (selectedAccountTypeInteger == null) {
         setState(() {
           errorField = 'Select Account Type';
-        });
-        return;
-      } else if (_filenameController.text.isEmpty) {
-        setState(() {
-          errorField = 'Please Provide Identity Card Filename';
         });
         return;
       } else if (_idNumberController.text.isEmpty) {
@@ -173,7 +166,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       errorField = '';
       Map<String, String> data = {
         'accountTypeId': selectedAccountTypeInteger.toString(),
-        'identityCardNumber': _filenameController.text,
+        'identityCardNumber': _fileName,
         'firstName': _firstNameController.text,
         'lastName': _lastNameController.text,
         'accountHolderName': _accountHolderNameController.text,
@@ -243,7 +236,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         SizedBox(height: 10),
                         Container(
                           decoration: buildBoxDecoration(),
-                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropDown(
                             items: listAccountNames,
                             isExpanded: true,
@@ -260,36 +253,32 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
                         //====================================
                         SizedBox(height: 10),
-                        CupertinoTextField(
-                          controller: _filenameController,
-                          clearButtonMode: OverlayVisibilityMode.editing,
-                          prefix: buildPadding(),
-                          padding: EdgeInsets.all(10),
-                          keyboardType: TextInputType.name,
-                          onChanged: (value) {
-                            setState(() {
-                              _fileName = value;
-                            });
-                          },
-                          placeholder: "Identity card",
+                        Container(
                           decoration: buildBoxDecoration(),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: DropDown(
+                            items: ['Adhar Card'],
+                            isExpanded: true,
+                            showUnderline: true,
+                            dropDownType: DropDownType.Button,
+                            hint: Text('Adhar Card'),
+                            onChanged: (value) {
+                              print(value);
+                            },
+                          ),
                         ),
 
                         //====================================
                         SizedBox(height: 10),
                         Row(
                           children: [
-                            FlatButton(
-                                height: 30,
-                                splashColor: Res.primaryColor,
-                                child: Text(
-                                  'Choose identity card',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                color: Res.accentColor,
-                                onPressed: () => _pickFile()),
+                            new OutlineButton(
+                                child: new Text("Choose identity card"),
+                                splashColor: Res.accentColor,
+                                onPressed: () => _pickFile(),
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(30.0))),
                             SizedBox(width: 20),
                             Expanded(
                               child: Text(
