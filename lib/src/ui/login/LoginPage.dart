@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:alok/res.dart';
 import 'package:alok/src/ui/dashboard/dashboard_page.dart';
+import 'package:alok/src/ui/login/Components.dart';
 import 'package:alok/src/ui/registration/SignUpPage.dart';
 import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
@@ -28,23 +30,23 @@ class _LoginPageState extends State<LoginPage> {
   // EmailController
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   void _validateCredentials(credentials) async {
-    //var box = await Hive.openBox(constant.csHiveDB);
+    var box = await Hive.openBox(Res.csHiveDB);
     var body = json.encode(credentials);
     print('Sending body $body');
     http.Response response = await http.post(Res.loginAPI, body: credentials);
     if (response.statusCode == 200) {
       var resp = json.decode(response.body);
-      print(
-          'isLoggedIn: ${resp["success"]} \nmessage ${resp['message']} \ndata ${resp['data']}');
 
       if (resp["success"]) {
-        // Store Data to Hive Database
-        // box.put(constant.csIsLoggedIn, true);
-        // box.put(constant.csLoginAuthToken, authToken);
-        // box.put(constant.csLoginUsername, username);
+        showToast(context, resp["message"]);
         Map userData = resp['data'];
+        // Store Data to Hive Database
+        box.put(Res.csIsLoggedIn, true);
+        box.put(Res.userData, userData);
+
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -52,22 +54,13 @@ class _LoginPageState extends State<LoginPage> {
                       user: userData,
                     )));
       } else {
-        // box.put(constant.csIsLoggedIn, false);
-        // Scaffold.of(context).showSnackBar(SnackBar(
-        //   content: Text(
-        //     resp["success"],
-        //     textAlign: TextAlign.center,
-        //     style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-        //   ),
-        //   duration: Duration(seconds: 2),
-        //   backgroundColor: Colors.red,
-        // ));
-        showToast(context, resp["message"]);
+        box.put(Res.csIsLoggedIn, false);
+        showSnackbarError(_scaffoldKey, resp['message']);
       }
     } else {
       // box.put(constant.csIsLoggedIn, false);
-      Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text("Sorry ! We have recieved invalid response")));
+      Scaffold.of(context)
+          .showSnackBar(SnackBar(content: Text("Failed to login")));
     }
   }
 
@@ -192,6 +185,7 @@ class _LoginPageState extends State<LoginPage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Res.accentColor,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
