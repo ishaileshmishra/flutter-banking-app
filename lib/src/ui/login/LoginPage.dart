@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
-import 'package:alok/src/network/requests.dart';
+import 'package:alok/src/models/LoginResponse.dart';
+import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/ui/login/Components.dart';
 import 'package:alok/src/utils/widgets.dart';
 
@@ -143,6 +147,37 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  fetchLoginResponse(context, credentials) async {
+    await http.post(Res.loginAPI, body: credentials).then((response) {
+      Map userMap = json.decode(response.body);
+      setState(() {
+        isLoading = true;
+      });
+      if (response.statusCode == 200) {
+        if (userMap['success']) {
+          showToast(context, userMap['message']);
+          LoginResponse loginDetails = LoginResponse.fromJson(userMap['data']);
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DashBoardScreen(
+                        user: loginDetails,
+                      )));
+        } else {
+          showToastWithError(context, userMap['message']);
+        }
+      }
+    }).catchError((onError) {
+      showToastWithError(context, 'Failed to login');
+      setState(() {
+        isLoading = true;
+      });
+    });
   }
 
   @override
