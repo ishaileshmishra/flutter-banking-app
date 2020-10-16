@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => DashBoardScreen(
-                      user: userData,
+                    //user: userData,
                     )));
       } else {
         showToast(context, resp["message"]);

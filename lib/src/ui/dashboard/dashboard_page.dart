@@ -1,5 +1,6 @@
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
+import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/agent/DepositAmount.dart';
 import 'package:alok/src/ui/user/DepositeAmount.dart';
@@ -10,9 +11,7 @@ import 'package:flutter/material.dart';
 
 class DashBoardScreen extends StatefulWidget {
   DashBoardScreen({Key key, this.user}) : super(key: key);
-
-  final Map user;
-
+  final LoginResponse user;
   @override
   _DashBoardScreenState createState() => _DashBoardScreenState();
 }
@@ -107,9 +106,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            widget.user['isAccountCreated'] == 0
+            widget.user.isAccountCreated == 0
                 ? Text(
-                    'Number of deposites : ${widget.user['noOfDepositRequest'].toString()}',
+                    'Number of deposites : ${widget.user.noOfDepositRequest.toString()}',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )
                 : Text(
@@ -121,7 +120,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     ),
                   ),
             SizedBox(height: 20),
-            widget.user['isAccountCreated'] == 0
+            widget.user.isAccountCreated == 0
                 ? GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -191,7 +190,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 height: 4,
               ),
               Text(
-                '${widget.user['firstName']} ${widget.user['lastName']}',
+                '${widget.user.firstName} ${widget.user.lastName}',
                 style: TextStyle(
                     fontSize: 18,
                     //fontWeight: FontWeight.bold,

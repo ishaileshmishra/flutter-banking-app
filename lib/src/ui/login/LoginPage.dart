@@ -1,14 +1,11 @@
-import 'dart:convert';
-import 'package:alok/res.dart';
-import 'package:alok/src/ui/dashboard/dashboard_page.dart';
-import 'package:alok/src/ui/login/Components.dart';
-import 'package:alok/src/ui/registration/SignUpPage.dart';
-import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hive/hive.dart';
-import 'package:http/http.dart' as http;
+
+import 'package:alok/res.dart';
+import 'package:alok/src/network/requests.dart';
+import 'package:alok/src/ui/login/Components.dart';
+import 'package:alok/src/utils/widgets.dart';
 
 class LoginPage extends StatefulWidget {
   //
@@ -31,50 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  void _validateCredentials(credentials) async {
-    var box = await Hive.openBox(Res.csHiveDB);
-    var body = json.encode(credentials);
-    print('Sending body $body');
-    http.Response response = await http.post(Res.loginAPI, body: credentials);
-    if (response.statusCode == 200) {
-      var resp = json.decode(response.body);
-
-      if (resp["success"]) {
-        showToast(context, resp["message"]);
-        Map userData = resp['data'];
-        // Store Data to Hive Database
-        box.put(Res.csIsLoggedIn, true);
-        box.put(Res.userData, userData);
-
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DashBoardScreen(
-                      user: userData,
-                    )));
-      } else {
-        box.put(Res.csIsLoggedIn, false);
-        showSnackbarError(_scaffoldKey, resp['message']);
-      }
-    } else {
-      // box.put(constant.csIsLoggedIn, false);
-      Scaffold.of(context)
-          .showSnackBar(SnackBar(content: Text("Failed to login")));
-    }
-  }
-
-  Widget _showWelcomeText() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Text("Welcome\nBack",
-            style: TextStyle(fontSize: 30, color: Colors.white),
-            textAlign: TextAlign.left),
-      ),
-    );
-  }
 
   Widget _textFieldMobile() {
     return Container(
@@ -121,118 +74,11 @@ class _LoginPageState extends State<LoginPage> {
   Widget _loginButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [_gestureDetectorSignup(), _btnSignIn()],
+      children: [btnRegistration(context), loginBtn()],
     );
   }
 
-  Future<void> _onBtnPressed() async {
-    setState(() {
-      errorTextMobile = null;
-      errorTextPassword = null;
-    });
-    if (mobileController.text == null || mobileController.text.isEmpty) {
-      setState(() {
-        errorTextMobile = "Mobile number required";
-      });
-      return;
-    }
-    if (passwordController.text == null || passwordController.text.isEmpty) {
-      setState(() {
-        errorTextPassword = "Provide password";
-      });
-      return;
-    }
-    var data = {
-      "mobileNumber": mobileController.text.trim(),
-      "password": passwordController.text.trim(),
-    };
-
-    // Future<LoginResponse> futureResponse = fetchLoginResponse(data);
-    // futureResponse.then((response) {
-    //   Navigator.push(
-    //       context, MaterialPageRoute(builder: (context) => DashBoardScreen()));
-    // }).catchError((onError) {
-    //   showToast(context, 'Invalid response recieved');
-    // });
-    _validateCredentials(data);
-  }
-
-  // _waitToCheckLogin() async {
-  //   var box = await Hive.openBox(constant.csHiveDB);
-  //   bool loggedIn = box.get(constant.csIsLoggedIn, defaultValue: false);
-  //   print('loggedIn: $loggedIn');
-  //   print('username: ${box.get(constant.csLoginUsername)}');
-  //   print('authtoken: ${box.get(constant.csLoginAuthToken)}');
-  //   if (loggedIn) {
-  //     box.get(constant.csIsLoggedIn);
-  //     Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (context) => StackPage(
-  //                 authToken: box.get(constant.csLoginAuthToken),
-  //                 userName: box.get(constant.csLoginUsername))));
-  //   }
-  // }
-
-  @override
-  void initState() {
-    //_waitToCheckLogin();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: Scaffold(
-          key: _scaffoldKey,
-          backgroundColor: Res.accentColor,
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Center(
-                  child: _showWelcomeText(),
-                ),
-              ),
-              Flexible(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        //=======================
-                        //mobile textField
-                        _textFieldMobile(),
-                        //=======================
-                        //password textfield
-                        _textFieldPassword(),
-                        //=======================
-                        SizedBox(height: 30),
-                        //login btn
-                        _loginButton()
-                        //=======================
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          )),
-    );
-  }
-
-  Row _btnSignIn() {
+  Row loginBtn() {
     return Row(
       children: [
         RaisedButton(
@@ -241,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               side: BorderSide(color: Res.accentColor)),
           onPressed: () {
             FocusScope.of(context).requestFocus(new FocusNode());
-            _onBtnPressed();
+            verifiyCredentials();
           },
           color: Res.accentColor,
           textColor: Colors.white,
@@ -268,25 +114,83 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  GestureDetector _gestureDetectorSignup() {
+  verifiyCredentials() async {
+    //Validation
+    setState(() {
+      errorTextMobile = null;
+      errorTextPassword = null;
+    });
+    if (mobileController.text == null || mobileController.text.isEmpty) {
+      setState(() {
+        errorTextMobile = "Mobile number required";
+      });
+      return;
+    }
+    if (passwordController.text == null || passwordController.text.isEmpty) {
+      setState(() {
+        errorTextPassword = "Provide password";
+      });
+      return;
+    }
+    var credentials = {
+      "mobileNumber": mobileController.text.trim(),
+      "password": passwordController.text.trim(),
+    };
+
+    fetchLoginResponse(context, credentials);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SignUpPage()),
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(8),
-        child: Text(
-          'Sign Up',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18.0,
-            color: Res.accentColor,
-          ),
-        ),
-      ),
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: Res.accentColor,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 300,
+                width: double.infinity,
+                child: Center(
+                  child: showWelcomeText(),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        //=======================
+                        _textFieldMobile(),
+                        //=======================
+                        _textFieldPassword(),
+                        //=======================
+                        SizedBox(height: 30),
+                        _loginButton()
+                        //=======================
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )),
     );
   }
 }

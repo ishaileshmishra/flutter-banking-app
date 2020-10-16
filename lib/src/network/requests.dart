@@ -4,20 +4,32 @@ import 'package:alok/res.dart';
 import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/models/SignUpResponse.dart';
+import 'package:alok/src/ui/dashboard/dashboard_page.dart';
+import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<LoginResponse> fetchLoginResponse(credentials) async {
-  final body = json.encode(credentials);
-  final response = await http.post(Res.loginAPI,
-      headers: {"Content-Type": "application/json"}, body: body);
-  if (response.statusCode == 200) {
+fetchLoginResponse(context, credentials) async {
+  await http.post(Res.loginAPI, body: credentials).then((response) {
     Map userMap = json.decode(response.body);
-    print("Login response: $userMap");
-    return LoginResponse.fromJson(userMap['user']);
-  } else {
-    return null;
-  }
+    print(userMap);
+    if (response.statusCode == 200) {
+      showToast(context, userMap['message']);
+      if (userMap['success']) {
+        LoginResponse loginDetails = LoginResponse.fromJson(userMap['data']);
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DashBoardScreen(
+                      user: loginDetails,
+                    )));
+      }
+    } else {
+      showToast(context, userMap['message']);
+    }
+  }).catchError((onError) {
+    showToast(context, 'Failed to login');
+  });
 }
 
 Future<SignUpResponse> fetchSignUpResponse(data) async {

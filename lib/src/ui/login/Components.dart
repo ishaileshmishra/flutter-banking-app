@@ -1,3 +1,5 @@
+import 'package:alok/res.dart';
+import 'package:alok/src/ui/registration/SignUpPage.dart';
 import 'package:alok/src/utils/fade_animation.dart';
 import 'package:flutter/material.dart';
 
@@ -53,4 +55,55 @@ showSnackbarSuccess(scaffoldKey, message) {
     behavior: SnackBarBehavior.floating,
     duration: Duration(seconds: 5),
   ));
+}
+
+Widget showWelcomeText() {
+  return Align(
+    alignment: Alignment.centerLeft,
+    child: Padding(
+      padding: const EdgeInsets.all(18.0),
+      child: Text("Welcome\nBack",
+          style: TextStyle(fontSize: 30, color: Colors.white),
+          textAlign: TextAlign.left),
+    ),
+  );
+}
+
+// _waitToCheckLogin() async {
+//   var box = await Hive.openBox(constant.csHiveDB);
+//   bool loggedIn = box.get(constant.csIsLoggedIn, defaultValue: false);
+//   print('loggedIn: $loggedIn');
+//   print('username: ${box.get(constant.csLoginUsername)}');
+//   print('authtoken: ${box.get(constant.csLoginAuthToken)}');
+//   if (loggedIn) {
+//     box.get(constant.csIsLoggedIn);
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => StackPage(
+//                 authToken: box.get(constant.csLoginAuthToken),
+//                 userName: box.get(constant.csLoginUsername))));
+//   }
+// }
+
+GestureDetector btnRegistration(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SignUpPage()),
+      );
+    },
+    child: Container(
+      padding: EdgeInsets.all(8),
+      child: Text(
+        'Sign Up',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 18.0,
+          color: Res.accentColor,
+        ),
+      ),
+    ),
+  );
 }

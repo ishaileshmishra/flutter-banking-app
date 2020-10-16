@@ -1,42 +1,25 @@
 class LoginResponse {
-  String uid;
-  String createdAt;
-  String updatedAt;
-  String email;
+  int userId;
   String firstName;
   String lastName;
-  String authToken;
-  String profileType;
+  String role;
+  int isAccountCreated;
+  int noOfDepositRequest;
 
   LoginResponse(
-      {this.uid,
-      this.createdAt,
-      this.updatedAt,
-      this.email,
+      {this.userId,
       this.firstName,
       this.lastName,
-      this.authToken,
-      this.profileType});
+      this.role,
+      this.isAccountCreated,
+      this.noOfDepositRequest});
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-        authToken: json["authtoken"],
-        firstName: json["first_name"],
-        lastName: json["last_name"],
-        uid: json["uid"],
-        createdAt: json["created_at"],
-        updatedAt: json["updated_at"],
-        email: json["email"],
-        profileType: json["profile_type"],
+        userId: json["userId"],
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        role: json["role"],
+        isAccountCreated: json["isAccountCreated"],
+        noOfDepositRequest: json["noOfDepositRequest"],
       );
-
-  Map<String, dynamic> toJson() => {
-        "authtoken": authToken,
-        "first_name": firstName,
-        'last_name': lastName,
-        'uid': uid,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
-        'email': email,
-        'profile_type': profileType
-      };
 }
