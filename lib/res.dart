@@ -22,7 +22,8 @@ class Res {
   static const String depositAmountAPI = baseURL + 'depositAmount';
 
   // Database Fields
-  static const String csHiveDB = 'AlokDB';
-  static const String csIsLoggedIn = 'loginStatus';
-  static const String userData = 'userData';
+  static const String aHiveDB = 'alokDB';
+  static const String loggedInStatus = 'loginStatus';
+  static const String aUserData = 'userData';
+  static const String aUserId = 'userId';
 }

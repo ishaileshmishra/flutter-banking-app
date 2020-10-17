@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
@@ -160,7 +161,9 @@ class _LoginPageState extends State<LoginPage> {
         if (userMap['success']) {
           showToast(context, userMap['message']);
           LoginResponse loginDetails = LoginResponse.fromJson(userMap['data']);
-          print('loginDetails: $loginDetails');
+          var box = Hive.box(Res.aHiveDB);
+          box.put(Res.loggedInStatus, true);
+          box.put(Res.aUserId, loginDetails.userId);
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(

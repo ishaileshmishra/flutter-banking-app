@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DepositAmountRequestList.dart';
 import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class DepositeAmount extends StatefulWidget {
@@ -13,19 +16,35 @@ class DepositeAmount extends StatefulWidget {
 
 class _DepositeAmountState extends State<DepositeAmount> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<DepositAmountRequestList> depositeList = getRequestList();
-  List<int> transactionIds;
-  String accountHolderName;
+  List<DepositAmountRequestList> depositeList =
+      new List<DepositAmountRequestList>();
+  String transactionId;
   final _amountController = TextEditingController();
   final _remarkController = TextEditingController();
   bool _validateFieldAmount = false;
   bool _validateFieldRemark = false;
 
-  getAllRequestList() {
-    depositeList.forEach((element) {
-      transactionIds.add(element.transactionId);
+  loadAccountList() async {
+    await http.get(Res.depositAmountListAPI).then((response) {
+      if (response.statusCode == 200) {
+        Map userMap = json.decode(response.body);
+        if (userMap['success']) {
+          showToast(context, userMap['message']);
+          var accountsJson = jsonDecode(response.body)['data'] as List;
+          depositeList = accountsJson
+              .map((tagJson) => DepositAmountRequestList.fromJson(tagJson))
+              .toList();
+          setState(() {
+            depositeList = depositeList;
+            print(depositeList.toString());
+          });
+        } else {
+          showToastWithError(context, userMap['message']);
+        }
+      }
+    }).catchError((error) {
+      showToastWithError(context, error.toString());
     });
-    return transactionIds;
   }
 
   showSnackBar(String message) {
@@ -38,9 +57,7 @@ class _DepositeAmountState extends State<DepositeAmount> {
   @override
   void initState() {
     super.initState();
-    transactionIds = new List();
-    accountHolderName = '';
-    transactionIds = getAllRequestList();
+    loadAccountList();
   }
 
   void textFieldValidator() {
@@ -48,7 +65,7 @@ class _DepositeAmountState extends State<DepositeAmount> {
       _validateFieldAmount = false;
       _validateFieldRemark = false;
     });
-    if (accountHolderName == null || accountHolderName.isEmpty) {
+    if (transactionId == null || transactionId.isEmpty) {
       showSnackBar('Pls select transaction id');
     } else if (_amountController.text.trim().isEmpty ||
         _amountController.text.trim().length < 2) {
@@ -64,17 +81,35 @@ class _DepositeAmountState extends State<DepositeAmount> {
         return;
       });
     } else {
-      // make api request
-      postCall().then((value) {
-        if (value.statusCode == 200) {
-          print('onSuccess: $value');
-          showToast(context, ('Successfully created done'));
-          Navigator.pop(context);
-        } else {
-          showToastWithError(context, 'Something went wrong, please try again');
+      var box = Hive.box(Res.aHiveDB);
+      var userId = box.get(Res.aUserId);
+      var dataToPost = {
+        'agentId': userId.toString(),
+        'transactionId': transactionId, //_amountController.text.trim(),
+        'amount': _amountController.text.trim().toString(),
+        'remark': _remarkController.text.trim().toString(),
+      };
+
+      print('post data: $dataToPost');
+      http
+          .post(
+        Res.depositAmountAPI,
+        body: dataToPost,
+      )
+          .then((response) {
+        Map userMap = json.decode(response.body);
+        print(userMap);
+        if (response.statusCode == 200) {
+          if (userMap['success']) {
+            showToast(context, userMap['message']);
+            new Future.delayed(const Duration(seconds: 2));
+            Navigator.pop(context);
+          } else {
+            showToastWithError(context, userMap['message']);
+          }
         }
-      }).catchError((onFailed) {
-        showToastWithError(context, 'Something went wrong, please try again');
+      }).catchError((error) {
+        showToastWithError(context, 'Failed: ${error.toString()}');
       });
     }
   }
@@ -121,18 +156,19 @@ class _DepositeAmountState extends State<DepositeAmount> {
                           //Dropdown Field
                           SizedBox(height: 10),
                           DropDown(
-                            items: transactionIds, //listAccountNames,
+                            items: depositeList, //listAccountNames,
                             isExpanded: true,
                             showUnderline: true,
                             dropDownType: DropDownType.Button,
                             hint: Text('Transaction Id'),
                             onChanged: (value) {
-                              var idx = depositeList.indexWhere(
-                                  (DepositAmountRequestList documentSnapshot) =>
-                                      documentSnapshot.transactionId == value);
-                              var selected = depositeList.elementAt(idx);
+                              print('selected transactionId: $value');
+                              // var idx = depositeList.indexWhere(
+                              //     (DepositAmountRequestList documentSnapshot) =>
+                              //         documentSnapshot.transactionId == value);
+                              // var selected = depositeList.elementAt(idx);
                               setState(() {
-                                accountHolderName = selected.accountHolderName;
+                                transactionId = value.toString().trim();
                               });
                             },
                           ),
@@ -200,19 +236,6 @@ class _DepositeAmountState extends State<DepositeAmount> {
               ],
             ),
           )),
-    );
-  }
-
-  Future postCall() async {
-    var dataToPost = {
-      'agentId': '6',
-      'transactionId': _amountController.text.trim(),
-      'amount': _amountController.text.trim(),
-      'remark': _remarkController.text.trim(),
-    };
-    await http.post(
-      Res.depositAmountAPI,
-      body: dataToPost,
     );
   }
 }

@@ -21,13 +21,10 @@ class DepositAmountRequestList {
         accountHolderPhoneNumber: json["accountHolderPhoneNumber"],
       );
 
-  Map<String, dynamic> toJson() => {
-        'transactionId': transactionId,
-        'accountNumber': accountNumber,
-        'amount': amount,
-        'accountHolderName': accountHolderName,
-        'accountHolderPhoneNumber': accountHolderPhoneNumber,
-      };
+  @override
+  String toString() {
+    return '${this.transactionId}';
+  }
 }
 
 getRequestList() {
