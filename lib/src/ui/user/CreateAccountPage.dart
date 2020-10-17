@@ -169,6 +169,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       errorField = '';
       var box = Hive.box(Res.aHiveDB);
       var userId = box.get(Res.aUserId);
+      print('userId $userId');
       Map<String, String> credentials = {
         'accountTypeId': selectedAccountTypeInteger.toString().trim(),
         'typeOfIdentity': 'Adhar Card',
@@ -180,7 +181,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         'mobileNumber': _mobileController.text.trim(),
         'city': _cityNameController.text.trim(),
         'pincode': _pinNumberController.text.trim(),
-        'userId': userId,
+        'userId': '$userId'
       };
 
       // POST The fields and multipartFile
