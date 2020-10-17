@@ -156,7 +156,6 @@ class _LoginPageState extends State<LoginPage> {
   fetchLoginResponse(context, credentials) async {
     await http.post(Res.loginAPI, body: credentials).then((response) {
       Map userMap = json.decode(response.body);
-      print(userMap);
       if (response.statusCode == 200) {
         if (userMap['success']) {
           showToast(context, userMap['message']);
@@ -175,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }).catchError((onError) {
-      showToastWithError(context, 'Failed to login: ${onError.toString()}');
+      showToastWithError(context, 'Failed ${onError.toString()}');
     });
   }
 

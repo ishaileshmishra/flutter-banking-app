@@ -64,20 +64,12 @@ Future uploadFileWithFields(_scaffoldKey, data, multipartFileSign) async {
   print('KEYS ${request.fields.keys}\nValues ${request.fields.values}');
   request.files.add(multipartFileSign);
   print("Uploading in progress...");
-  //await request.send();
-
   request.send().then((response) {
     if (response.statusCode == 200) {
       response.stream.transform(utf8.decoder).listen((value) {
         var data = json.decode(value);
         print('data: ${data['message']}');
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(data['message']),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 5),
-        ));
       });
-      return 'Account create successfully done';
     } else {
       response.stream.bytesToString().catchError((onError) {
         print(onError.toString());

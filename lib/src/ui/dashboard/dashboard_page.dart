@@ -3,7 +3,7 @@ import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/agent/DepositAmount.dart';
-import 'package:alok/src/ui/user/DepositeAmount.dart';
+import 'package:alok/src/ui/user/DepositAmount.dart';
 import 'package:alok/src/ui/user/CreateAccountPage.dart';
 import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/cupertino.dart';

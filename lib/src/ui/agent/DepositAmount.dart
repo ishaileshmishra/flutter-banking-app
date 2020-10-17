@@ -19,6 +19,7 @@ class _DepositeAmountState extends State<DepositeAmount> {
   List<DepositAmountRequestList> depositeList =
       new List<DepositAmountRequestList>();
   String transactionId;
+  List accountsJsonList;
   final _amountController = TextEditingController();
   final _remarkController = TextEditingController();
   bool _validateFieldAmount = false;
@@ -30,8 +31,8 @@ class _DepositeAmountState extends State<DepositeAmount> {
         Map userMap = json.decode(response.body);
         if (userMap['success']) {
           showToast(context, userMap['message']);
-          var accountsJson = jsonDecode(response.body)['data'] as List;
-          depositeList = accountsJson
+          accountsJsonList = jsonDecode(response.body)['data'] as List;
+          depositeList = accountsJsonList
               .map((tagJson) => DepositAmountRequestList.fromJson(tagJson))
               .toList();
           setState(() {
@@ -124,7 +125,7 @@ class _DepositeAmountState extends State<DepositeAmount> {
             backgroundColor: Res.accentColor,
             elevation: 0,
             centerTitle: true,
-            title: Text('Deposite'),
+            title: Text('Deposit'),
             actions: [
               Padding(
                 padding: EdgeInsets.all(10),
@@ -162,13 +163,11 @@ class _DepositeAmountState extends State<DepositeAmount> {
                             dropDownType: DropDownType.Button,
                             hint: Text('Transaction Id'),
                             onChanged: (value) {
-                              print('selected transactionId: $value');
-                              // var idx = depositeList.indexWhere(
-                              //     (DepositAmountRequestList documentSnapshot) =>
-                              //         documentSnapshot.transactionId == value);
-                              // var selected = depositeList.elementAt(idx);
+                              transactionId =
+                                  value.toString().split('(').first.trim();
+                              var amount = findSelectedAmount(transactionId);
                               setState(() {
-                                transactionId = value.toString().trim();
+                                _amountController.text = amount.toString();
                               });
                             },
                           ),
@@ -237,5 +236,13 @@ class _DepositeAmountState extends State<DepositeAmount> {
             ),
           )),
     );
+  }
+
+  findSelectedAmount(String transactionId) {
+    var idx = accountsJsonList.indexWhere(
+        (element) => element['transactionId'].toString() == transactionId);
+    var selected = accountsJsonList.elementAt(idx);
+    print('Index: ${selected['amount']}');
+    return selected['amount'];
   }
 }

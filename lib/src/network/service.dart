@@ -19,7 +19,7 @@ mixin Reposit {
           size: 40,
           color: Res.accentColor,
         ),
-        'Deposite Amount'));
+        'Deposit Amount'));
 
     return categories;
   }

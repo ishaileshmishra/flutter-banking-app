@@ -147,7 +147,7 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
         key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Deposite'),
+          title: Text('Deposit'),
           backgroundColor: Res.primaryColor,
           elevation: 0,
           actions: [
