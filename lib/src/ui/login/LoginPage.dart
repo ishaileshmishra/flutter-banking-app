@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }).catchError((onError) {
-      showToastWithError(context, 'Failed to login: ${onError.}');
+      showToastWithError(context, 'Failed to login: ${onError.toString()}');
     });
   }
 

@@ -18,41 +18,51 @@ class DepositeAmountScreen extends StatefulWidget {
 class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
   List<UserAccountModel> accoutList = new List<UserAccountModel>();
   var errorTextFields = '';
-  Map<String, String> dataToPost;
-  final _accountController = TextEditingController();
+  String accountNumber;
   final _amountController = TextEditingController();
+  String errorTextAmount;
   final _remarkController = TextEditingController();
+  String errorTextRemark;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   void _validateDepositeFields() {
-    errorTextFields = '';
-    if (_accountController.text.isEmpty || _accountController.text.length < 6) {
-      setState(() {
-        errorTextFields = 'Pls provide valid account number';
-      });
-      return;
-    } else if (_amountController.text.isEmpty ||
+    setState(() {
+      errorTextAmount = null;
+      errorTextRemark = null;
+    });
+    if (_amountController.text == null ||
+        _amountController.text.isEmpty ||
         _amountController.text.length < 2) {
       setState(() {
-        errorTextFields = 'Pls provide a valid amount';
-      });
-      return;
-    } else if (_remarkController.text.isEmpty) {
-      setState(() {
-        errorTextFields =
-            'Pls Provide Remark, So you can remmenber your spendings!!';
+        errorTextAmount = "Pls provide amount";
       });
       return;
     }
-    setState(() {
-      errorTextFields = '';
-    });
-    // dataToPost = new Map<String, String>();
-    dataToPost = {
-      'accountNumber': _accountController.text.trim(),
-      'amount': _amountController.text.trim(),
-      'remark': _remarkController.text.trim(),
+    if (_remarkController.text == null || _remarkController.text.isEmpty) {
+      setState(() {
+        errorTextRemark = "Pls provide remark";
+      });
+      return;
+    }
+    var credentials = {
+      "accountNumber": accountNumber,
+      "amount": _amountController.text.trim().toString(),
+      "remark": _remarkController.text.trim().toString(),
     };
+
+    http.post(Res.createDepositAPI, body: credentials).then((response) async {
+      Map userMap = json.decode(response.body);
+      print(userMap);
+      if (response.statusCode == 200) {
+        showToast(context, userMap['message']);
+        await new Future.delayed(const Duration(seconds: 2));
+        Navigator.pop(context);
+      } else {
+        showToastWithError(context, userMap['message']);
+      }
+    }).catchError((error) {
+      showToastWithError(context, 'Failed to submit ${error.toString()}');
+    });
   }
 
   loadAccountList() async {
@@ -87,6 +97,48 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget _textFieldAmount() {
+      return Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: textFieldDec(),
+        child: TextField(
+          controller: _amountController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: "Amount",
+              labelText: 'Amount',
+              errorText: errorTextAmount,
+              prefixIcon: const Icon(
+                Icons.money,
+                color: Res.accentColor,
+              ),
+              hintStyle: TextStyle(color: Colors.grey[400])),
+        ),
+      );
+    }
+
+    Widget _textFieldRemark() {
+      return Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: textFieldDec(),
+        child: TextField(
+          controller: _remarkController,
+          keyboardType: TextInputType.name,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: "Remark",
+              labelText: 'Remark',
+              errorText: errorTextRemark,
+              prefixIcon: const Icon(
+                Icons.text_fields,
+                color: Res.accentColor,
+              ),
+              hintStyle: TextStyle(color: Colors.grey[400])),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
@@ -130,11 +182,6 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                       child: Column(
                         children: [
                           SizedBox(height: 20),
-                          Text(
-                            '$errorTextFields',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          //====================================
                           Container(
                             decoration: buildBoxDecoration(),
                             padding: EdgeInsets.symmetric(horizontal: 10),
@@ -146,6 +193,12 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                               hint: Text('Accounts'),
                               onChanged: (value) {
                                 print(value);
+                                accountNumber =
+                                    value.toString().split('(').first.trim();
+                                print(accountNumber);
+                                setState(() {
+                                  accountNumber = accountNumber;
+                                });
                                 //selectedAccountTypeInteger = mapAccounts[value];
                                 //print(selectedAccountTypeInteger);
                               },
@@ -153,26 +206,11 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                           ),
                           //====================================
                           SizedBox(height: 10),
-                          CupertinoTextField(
-                            controller: _amountController,
-                            clearButtonMode: OverlayVisibilityMode.editing,
-                            prefix: buildPadding(),
-                            padding: EdgeInsets.all(10),
-                            keyboardType: TextInputType.number,
-                            placeholder: "Amount",
-                            decoration: buildBoxDecoration(),
-                          ),
+
+                          _textFieldAmount(),
                           //====================================
                           SizedBox(height: 10),
-                          CupertinoTextField(
-                            controller: _remarkController,
-                            clearButtonMode: OverlayVisibilityMode.editing,
-                            prefix: buildPadding(),
-                            padding: EdgeInsets.all(10),
-                            keyboardType: TextInputType.name,
-                            placeholder: "Remark",
-                            decoration: buildBoxDecoration(),
-                          ),
+                          _textFieldRemark(),
                           //====================================
                           SizedBox(height: 40),
                           //Submit Button
@@ -181,22 +219,6 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                             color: Res.primaryColor,
                             onPressed: () async {
                               _validateDepositeFields();
-                              // Senfing dataToPost
-                              print(dataToPost);
-                              final response = await http
-                                  .post(Res.createDepositAPI, body: dataToPost);
-                              if (response.statusCode == 200) {
-                                Map userMap = json.decode(response.body);
-                                print(userMap);
-
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                  content: Text(userMap['message']),
-                                  behavior: SnackBarBehavior.floating,
-                                  duration: Duration(seconds: 5),
-                                ));
-                              } else {
-                                print('Failed to deposite amount');
-                              }
                             },
                           ),
                           //====================================
