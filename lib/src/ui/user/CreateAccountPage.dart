@@ -178,9 +178,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
       // POST The fields and multipartFile
       await uploadFileWithFields(_scaffoldKey, data, multipartFileDocument);
-      // .catchError((onError) => {print('onError: ${onError.toString()}')})
-      // .then((onSucess) => {print('onSuccess: $onSucess')})
-      // .whenComplete(() => print("onComplete "));
     }
 
     return GestureDetector(

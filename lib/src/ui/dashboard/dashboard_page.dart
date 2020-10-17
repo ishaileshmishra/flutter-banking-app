@@ -29,7 +29,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         child: Column(
           children: [
             // container appbar
-            buildAppbar(context),
+            buildAppbar(),
             buildAccountStrip(),
             SizedBox(height: 30),
             buildExpanded(categories, agentCategories)
@@ -239,7 +239,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Container buildAppbar(BuildContext context) {
+  Container buildAppbar() {
     return Container(
       padding: EdgeInsets.all(20),
       child: Row(
@@ -276,11 +276,30 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  bool logoutApp = _showAlertConfirmLogout();
-                  print("logoutApp $logoutApp");
-                  if (logoutApp) {
-                    Navigator.pop(context);
-                  }
+                  print('Tapped');
+
+                  showDialog(
+                      context: (context),
+                      barrierDismissible: false,
+                      builder: (_) => AlertDialog(
+                            title: Text('Logout'),
+                            content: Text('Want to logout?'),
+                            actions: [
+                              FlatButton(
+                                child: Text('cancel'),
+                                onPressed: () {
+                                  _close();
+                                },
+                              ),
+                              FlatButton(
+                                child: Text('logout'),
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                              ),
+                            ],
+                            elevation: 18,
+                          ));
                 },
                 child: CircleAvatar(
                   backgroundColor: Res.accentColor,
@@ -298,25 +317,29 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  _showAlertConfirmLogout() async {
-    // the response will store the .pop value (it can be any object you want)
-    var response = await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text('Logout'),
-              content: Text('Do you want to logout?'),
-              actions: <Widget>[
-                FlatButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text('Cancle')),
-                FlatButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text('Logout'))
-              ],
-            ));
-    // do you want to do with the response.
-    print('response flag $response');
-    bool flag = response.toString().toLowerCase() == 'true';
-    return flag;
+  void _close() {
+    Navigator.pop(context);
   }
+  // _showAlertConfirmLogout() async {
+  //   // the response will store the .pop value (it can be any object you want)
+  //   var response = await showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //             title: Text('Logout'),
+  //             content: Text('Do you want to logout?'),
+  //             actions: <Widget>[
+  //               FlatButton(
+  //                   onPressed: () => Navigator.of(context).pop(false),
+  //                   child: Text('Cancle')),
+  //               FlatButton(
+  //                   onPressed: () => Navigator.of(context).pop(true),
+  //                   child: Text('Logout'))
+  //             ],
+  //           ));
+  //   // do you want to do with the response.
+  //   print('response flag $response');
+  //   bool flag = response.toString().toLowerCase() == 'true';
+  //   return flag;
+  // }
+
 }
