@@ -20,6 +20,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     final categories = Reposit.getCategories();
+    final agentCategories = Reposit.getAgentCategories();
 
     return Scaffold(
       backgroundColor: Res.primaryColor,
@@ -31,14 +32,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             buildAppbar(),
             buildAccountStrip(),
             SizedBox(height: 30),
-            buildExpanded(categories)
+            buildExpanded(categories, agentCategories)
           ],
         ),
       ),
     );
   }
 
-  Expanded buildExpanded(List<CatModel> categories) {
+  Expanded buildExpanded(
+      List<CatModel> categories, List<CatModel> agentCategories) {
     return Expanded(
         child: Container(
       decoration: BoxDecoration(
@@ -46,7 +48,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         borderRadius: BorderRadius.only(
             topRight: Radius.circular(30.0), topLeft: Radius.circular(30.0)),
       ),
-      child: _listView(categories),
+      child: widget.user.role == 'user'
+          ? _listView(categories)
+          : _listView(agentCategories),
     ));
   }
 
@@ -57,6 +61,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           return GestureDetector(
             onTap: () => {
               {
+                // TODO: here to go
+                /// handle click on the basis of the role availabe
+                /// if (widget.user.role == 'user')
+                // {
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => DepositeAmount()),
+                //   )
+                // }
                 index == 0
                     ? Navigator.push(
                         context,
@@ -102,41 +115,101 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       ),
       child: Container(
         width: double.infinity,
-        child: Column(
+        child:
+            widget.user.role == 'user' ? buildUserColumn() : buildAgentColumn(),
+      ),
+    );
+  }
+
+  Column buildAgentColumn() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Recieved request : ${widget.user.noOfDepositRequest}',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        SizedBox(height: 20),
+        GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => DepositeAmount()));
+            },
+            child: btnViewRequest())
+      ],
+    );
+  }
+
+  Column buildUserColumn() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        widget.user.isAccountCreated == 0
+            ? Text(
+                'Available balance : ${widget.user.noOfDepositRequest.toDouble()}',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              )
+            : Text(
+                'Available balance : ${widget.user.noOfDepositRequest.toDouble()}',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+        SizedBox(height: 20),
+        widget.user.isAccountCreated == 0
+            ? GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            CreateNewAccountPage()), //CreateNewAccountPage()),
+                  );
+                },
+                child: btnCreatAccount())
+            : Text('${widget.user.availableBalance}',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                )),
+      ],
+    );
+  }
+
+  Card btnViewRequest() {
+    return Card(
+      elevation: 0,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        //width: 160,
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            widget.user.isAccountCreated == 0
-                ? Text(
-                    'Number of deposites : ${widget.user.noOfDepositRequest.toString()}',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                : Text(
-                    'Your main balance',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-            SizedBox(height: 20),
-            widget.user.isAccountCreated == 0
-                ? GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                DepositeAmount()), //CreateNewAccountPage()),
-                      );
-                    },
-                    child: btnCreatAccount())
-                : Text("45.500,12",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    )),
+            Icon(
+              Icons.supervised_user_circle_outlined,
+              color: Res.accentColor,
+            ),
+            SizedBox(width: 6),
+            Text(
+              'View Request',
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
           ],
         ),
       ),
@@ -145,10 +218,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   Card btnCreatAccount() {
     return Card(
-      elevation: 8,
+      elevation: 0,
       child: Container(
         padding: EdgeInsets.all(10),
-        width: 160,
+        //width: 160,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

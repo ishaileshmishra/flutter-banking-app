@@ -1,10 +1,14 @@
 import 'dart:convert';
 
-import 'package:alok/res.dart';
-import 'package:alok/src/ui/user/Components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:alok/res.dart';
+import 'package:alok/src/models/UserAccountModel.dart';
+import 'package:alok/src/ui/user/Components.dart';
+import 'package:alok/src/utils/widgets.dart';
 
 class DepositeAmountScreen extends StatefulWidget {
   @override
@@ -12,6 +16,7 @@ class DepositeAmountScreen extends StatefulWidget {
 }
 
 class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
+  List<UserAccountModel> accoutList = new List<UserAccountModel>();
   var errorTextFields = '';
   Map<String, String> dataToPost;
   final _accountController = TextEditingController();
@@ -50,10 +55,34 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
     };
   }
 
+  loadAccountList() async {
+    await http.get(Res.accountListAPI).then((response) {
+      if (response.statusCode == 200) {
+        Map userMap = json.decode(response.body);
+        if (userMap['success']) {
+          showToast(context, userMap['message']);
+          var accountsJson = jsonDecode(response.body)['data'] as List;
+          accoutList = accountsJson
+              .map((tagJson) => UserAccountModel.fromJson(tagJson))
+              .toList();
+          setState(() {
+            accoutList = accoutList;
+            print(accoutList.toString());
+          });
+        } else {
+          showToastWithError(context, userMap['message']);
+        }
+      }
+    }).catchError((error) {
+      showToastWithError(context, error.toString());
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     errorTextFields = '';
+    loadAccountList();
   }
 
   @override
@@ -106,17 +135,22 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                             style: TextStyle(color: Colors.red),
                           ),
                           //====================================
-                          SizedBox(height: 20),
-                          CupertinoTextField(
-                            controller: _accountController,
-                            clearButtonMode: OverlayVisibilityMode.editing,
-                            prefix: buildPadding(),
-                            padding: EdgeInsets.all(10),
-                            keyboardType: TextInputType.number,
-                            placeholder: "Account number",
+                          Container(
                             decoration: buildBoxDecoration(),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: DropDown(
+                              items: accoutList,
+                              isExpanded: true,
+                              showUnderline: true,
+                              dropDownType: DropDownType.Button,
+                              hint: Text('Accounts'),
+                              onChanged: (value) {
+                                print(value);
+                                //selectedAccountTypeInteger = mapAccounts[value];
+                                //print(selectedAccountTypeInteger);
+                              },
+                            ),
                           ),
-
                           //====================================
                           SizedBox(height: 10),
                           CupertinoTextField(
@@ -128,7 +162,6 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                             placeholder: "Amount",
                             decoration: buildBoxDecoration(),
                           ),
-
                           //====================================
                           SizedBox(height: 10),
                           CupertinoTextField(
@@ -140,9 +173,7 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                             placeholder: "Remark",
                             decoration: buildBoxDecoration(),
                           ),
-
                           //====================================
-                          // Spaces
                           SizedBox(height: 40),
                           //Submit Button
                           CupertinoButton(

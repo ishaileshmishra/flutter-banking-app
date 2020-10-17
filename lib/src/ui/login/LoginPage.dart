@@ -155,13 +155,12 @@ class _LoginPageState extends State<LoginPage> {
   fetchLoginResponse(context, credentials) async {
     await http.post(Res.loginAPI, body: credentials).then((response) {
       Map userMap = json.decode(response.body);
-      setState(() {
-        isLoading = true;
-      });
+      print(userMap);
       if (response.statusCode == 200) {
         if (userMap['success']) {
           showToast(context, userMap['message']);
           LoginResponse loginDetails = LoginResponse.fromJson(userMap['data']);
+          print('loginDetails: $loginDetails');
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -173,10 +172,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }).catchError((onError) {
-      showToastWithError(context, 'Failed to login');
-      setState(() {
-        isLoading = true;
-      });
+      showToastWithError(context, 'Failed to login: ${onError.}');
     });
   }
 

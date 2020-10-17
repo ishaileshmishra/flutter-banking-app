@@ -5,6 +5,7 @@ class LoginResponse {
   String role;
   int isAccountCreated;
   int noOfDepositRequest;
+  int availableBalance;
 
   LoginResponse(
       {this.userId,
@@ -12,7 +13,8 @@ class LoginResponse {
       this.lastName,
       this.role,
       this.isAccountCreated,
-      this.noOfDepositRequest});
+      this.noOfDepositRequest,
+      this.availableBalance});
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
         userId: json["userId"],
@@ -21,5 +23,6 @@ class LoginResponse {
         role: json["role"],
         isAccountCreated: json["isAccountCreated"],
         noOfDepositRequest: json["noOfDepositRequest"],
+        availableBalance: json["availableBalance"],
       );
 }

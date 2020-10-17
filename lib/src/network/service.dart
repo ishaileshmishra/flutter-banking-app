@@ -23,4 +23,18 @@ mixin Reposit {
 
     return categories;
   }
+
+  static List<CatModel> getAgentCategories() {
+    List<CatModel> categories = new List<CatModel>();
+
+    categories.add(new CatModel(
+        Icon(
+          Icons.supervised_user_circle_outlined,
+          size: 40,
+          color: Res.accentColor,
+        ),
+        'View Request'));
+
+    return categories;
+  }
 }

@@ -16,6 +16,7 @@ class Res {
   static const String createAccount = baseURL + 'createAccount';
   static const String accountType = baseURL + 'accountTypeList';
   static const String createDepositAPI = baseURL + 'createDepositRequest';
+  static const String accountListAPI = baseURL + 'accountList';
   static const String depositAmountListAPI =
       baseURL + 'depositAmountRequestList';
   static const String depositAmountAPI = baseURL + 'depositAmount';
