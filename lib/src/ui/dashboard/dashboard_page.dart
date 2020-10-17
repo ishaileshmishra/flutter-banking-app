@@ -29,7 +29,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         child: Column(
           children: [
             // container appbar
-            buildAppbar(),
+            buildAppbar(context),
             buildAccountStrip(),
             SizedBox(height: 30),
             buildExpanded(categories, agentCategories)
@@ -61,26 +61,22 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           return GestureDetector(
             onTap: () => {
               {
-                // TODO: here to go
-                /// handle click on the basis of the role availabe
-                /// if (widget.user.role == 'user')
-                // {
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(builder: (context) => DepositeAmount()),
-                //   )
-                // }
-                index == 0
+                (widget.user.role == 'agent' && index == 0)
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CreateNewAccountPage()),
-                      )
-                    : Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DepositeAmountScreen()),
-                      )
+                            builder: (context) => DepositeAmount()))
+                    : index == 0
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateNewAccountPage()),
+                          )
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DepositeAmountScreen()),
+                          )
               },
             },
             child: Card(
@@ -243,7 +239,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Container buildAppbar() {
+  Container buildAppbar(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
       child: Row(
@@ -278,12 +274,21 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               SizedBox(
                 width: 10,
               ),
-              CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: Icon(
-                  CupertinoIcons.person,
-                  color: Colors.white,
-                  size: 30,
+              GestureDetector(
+                onTap: () {
+                  bool logoutApp = _showAlertConfirmLogout();
+                  print("logoutApp $logoutApp");
+                  if (logoutApp) {
+                    Navigator.pop(context);
+                  }
+                },
+                child: CircleAvatar(
+                  backgroundColor: Res.accentColor,
+                  child: Icon(
+                    CupertinoIcons.person,
+                    color: Colors.white,
+                    size: 25,
+                  ),
                 ),
               )
             ],
@@ -291,5 +296,27 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         ],
       ),
     );
+  }
+
+  _showAlertConfirmLogout() async {
+    // the response will store the .pop value (it can be any object you want)
+    var response = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Logout'),
+              content: Text('Do you want to logout?'),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text('Cancle')),
+                FlatButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text('Logout'))
+              ],
+            ));
+    // do you want to do with the response.
+    print('response flag $response');
+    bool flag = response.toString().toLowerCase() == 'true';
+    return flag;
   }
 }

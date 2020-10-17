@@ -1,5 +1,6 @@
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DepositAmountRequestList.dart';
+import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
@@ -67,16 +68,13 @@ class _DepositeAmountState extends State<DepositeAmount> {
       postCall().then((value) {
         if (value.statusCode == 200) {
           print('onSuccess: $value');
-          showSnackBar('Successfully created done');
+          showToast(context, ('Successfully created done'));
           Navigator.pop(context);
         } else {
-          showSnackBar('Something went wrong, please try again');
-          print('onError: ');
+          showToastWithError(context, 'Something went wrong, please try again');
         }
       }).catchError((onFailed) {
-        print('onFailed: ${onFailed.toString()}');
-        showSnackBar('Something went wrong, please try again');
-        //Navigator.pop(context);
+        showToastWithError(context, 'Something went wrong, please try again');
       });
     }
   }
