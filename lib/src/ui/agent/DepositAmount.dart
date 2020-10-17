@@ -30,7 +30,7 @@ class _DepositeAmountState extends State<DepositeAmount> {
       if (response.statusCode == 200) {
         Map userMap = json.decode(response.body);
         if (userMap['success']) {
-          showToast(context, userMap['message']);
+          //showToast(context, userMap['message']);
           accountsJsonList = jsonDecode(response.body)['data'] as List;
           depositeList = accountsJsonList
               .map((tagJson) => DepositAmountRequestList.fromJson(tagJson))

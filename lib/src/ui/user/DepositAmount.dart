@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
@@ -66,11 +67,13 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
   }
 
   loadAccountList() async {
-    await http.get(Res.accountListAPI).then((response) {
+    var box = Hive.box(Res.aHiveDB);
+    var userId = box.get(Res.aUserId);
+    await http.get(Res.accountListAPI + '$userId').then((response) {
       if (response.statusCode == 200) {
         Map userMap = json.decode(response.body);
         if (userMap['success']) {
-          showToast(context, userMap['message']);
+          //showToast(context, userMap['message']);
           var accountsJson = jsonDecode(response.body)['data'] as List;
           accoutList = accountsJson
               .map((tagJson) => UserAccountModel.fromJson(tagJson))
@@ -206,14 +209,12 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                           ),
                           //====================================
                           SizedBox(height: 10),
-
                           _textFieldAmount(),
                           //====================================
                           SizedBox(height: 10),
                           _textFieldRemark(),
                           //====================================
                           SizedBox(height: 40),
-                          //Submit Button
                           CupertinoButton(
                             child: Text('Submit'),
                             color: Res.primaryColor,

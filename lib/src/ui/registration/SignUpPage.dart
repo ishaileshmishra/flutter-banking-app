@@ -37,38 +37,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // void _validateCredentials(credentials) async {
-  //   //var box = await Hive.openBox(constant.csHiveDB);
-  //   //var body = json.encode(credentials);
-  //   var response = await http.post(Res.registerAPI, body: credentials);
-  //   if (response.statusCode == 200) {
-  //     var resp = json.decode(response.body);
-  //     if (resp["success"]) {
-  //       // Store Data to Hive Database
-  //       // box.put(constant.csIsLoggedIn, true);
-  //       // box.put(constant.csLoginAuthToken, authToken);
-  //       // box.put(constant.csLoginUsername, username);
-  //       Map userData = resp['data'];
-  //       Navigator.pushReplacement(
-  //           context,
-  //           MaterialPageRoute(
-  //               builder: (context) => DashBoardScreen(
-  //                   //user: userData,
-  //                   )));
-  //     } else {
-  //       showToast(context, resp["message"]);
-  //     }
-  //   } else {
-  //     // box.put(constant.csIsLoggedIn, false);
-  //     // var data = json.decode(response.body);
-  //     // var errorMsg = data["error_message"];
-  //     Toast.show('Failed To Login', context,
-  //         duration: Toast.LENGTH_LONG,
-  //         gravity: Toast.BOTTOM,
-  //         backgroundColor: Colors.red);
-  //   }
-  // }
-
   Widget _showWelcomeText() {
     return Align(
       alignment: Alignment.centerLeft,
@@ -91,13 +59,14 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: textFieldDec(),
       child: TextField(
         controller: idProofController,
+        enabled: false,
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "ID Proof",
-            labelText: 'ID Proof',
+            hintText: "Adhar card",
+            labelText: "ID Proof (Adhar card only)",
             errorText: errorIdProof,
             prefixIcon: const Icon(
-              Icons.perm_identity_outlined,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -111,12 +80,14 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: textFieldDec(),
       child: TextField(
         controller: idProodNumberController,
+        maxLength: 12,
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "ID proof number",
-            labelText: 'ID proof number',
+            hintText: "Adhar card number",
+            labelText: 'Adhar card number',
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -136,7 +107,7 @@ class _SignUpPageState extends State<SignUpPage> {
             labelText: 'First name',
             errorText: errorFirstname,
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -156,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
             labelText: 'Last name',
             errorText: errorLastname,
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -177,7 +148,7 @@ class _SignUpPageState extends State<SignUpPage> {
             labelText: 'Mobile number',
             errorText: errorMobileNumber,
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.phone,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -198,7 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
             hintText: 'Password',
             errorText: errorPassword,
             prefixIcon: const Icon(
-              Icons.lock,
+              CupertinoIcons.lock,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -214,11 +185,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _onBtnPressed() async {
-    //
-    // Validator
-    //
-
-    /// clear app the fields
     setState(() {
       errorFirstname = null;
       errorLastname = null;
@@ -296,6 +262,9 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      idProofController.text = "Adhar card";
+    });
   }
 
   @override

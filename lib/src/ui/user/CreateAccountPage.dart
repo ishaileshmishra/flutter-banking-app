@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
@@ -121,7 +122,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         return;
       } else if (_idNumberController.text.isEmpty) {
         setState(() {
-          errorField = 'Provide card number';
+          errorField = 'Provide Identity Number';
         });
         return;
       } else if (_firstNameController.text.isEmpty) {
@@ -166,6 +167,8 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
       // clear all fields
       errorField = '';
+      var box = Hive.box(Res.aHiveDB);
+      var userId = box.get(Res.aUserId);
       Map<String, String> credentials = {
         'accountTypeId': selectedAccountTypeInteger.toString().trim(),
         'typeOfIdentity': 'Adhar Card',
@@ -177,6 +180,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         'mobileNumber': _mobileController.text.trim(),
         'city': _cityNameController.text.trim(),
         'pincode': _pinNumberController.text.trim(),
+        'userId': userId,
       };
 
       // POST The fields and multipartFile

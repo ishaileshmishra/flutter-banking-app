@@ -40,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
       decoration: textFieldDec(),
       child: TextField(
         controller: mobileController,
+        maxLength: 10,
         keyboardType: TextInputType.phone,
         decoration: InputDecoration(
             border: InputBorder.none,
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
             labelText: 'Mobile Number',
             errorText: errorTextMobile,
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.phone,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -68,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
             hintText: 'Password',
             errorText: errorTextPassword,
             prefixIcon: const Icon(
-              Icons.lock,
+              CupertinoIcons.lock,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
