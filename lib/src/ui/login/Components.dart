@@ -1,3 +1,5 @@
+import 'package:alok/res.dart';
+import 'package:alok/src/ui/registration/SignUpPage.dart';
 import 'package:alok/src/utils/fade_animation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +12,6 @@ Container buildAnimatedBackground(String textBold) {
     ),
     child: Stack(
       children: <Widget>[
-        //_positionedLight1(),
-        //_positionedLight2(),
-        //_positionedClock(),
         _positionedLoginText(textBold),
       ],
     ),
@@ -37,48 +36,74 @@ Positioned _positionedLoginText(String boldText) {
   );
 }
 
-// Positioned _positionedClock() {
-//   return Positioned(
-//     right: 40,
-//     top: 40,
-//     width: 80,
-//     height: 150,
-//     child: FadeAnimation(
-//         1.5,
-//         Container(
-//           decoration: BoxDecoration(
-//               image: DecorationImage(
-//                   image: AssetImage('assets/images/clock.png'))),
-//         )),
-//   );
+showSnackbarError(scaffoldKey, message) {
+  scaffoldKey.currentState.showSnackBar(SnackBar(
+    content: Text(message),
+    backgroundColor: Colors.red.shade600,
+    behavior: SnackBarBehavior.floating,
+    duration: Duration(seconds: 5),
+  ));
+}
+
+showSnackbarSuccess(scaffoldKey, message) {
+  scaffoldKey.currentState.showSnackBar(SnackBar(
+    content: Text(
+      message,
+      style: TextStyle(color: Colors.white),
+    ),
+    backgroundColor: Colors.green,
+    behavior: SnackBarBehavior.floating,
+    duration: Duration(seconds: 5),
+  ));
+}
+
+Widget showWelcomeText() {
+  return Align(
+    alignment: Alignment.centerLeft,
+    child: Padding(
+      padding: const EdgeInsets.all(18.0),
+      child: Text("Welcome\nBack",
+          style: TextStyle(fontSize: 30, color: Colors.white),
+          textAlign: TextAlign.left),
+    ),
+  );
+}
+
+// _waitToCheckLogin() async {
+//   var box = await Hive.openBox(constant.csHiveDB);
+//   bool loggedIn = box.get(constant.csIsLoggedIn, defaultValue: false);
+//   print('loggedIn: $loggedIn');
+//   print('username: ${box.get(constant.csLoginUsername)}');
+//   print('authtoken: ${box.get(constant.csLoginAuthToken)}');
+//   if (loggedIn) {
+//     box.get(constant.csIsLoggedIn);
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => StackPage(
+//                 authToken: box.get(constant.csLoginAuthToken),
+//                 userName: box.get(constant.csLoginUsername))));
+//   }
 // }
 
-// Positioned _positionedLight2() {
-//   return Positioned(
-//     left: 140,
-//     width: 80,
-//     height: 150,
-//     child: FadeAnimation(
-//         1.3,
-//         Container(
-//           decoration: BoxDecoration(
-//               image: DecorationImage(
-//                   image: AssetImage('assets/images/light-2.png'))),
-//         )),
-//   );
-// }
-
-// Positioned _positionedLight1() {
-//   return Positioned(
-//     left: 30,
-//     width: 80,
-//     height: 200,
-//     child: FadeAnimation(
-//         1,
-//         Container(
-//           decoration: BoxDecoration(
-//               image: DecorationImage(
-//                   image: AssetImage('assets/images/light-1.png'))),
-//         )),
-//   );
-// }
+GestureDetector btnRegistration(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SignUpPage()),
+      );
+    },
+    child: Container(
+      padding: EdgeInsets.all(8),
+      child: Text(
+        'Sign Up',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 18.0,
+          color: Res.accentColor,
+        ),
+      ),
+    ),
+  );
+}

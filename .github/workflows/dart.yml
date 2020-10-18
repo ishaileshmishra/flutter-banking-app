@@ -2,21 +2,26 @@ name: Dart CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, development ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, development ]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
-    container:
-      image:  google/dart:latest
-
     steps:
+    # Checkout the repository code using V1 of the standard checkout Action
     - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: flutter pub get
-    - name: Run tests
-      run: pub run test
+    # Use the standard Java Action to setup Java
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '12.x'
+    # Use the community Action to install Flutter
+    - uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '1.12.13+hotfix.6'
+        channel: 'beta'
+    - run: flutter pub get
+    - run: flutter test

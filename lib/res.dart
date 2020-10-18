@@ -16,7 +16,14 @@ class Res {
   static const String createAccount = baseURL + 'createAccount';
   static const String accountType = baseURL + 'accountTypeList';
   static const String createDepositAPI = baseURL + 'createDepositRequest';
+  static const String accountListAPI = baseURL + 'accountList?userId=';
   static const String depositAmountListAPI =
       baseURL + 'depositAmountRequestList';
   static const String depositAmountAPI = baseURL + 'depositAmount';
+
+  // Database Fields
+  static const String aHiveDB = 'alokDB';
+  static const String loggedInStatus = 'loginStatus';
+  static const String aUserData = 'userData';
+  static const String aUserId = 'userId';
 }

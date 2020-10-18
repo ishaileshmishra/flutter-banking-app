@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:alok/src/ui/user/Components.dart';
+import 'package:alok/src/utils/widgets.dart';
 import 'package:async/async.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
@@ -119,7 +122,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         return;
       } else if (_idNumberController.text.isEmpty) {
         setState(() {
-          errorField = 'Provide card number';
+          errorField = 'Provide Identity Number';
         });
         return;
       } else if (_firstNameController.text.isEmpty) {
@@ -164,23 +167,46 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
       // clear all fields
       errorField = '';
-      Map<String, String> data = {
-        'accountTypeId': selectedAccountTypeInteger.toString(),
-        'identityCardNumber': _fileName,
-        'firstName': _firstNameController.text,
-        'lastName': _lastNameController.text,
-        'accountHolderName': _accountHolderNameController.text,
-        'email': _emailAddressController.text,
-        'mobileNumber': _mobileController.text,
-        'city': _cityNameController.text,
-        'pincode': _pinNumberController.text
+      var box = Hive.box(Res.aHiveDB);
+      var userId = box.get(Res.aUserId);
+      print('userId $userId');
+      Map<String, String> credentials = {
+        'accountTypeId': selectedAccountTypeInteger.toString().trim(),
+        'typeOfIdentity': 'Adhar Card',
+        'identityCardNumber': _idNumberController.text.toString().trim(),
+        'firstName': _firstNameController.text.trim(),
+        'lastName': _lastNameController.text.trim(),
+        'accountHolderName': _accountHolderNameController.text.trim(),
+        'email': _emailAddressController.text.trim(),
+        'mobileNumber': _mobileController.text.trim(),
+        'city': _cityNameController.text.trim(),
+        'pincode': _pinNumberController.text.trim(),
+        'userId': '$userId'
       };
 
       // POST The fields and multipartFile
-      await uploadFileWithFields(_scaffoldKey, data, multipartFileDocument);
-      // .catchError((onError) => {print('onError: ${onError.toString()}')})
-      // .then((onSucess) => {print('onSuccess: $onSucess')})
-      // .whenComplete(() => print("onComplete "));
+      // await uploadFileWithFields(_scaffoldKey, credentials, multipartFileDocument);
+
+      var postUri = Uri.parse(Res.createAccount);
+      var request = new http.MultipartRequest("POST", postUri);
+      request.fields.addAll(credentials);
+      request.files.add(multipartFileDocument);
+      request.send().then((response) {
+        if (response.statusCode == 200) {
+          response.stream.transform(utf8.decoder).listen((value) {
+            Map userMap = json.decode(value);
+            if (userMap['success']) {
+              showToast(context, userMap['message']);
+              new Future.delayed(const Duration(seconds: 2));
+              Navigator.pop(context);
+            } else {
+              showToastWithError(context, userMap['message']);
+            }
+          });
+        }
+      }).catchError((error) {
+        showToastWithError(context, 'FAILED ${error.toString()}');
+      });
     }
 
     return GestureDetector(
@@ -297,7 +323,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           padding: EdgeInsets.all(10),
                           prefix: buildPadding(),
                           placeholder: "ID card number",
-                          keyboardType: TextInputType.name,
+                          keyboardType: TextInputType.number,
                           decoration: buildBoxDecoration(),
                         ),
 

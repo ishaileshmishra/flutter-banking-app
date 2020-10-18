@@ -4,20 +4,32 @@ import 'package:alok/res.dart';
 import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/models/SignUpResponse.dart';
+import 'package:alok/src/ui/dashboard/dashboard_page.dart';
+import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<LoginResponse> fetchLoginResponse(credentials) async {
-  final body = json.encode(credentials);
-  final response = await http.post(Res.loginAPI,
-      headers: {"Content-Type": "application/json"}, body: body);
-  if (response.statusCode == 200) {
+fetchLoginResponse(context, credentials) async {
+  await http.post(Res.loginAPI, body: credentials).then((response) {
     Map userMap = json.decode(response.body);
-    print("Login response: $userMap");
-    return LoginResponse.fromJson(userMap['user']);
-  } else {
-    return null;
-  }
+    print(userMap);
+    if (response.statusCode == 200) {
+      showToast(context, userMap['message']);
+      if (userMap['success']) {
+        LoginResponse loginDetails = LoginResponse.fromJson(userMap['data']);
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DashBoardScreen(
+                      user: loginDetails,
+                    )));
+      }
+    } else {
+      showToast(context, userMap['message']);
+    }
+  }).catchError((onError) {
+    showToast(context, 'Failed to login');
+  });
 }
 
 Future<SignUpResponse> fetchSignUpResponse(data) async {
@@ -52,20 +64,12 @@ Future uploadFileWithFields(_scaffoldKey, data, multipartFileSign) async {
   print('KEYS ${request.fields.keys}\nValues ${request.fields.values}');
   request.files.add(multipartFileSign);
   print("Uploading in progress...");
-  //await request.send();
-
   request.send().then((response) {
     if (response.statusCode == 200) {
       response.stream.transform(utf8.decoder).listen((value) {
         var data = json.decode(value);
         print('data: ${data['message']}');
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(data['message']),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 5),
-        ));
       });
-      return 'Account create successfully done';
     } else {
       response.stream.bytesToString().catchError((onError) {
         print(onError.toString());

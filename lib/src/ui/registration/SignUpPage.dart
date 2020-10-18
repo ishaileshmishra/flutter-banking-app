@@ -1,14 +1,15 @@
-import 'package:alok/src/models/SignUpResponse.dart';
-import 'package:alok/src/network/requests.dart';
-import 'package:alok/src/ui/dashboard/dashboard_page.dart';
-import 'package:flutter/material.dart';
-import 'package:alok/src/utils/widgets.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
-import 'package:toast/toast.dart';
 import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:alok/res.dart';
+import 'package:alok/src/models/LoginResponse.dart';
+import 'package:alok/src/ui/dashboard/dashboard_page.dart';
+import 'package:alok/src/utils/widgets.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key key, this.title}) : super(key: key);
@@ -36,38 +37,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void _validateCredentials(credentials) async {
-    //var box = await Hive.openBox(constant.csHiveDB);
-    //var body = json.encode(credentials);
-    var response = await http.post(Res.registerAPI, body: credentials);
-    if (response.statusCode == 200) {
-      var resp = json.decode(response.body);
-      if (resp["success"]) {
-        // Store Data to Hive Database
-        // box.put(constant.csIsLoggedIn, true);
-        // box.put(constant.csLoginAuthToken, authToken);
-        // box.put(constant.csLoginUsername, username);
-        Map userData = resp['data'];
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DashBoardScreen(
-                      user: userData,
-                    )));
-      } else {
-        showToast(context, resp["message"]);
-      }
-    } else {
-      // box.put(constant.csIsLoggedIn, false);
-      // var data = json.decode(response.body);
-      // var errorMsg = data["error_message"];
-      Toast.show('Failed To Login', context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.BOTTOM,
-          backgroundColor: Colors.red);
-    }
-  }
-
   Widget _showWelcomeText() {
     return Align(
       alignment: Alignment.centerLeft,
@@ -90,13 +59,14 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: textFieldDec(),
       child: TextField(
         controller: idProofController,
+        enabled: false,
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "ID Proof",
-            labelText: 'ID Proof',
+            hintText: "Adhar card",
+            labelText: "ID Proof (Adhar card only)",
             errorText: errorIdProof,
             prefixIcon: const Icon(
-              Icons.perm_identity_outlined,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -110,12 +80,14 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: textFieldDec(),
       child: TextField(
         controller: idProodNumberController,
+        maxLength: 12,
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "ID proof number",
-            labelText: 'ID proof number',
+            hintText: "Adhar card number",
+            labelText: 'Adhar card number',
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -135,7 +107,7 @@ class _SignUpPageState extends State<SignUpPage> {
             labelText: 'First name',
             errorText: errorFirstname,
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -155,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
             labelText: 'Last name',
             errorText: errorLastname,
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.person,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -169,13 +141,14 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: textFieldDec(),
       child: TextField(
         controller: mobileNumberController,
+        maxLength: 10,
         decoration: InputDecoration(
             border: InputBorder.none,
             hintText: "Mobile number",
             labelText: 'Mobile number',
             errorText: errorMobileNumber,
             prefixIcon: const Icon(
-              Icons.email,
+              CupertinoIcons.phone,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -196,7 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
             hintText: 'Password',
             errorText: errorPassword,
             prefixIcon: const Icon(
-              Icons.lock,
+              CupertinoIcons.lock,
               color: Res.accentColor,
             ),
             hintStyle: TextStyle(color: Colors.grey[400])),
@@ -212,11 +185,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _onBtnPressed() async {
-    //
-    // Validator
-    //
-
-    /// clear app the fields
     setState(() {
       errorFirstname = null;
       errorLastname = null;
@@ -238,10 +206,10 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    if (mobileNumberController.text == null ||
-        mobileNumberController.text.isEmpty) {
+    if (mobileNumberController.text.isEmpty ||
+        mobileNumberController.text.length < 10) {
       setState(() {
-        errorMobileNumber = "Mobile name required";
+        errorMobileNumber = "Mobile number required";
       });
       return;
     }
@@ -253,53 +221,50 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    var data = {
+    var credentials = {
       "idProofNumber": idProodNumberController.text.trim(),
       "firstName": firstNameController.text.trim(),
+      "email": '',
       "lastName": lastNameController.text.trim(),
       "mobileNumber": mobileNumberController.text.trim(),
       "password": passwordController.text.trim(),
     };
 
-    Future<SignUpResponse> futureResponse = fetchSignUpResponse(data);
-
-    if (futureResponse == null) {
-      showToast(context, 'Failed to login');
-      return;
-    }
-
-    futureResponse.then((response) {
-      //final username = '${response.firstName} ${response.lastName}';
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => DashBoardScreen()));
-    }).catchError((onError) {
-      showToast(context, 'Invalid response recieved');
-    });
-
-    _validateCredentials(data);
+    fetchLoginResponse(context, credentials);
   }
 
-  // _waitToCheckLogin() async {
-  //   var box = await Hive.openBox(constant.csHiveDB);
-  //   bool loggedIn = box.get(constant.csIsLoggedIn, defaultValue: false);
-  //   print('loggedIn: $loggedIn');
-  //   print('username: ${box.get(constant.csLoginUsername)}');
-  //   print('authtoken: ${box.get(constant.csLoginAuthToken)}');
-  //   if (loggedIn) {
-  //     box.get(constant.csIsLoggedIn);
-  //     Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //             builder: (context) => StackPage(
-  //                 authToken: box.get(constant.csLoginAuthToken),
-  //                 userName: box.get(constant.csLoginUsername))));
-  //   }
-  // }
+  fetchLoginResponse(context, credentials) async {
+    await http.post(Res.registerAPI, body: credentials).then((response) {
+      Map userMap = json.decode(response.body);
+      print(userMap);
+      if (response.statusCode == 200) {
+        if (userMap['success']) {
+          showToast(context, userMap['message']);
+          LoginResponse loginDetails = LoginResponse.fromJson(userMap['data']);
+          var box = Hive.box(Res.aHiveDB);
+          box.put(Res.loggedInStatus, true);
+          box.put(Res.aUserId, loginDetails.userId);
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DashBoardScreen(
+                        user: loginDetails,
+                      )));
+        } else {
+          showToastWithError(context, userMap['message']);
+        }
+      }
+    }).catchError((onError) {
+      showToastWithError(context, 'Failed to login');
+    });
+  }
 
   @override
   void initState() {
-    //_waitToCheckLogin();
     super.initState();
+    setState(() {
+      idProofController.text = "Adhar card";
+    });
   }
 
   @override
