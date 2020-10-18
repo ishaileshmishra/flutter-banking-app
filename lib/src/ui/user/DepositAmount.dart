@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:alok/res.dart';
 import 'package:alok/src/models/UserAccountModel.dart';
 import 'package:alok/src/ui/user/Components.dart';
-import 'package:alok/src/utils/widgets.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 
 class DepositeAmountScreen extends StatefulWidget {
   @override
@@ -191,7 +191,7 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                             child: DropDown(
                               items: accoutList,
                               isExpanded: true,
-                              showUnderline: true,
+                              showUnderline: false,
                               dropDownType: DropDownType.Button,
                               hint: Text('Accounts'),
                               onChanged: (value) {
@@ -202,8 +202,7 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                                 setState(() {
                                   accountNumber = accountNumber;
                                 });
-                                //selectedAccountTypeInteger = mapAccounts[value];
-                                //print(selectedAccountTypeInteger);
+
                               },
                             ),
                           ),

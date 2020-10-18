@@ -1,6 +1,6 @@
 import 'package:alok/res.dart';
 import 'package:alok/src/ui/registration/SignUpPage.dart';
-import 'package:alok/src/utils/fade_animation.dart';
+import 'package:alok/src/utils/anims.dart';
 import 'package:flutter/material.dart';
 
 Container buildAnimatedBackground(String textBold) {

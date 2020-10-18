@@ -3,34 +3,39 @@ import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/agent/DepositAmount.dart';
-import 'package:alok/src/ui/user/DepositAmount.dart';
+import 'package:alok/src/ui/dashboard/components.dart';
 import 'package:alok/src/ui/user/CreateAccountPage.dart';
-import 'package:alok/src/utils/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class DashBoardScreen extends StatefulWidget {
+class DashBoardScreen extends StatelessWidget {
   DashBoardScreen({Key key, this.user}) : super(key: key);
-  final LoginResponse user;
-  @override
-  _DashBoardScreenState createState() => _DashBoardScreenState();
-}
 
-class _DashBoardScreenState extends State<DashBoardScreen> {
+  final LoginResponse user;
+
+//   @override
+//   _DashBoardScreenState createState() => _DashBoardScreenState();
+// }
+
+// class _DashBoardScreenState extends State<DashBoardScreen> {
+
   @override
   Widget build(BuildContext context) {
     final categories = Reposit.getCategories();
     final agentCategories = Reposit.getAgentCategories();
+    final username = "${user.firstName} ${user.lastName}";
+    final depositBalance = user.noOfDepositRequest.toDouble();
+    final availBalance = user.availableBalance;
 
     return Scaffold(
       backgroundColor: Res.primaryColor,
       body: Container(
-        padding: EdgeInsets.only(top: 30),
+        padding: EdgeInsets.only(top: 20),
         child: Column(
           children: [
             // container appbar
-            buildAppbar(),
-            buildAccountStrip(),
+            renderActionbar(context, username),
+            buildAccountStrip(context, availBalance, depositBalance),
             SizedBox(height: 30),
             buildExpanded(categories, agentCategories)
           ],
@@ -44,64 +49,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     return Expanded(
         child: Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: Colors.grey.shade300,
         borderRadius: BorderRadius.only(
-            topRight: Radius.circular(30.0), topLeft: Radius.circular(30.0)),
+          topRight: Radius.circular(30.0),
+          topLeft: Radius.circular(30.0),
+        ),
       ),
-      child: widget.user.role == 'user'
-          ? _listView(categories)
-          : _listView(agentCategories),
+      child: user.role == 'user'
+          ? listView(user.role, categories)
+          : listView(user.role, agentCategories),
     ));
   }
 
-  ListView _listView(categories) {
-    return ListView.builder(
-        itemCount: categories.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () => {
-              {
-                (widget.user.role == 'agent' && index == 0)
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DepositeAmount()))
-                    : index == 0
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateNewAccountPage()),
-                          )
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DepositeAmountScreen()),
-                          )
-              },
-            },
-            child: Card(
-              elevation: 4,
-              color: Colors.white,
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: ListTile(
-                  title: Text(
-                    categories[index].title,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                  leading: categories[index].icon,
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  Container buildAccountStrip() {
+  Container buildAccountStrip(context, availBalance, depositBalance) {
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.all(20),
@@ -111,19 +71,20 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       ),
       child: Container(
         width: double.infinity,
-        child:
-            widget.user.role == 'user' ? buildUserColumn() : buildAgentColumn(),
+        child: user.role == 'user'
+            ? buildUserColumn(context, depositBalance, availBalance)
+            : buildAgentColumn(context),
       ),
     );
   }
 
-  Column buildAgentColumn() {
+  Column buildAgentColumn(context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Recieved request : ${widget.user.noOfDepositRequest}',
+          'Recieved request : ${user.noOfDepositRequest}',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -133,22 +94,25 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         SizedBox(height: 20),
         GestureDetector(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DepositeAmount()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DepositeAmount(),
+                  ));
             },
-            child: btnViewRequest())
+            child: btnCardView(titleTitle: "View Request"))
       ],
     );
   }
 
-  Column buildUserColumn() {
+  Column buildUserColumn(context, depositBalance, availBalance) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        widget.user.isAccountCreated == 0
+        user.isAccountCreated == 0
             ? Text(
-                'Available balance : ${widget.user.noOfDepositRequest.toDouble()}',
+                'Available balance : $depositBalance',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -156,7 +120,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               )
             : Text(
-                'Available balance : ${widget.user.noOfDepositRequest.toDouble()}',
+                'Available balance : $depositBalance',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -164,18 +128,18 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               ),
         SizedBox(height: 20),
-        widget.user.isAccountCreated == 0
+        user.isAccountCreated == 0
             ? GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            CreateNewAccountPage()), //CreateNewAccountPage()),
+                      builder: (context) => CreateNewAccountPage(),
+                    ),
                   );
                 },
-                child: btnCreatAccount())
-            : Text('${widget.user.availableBalance}',
+                child: btnCardView(titleTitle: "Create Account"))
+            : Text('$availBalance',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -184,162 +148,4 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       ],
     );
   }
-
-  Card btnViewRequest() {
-    return Card(
-      elevation: 0,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        //width: 160,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.supervised_user_circle_outlined,
-              color: Res.accentColor,
-            ),
-            SizedBox(width: 6),
-            Text(
-              'View Request',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Card btnCreatAccount() {
-    return Card(
-      elevation: 0,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        //width: 160,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.supervised_user_circle_outlined,
-              color: Res.accentColor,
-            ),
-            SizedBox(width: 6),
-            Text(
-              'Create Account',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Container buildAppbar() {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Good ${greeting()}',
-                style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade300,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Text(
-                '${widget.user.firstName} ${widget.user.lastName}',
-                style: TextStyle(
-                    fontSize: 18,
-                    //fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              myAppBarIcon(),
-              SizedBox(
-                width: 10,
-              ),
-              GestureDetector(
-                onTap: () {
-                  print('Tapped');
-
-                  showDialog(
-                      context: (context),
-                      barrierDismissible: false,
-                      builder: (_) => AlertDialog(
-                            title: Text('Logout'),
-                            content: Text('Want to logout?'),
-                            actions: [
-                              FlatButton(
-                                child: Text('cancel'),
-                                onPressed: () {
-                                  _close();
-                                },
-                              ),
-                              FlatButton(
-                                child: Text('logout'),
-                                onPressed: () {
-                                  Navigator.pop(context, true);
-                                },
-                              ),
-                            ],
-                            elevation: 18,
-                          ));
-                },
-                child: CircleAvatar(
-                  backgroundColor: Res.accentColor,
-                  child: Icon(
-                    CupertinoIcons.person,
-                    color: Colors.white,
-                    size: 25,
-                  ),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  void _close() {
-    Navigator.pop(context);
-  }
-  // _showAlertConfirmLogout() async {
-  //   // the response will store the .pop value (it can be any object you want)
-  //   var response = await showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
-  //             title: Text('Logout'),
-  //             content: Text('Do you want to logout?'),
-  //             actions: <Widget>[
-  //               FlatButton(
-  //                   onPressed: () => Navigator.of(context).pop(false),
-  //                   child: Text('Cancle')),
-  //               FlatButton(
-  //                   onPressed: () => Navigator.of(context).pop(true),
-  //                   child: Text('Logout'))
-  //             ],
-  //           ));
-  //   // do you want to do with the response.
-  //   print('response flag $response');
-  //   bool flag = response.toString().toLowerCase() == 'true';
-  //   return flag;
-  // }
-
 }

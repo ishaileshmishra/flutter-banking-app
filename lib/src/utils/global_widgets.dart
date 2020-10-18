@@ -1,20 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
-Widget logoPortion() {
-  return Container(
-      height: 450,
-      width: double.infinity,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: getColorFromHex("#E7484A"),
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100))),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Image.asset('assets/images/logo.png'),
-      ));
-}
-
 Widget loginText() {
   return Text("Login to your account",
       style: TextStyle(
@@ -176,15 +162,4 @@ Widget myAppBarIcon() {
 BoxDecoration textFieldDec() {
   return BoxDecoration(
       border: Border(bottom: BorderSide(color: Colors.grey[300])));
-}
-
-String greeting() {
-  var hour = DateTime.now().hour;
-  if (hour < 12) {
-    return 'Morning';
-  }
-  if (hour < 17) {
-    return 'Afternoon';
-  }
-  return 'Evening';
 }

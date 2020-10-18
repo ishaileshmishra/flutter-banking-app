@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DepositAmountRequestList.dart';
-import 'package:alok/src/utils/widgets.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';

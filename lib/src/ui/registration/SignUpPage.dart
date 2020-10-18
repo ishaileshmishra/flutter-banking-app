@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:alok/res.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/ui/dashboard/dashboard_page.dart';
-import 'package:alok/src/utils/widgets.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key key, this.title}) : super(key: key);

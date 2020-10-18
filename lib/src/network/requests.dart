@@ -5,7 +5,7 @@ import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/models/SignUpResponse.dart';
 import 'package:alok/src/ui/dashboard/dashboard_page.dart';
-import 'package:alok/src/utils/widgets.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 

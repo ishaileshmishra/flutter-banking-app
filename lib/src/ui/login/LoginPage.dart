@@ -10,7 +10,7 @@ import 'package:alok/res.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/ui/login/Components.dart';
-import 'package:alok/src/utils/widgets.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 
 class LoginPage extends StatefulWidget {
   //
