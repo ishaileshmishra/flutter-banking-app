@@ -1,21 +1,18 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:alok/src/ui/user/Components.dart';
-import 'package:alok/src/utils/global_widgets.dart';
-import 'package:async/async.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 
 import 'package:alok/res.dart';
 import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/network/requests.dart';
+import 'package:alok/src/ui/user/Components.dart';
+import 'package:alok/src/ui/user/beneficiary_detail_page.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 
 class CreateNewAccountPage extends StatefulWidget {
   @override
@@ -28,17 +25,17 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String _fileName = '';
   var multipartFileDocument;
   List<AccountType> selectedAccountType = new List<AccountType>();
   var mapAccounts = Map<String, int>();
   List<String> listAccountNames = new List<String>();
   int selectedAccountTypeInteger;
 
-  bool _validateIdNumber = false;
-  bool _validateName = false;
-  bool _validateLastname = false;
+  bool _validateIdAmount = false;
+  bool _validateDateOfBirth = false;
+  bool _validateAddress = false;
   bool _validateAccountHolderName = false;
+  bool _validateAccountHolderAdharCardNumber = false;
   bool _validateMobile = false;
   bool _validateEmailId = false;
   bool _validateCity = false;
@@ -46,11 +43,12 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
   // TextEditingController
   final _idNumberController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _dobController = TextEditingController();
   final _accountHolderNameController = TextEditingController();
+  final _accountHolderAdharCardNumberController = TextEditingController();
   final _mobileController = TextEditingController();
   final _emailAddressController = TextEditingController();
+  final _addressController = TextEditingController();
   final _cityNameController = TextEditingController();
   final _pinNumberController = TextEditingController();
 
@@ -78,72 +76,41 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   /// This build makes draws the conatains the view of the Screen
   @override
   Widget build(BuildContext context) {
-    Future<void> _pickFile() async {
-      // Pick File from the Gallery
-      FilePickerResult result = await FilePicker.platform.pickFiles();
-      // Check if file available
-      if (result != null) {
-        File imageFile = File(result.files.single.path);
-        // Make sure about the file's existance
-        if (imageFile.existsSync()) {
-          var stream =
-              // ignore: deprecated_member_use
-              http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-          var length = await imageFile.length();
-          setState(() {
-            imageFile
-                .exists()
-                .then((_) => {
-                      setState(() {
-                        multipartFileDocument = new http.MultipartFile(
-                            'identityCardFile', stream, length,
-                            filename: basename(imageFile.path));
-                        _fileName = basename(imageFile.path);
-                        print('filename: ${basename(imageFile.path)}');
-                      })
-                    })
-                .catchError((onError) {
-              print('error while loading file: $onError');
-            });
-          });
-        }
-      }
-    }
-
     void _textFiledValidator() async {
       ///
       ///
       ///
       setState(() {
-        _validateIdNumber = false;
-        _validateName = false;
-        _validateLastname = false;
+        _validateIdAmount = false;
+        _validateAddress = false;
         _validateAccountHolderName = false;
+        _validateAccountHolderAdharCardNumber = false;
         _validateMobile = false;
+        _validateAddress = false;
         _validateEmailId = false;
         _validateCity = false;
         _validatePIN = false;
       });
       RegExp regex = new RegExp(pattern);
       if (_idNumberController.text.length == 0) {
-        _validateIdNumber = true;
-        return;
-      } else if (_firstNameController.text.isEmpty) {
-        _validateName = true;
-        return;
-      } else if (_lastNameController.text.isEmpty) {
-        _validateLastname = true;
+        _validateIdAmount = true;
         return;
       } else if (_accountHolderNameController.text.isEmpty) {
         _validateAccountHolderName = true;
+        return;
+      } else if (_accountHolderAdharCardNumberController.text.isEmpty) {
+        _validateAccountHolderAdharCardNumber = true;
         return;
       } else if (_mobileController.text.isEmpty ||
           _mobileController.text.length < 10) {
         _validateMobile = true;
         return;
-      } else if (_emailAddressController.text.isEmpty ||
+      } else if (_emailAddressController.text.isNotEmpty &&
           !regex.hasMatch(_emailAddressController.text)) {
         _validateEmailId = true;
+        return;
+      } else if (_addressController.text.isEmpty) {
+        _validateAddress = true;
         return;
       } else if (_cityNameController.text.isEmpty) {
         _validateCity = true;
@@ -159,10 +126,12 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         print('userId $userId');
         Map<String, String> credentials = {
           'accountTypeId': selectedAccountTypeInteger.toString().trim(),
-          'typeOfIdentity': 'Adhar Card',
+          'accountMode': '',
+          'amount': '',
+          'accountFor': '',
+          'dateOfBirth': '',
+          'address': '',
           'identityCardNumber': _idNumberController.text.toString().trim(),
-          'firstName': _firstNameController.text.trim(),
-          'lastName': _lastNameController.text.trim(),
           'accountHolderName': _accountHolderNameController.text.trim(),
           'email': _emailAddressController.text.trim(),
           'mobileNumber': _mobileController.text.trim(),
@@ -218,15 +187,15 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
             children: [
               Stack(
                 children: [
+                  // Colored container
                   Container(
                     color: Res.primaryColor,
                     height: 200,
                   ),
-
-                  //field container
+                  //Curved Field container
                   Container(
                     margin: EdgeInsets.only(top: 20),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
                       color: Colors.white,
@@ -234,7 +203,8 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //Dropdown Field
+                        //====================================
+                        //Dropdown Field Account type
                         SizedBox(height: 20),
                         Container(
                           decoration: buildBoxDecoration(),
@@ -244,7 +214,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             isExpanded: true,
                             showUnderline: false,
                             dropDownType: DropDownType.Button,
-                            hint: Text('Account Type'),
+                            hint: Text('Account type'),
                             onChanged: (value) {
                               print(value);
                               selectedAccountTypeInteger = mapAccounts[value];
@@ -254,16 +224,17 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         ),
 
                         //====================================
+                        //Dropdown Field Account Mode
                         SizedBox(height: 10),
                         Container(
                           decoration: buildBoxDecoration(),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropDown(
-                            items: ['Adhar Card'],
+                            items: ['Gullak', 'Daily', 'Monthly'],
                             isExpanded: true,
                             showUnderline: false,
                             dropDownType: DropDownType.Button,
-                            hint: Text('Adhar Card'),
+                            hint: Text('Account mode'),
                             onChanged: (value) {
                               print(value);
                             },
@@ -272,85 +243,47 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
                         //====================================
                         SizedBox(height: 10),
-                        Row(
-                          children: [
-                            new OutlineButton(
-                                child: new Text("Choose identity card"),
-                                splashColor: Res.accentColor,
-                                onPressed: () => _pickFile(),
-                                shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(30.0))),
-                            SizedBox(width: 20),
-                            Expanded(
-                              child: Text(
-                                '$_fileName',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        //====================================
-                        SizedBox(height: 10),
-
                         TextField(
                           controller: _idNumberController,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                            errorText: _validateIdNumber
-                                ? 'Provide Identity Number'
-                                : null,
+                            errorText:
+                                _validateIdAmount ? 'Provide Amount' : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "ID card number",
+                            labelText: "Amount",
                             prefixIcon: Icon(CupertinoIcons.number_circle),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
 
                         //====================================
+                        // Dropdown
                         SizedBox(height: 10),
-
-                        TextField(
-                          controller: _firstNameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateName
-                                ? "First name Can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "First name",
-                            prefixIcon:
-                                const Icon(CupertinoIcons.number_circle),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
-                        ),
-
-                        //====================================
-                        SizedBox(height: 10),
-
-                        TextField(
-                          controller: _lastNameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateLastname
-                                ? "Last name Can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Last name",
-                            prefixIcon:
-                                const Icon(CupertinoIcons.number_circle),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                        Container(
+                          decoration: buildBoxDecoration(),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: DropDown(
+                            items: [
+                              'self',
+                              'son',
+                              'daughter',
+                              'brother',
+                              'sister',
+                              'wife',
+                              'father',
+                              'mother'
+                            ],
+                            isExpanded: true,
+                            showUnderline: false,
+                            dropDownType: DropDownType.Button,
+                            hint: Text('Account for'),
+                            onChanged: (value) {
+                              print(value);
+                            },
+                          ),
                         ),
 
                         //====================================
@@ -367,8 +300,48 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Account holder name",
-                            prefixIcon:
-                                const Icon(CupertinoIcons.number_circle),
+                            prefixIcon: const Icon(CupertinoIcons.person_2_alt),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ), //buildInputDecoration('ID card number'),
+                        ),
+
+                        //====================================
+                        // Textfield Date of birth
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _dobController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.datetime,
+                          onTap: () => print('open a calender dialog'),
+
+                          decoration: InputDecoration(
+                            errorText:
+                                _validateDateOfBirth ? 'Date of birth' : null,
+                            contentPadding: EdgeInsets.all(0),
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Date of birth",
+                            prefixIcon: Icon(CupertinoIcons.calendar_today),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ), //buildInputDecoration('ID card number'),
+                        ),
+
+                        //====================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _accountHolderAdharCardNumberController,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            errorText: _validateAccountHolderAdharCardNumber
+                                ? "Account holder name Can\'t Be Empty"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Account holder adhar card number",
+                            prefixIcon: const Icon(CupertinoIcons
+                                .person_crop_circle_badge_checkmark),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
@@ -377,8 +350,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         SizedBox(height: 10),
                         TextField(
                           controller: _mobileController,
-                          keyboardType: TextInputType.name,
+                          keyboardType: TextInputType.phone,
                           textInputAction: TextInputAction.next,
+                          maxLength: 10,
                           decoration: InputDecoration(
                             errorText:
                                 _validateMobile ? "Invalid Mobile" : null,
@@ -386,15 +360,13 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Mobile number",
-                            prefixIcon:
-                                const Icon(CupertinoIcons.number_circle),
+                            prefixIcon: const Icon(CupertinoIcons.phone),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
 
                         //====================================
                         SizedBox(height: 10),
-
                         TextField(
                           controller: _emailAddressController,
                           keyboardType: TextInputType.name,
@@ -406,8 +378,25 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Email Id",
-                            prefixIcon:
-                                const Icon(CupertinoIcons.number_circle),
+                            prefixIcon: const Icon(CupertinoIcons.mail),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ), //buildInputDecoration('ID card number'),
+                        ),
+
+                        //====================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _addressController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            errorText:
+                                _validateAddress ? "Invalid Address" : null,
+                            contentPadding: EdgeInsets.all(0),
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Address",
+                            prefixIcon: const Icon(Icons.add_to_drive),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
@@ -426,8 +415,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "City name",
-                            prefixIcon:
-                                const Icon(CupertinoIcons.number_circle),
+                            prefixIcon: const Icon(Icons.location_city),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
@@ -438,14 +426,14 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _pinNumberController,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.done,
+                          maxLength: 6,
                           decoration: InputDecoration(
                             errorText: _validatePIN ? "Invalid PIN" : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "PIN",
-                            prefixIcon:
-                                const Icon(CupertinoIcons.number_circle),
+                            labelText: "Pincode",
+                            prefixIcon: const Icon(Icons.confirmation_number),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
@@ -458,7 +446,13 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             child: Text('Submit'),
                             color: Res.primaryColor,
                             onPressed: () {
-                              _textFiledValidator();
+                              //_textFiledValidator();
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          BeneficiaryDetailsPage()));
                             },
                           ),
                         ),
