@@ -234,19 +234,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //====================================
-                        //Error and Text Success Field
-                        // Padding(
-                        //     padding: EdgeInsets.all(8),
-                        //     child: Text(
-                        //       '$errorField',
-                        //       style: TextStyle(
-                        //         fontSize: 16,
-                        //         color: CupertinoColors.systemRed,
-                        //       ),
-                        //     )),
-
-                        //====================================
                         //Dropdown Field
                         SizedBox(height: 20),
                         Container(
