@@ -312,8 +312,24 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _dobController,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.datetime,
-                          onTap: () => print('open a calender dialog'),
+                          //onTap: () => print('open a calender dialog'),
+                          onTap: () async {
+                            DateTime date = DateTime(1900);
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
 
+                            date = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime(2100));
+                            var formattedDate =
+                                "${date.day}-${date.month}-${date.year}";
+
+                            print(formattedDate);
+                            _dobController.text = formattedDate;
+                            // Show Date Picker Here
+                          },
                           decoration: InputDecoration(
                             errorText:
                                 _validateDateOfBirth ? 'Date of birth' : null,
