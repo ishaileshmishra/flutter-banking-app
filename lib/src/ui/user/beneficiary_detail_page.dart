@@ -12,16 +12,14 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
-  bool _validateBeneficiaryName = false;
-  bool _validateBeneficiaryDateOfBirth = false;
-  bool _validateAccountHolderAdharCardNumber = false;
+  bool _validateAdharCardNumber = false;
+  bool _validateDOB = false;
   bool _validateMobile = false;
   bool _validateEmailId = false;
 
   // TextEditingController
-  final _beneficiaryNameController = TextEditingController();
-  final _beneficiaryDOBController = TextEditingController();
   final _accountHolderAdharCardNumberController = TextEditingController();
+  final _dobController = TextEditingController();
   final _mobileController = TextEditingController();
   final _emailAddressController = TextEditingController();
 
@@ -36,21 +34,18 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
   Widget build(BuildContext context) {
     void _textFiledValidator() async {
       setState(() {
-        _validateBeneficiaryName = false;
-        _validateBeneficiaryDateOfBirth = false;
-        _validateAccountHolderAdharCardNumber = false;
+        _validateAdharCardNumber = false;
+        _validateDOB = false;
         _validateMobile = false;
         _validateEmailId = false;
       });
       RegExp regex = new RegExp(pattern);
-      if (_beneficiaryNameController.text.isEmpty) {
-        _validateBeneficiaryName = true;
+
+      if (_accountHolderAdharCardNumberController.text.isEmpty) {
+        _validateAdharCardNumber = true;
         return;
-      } else if (_beneficiaryDOBController.text.isEmpty) {
-        _validateBeneficiaryDateOfBirth = true;
-        return;
-      } else if (_accountHolderAdharCardNumberController.text.isEmpty) {
-        _validateAccountHolderAdharCardNumber = true;
+      } else if (_dobController.text.isEmpty) {
+        _validateDOB = true;
         return;
       } else if (_mobileController.text.isEmpty ||
           _mobileController.text.length < 10) {
@@ -135,12 +130,12 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                         // ================================
                         SizedBox(height: 10),
                         TextField(
-                          controller: _beneficiaryNameController,
+                          controller: _accountHolderAdharCardNumberController,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                            errorText: _validateBeneficiaryName
-                                ? "Beneficiary name Can\'t Be Empty"
+                            errorText: _validateAdharCardNumber
+                                ? "Adhar card number can\'t Be Empty"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
@@ -155,39 +150,33 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                         // Textfield Date of birth
                         SizedBox(height: 10),
                         TextField(
-                          controller: _beneficiaryDOBController,
+                          controller: _dobController,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.datetime,
-                          onTap: () => print('open a calender dialog'),
+                          onTap: () async {
+                            DateTime date = DateTime(1900);
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+
+                            date = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime(2100));
+                            var formattedDate =
+                                "${date.day}-${date.month}-${date.year}";
+
+                            print(formattedDate);
+                            _dobController.text = formattedDate;
+                            // Show Date Picker Here
+                          },
                           decoration: InputDecoration(
-                            errorText: _validateBeneficiaryDateOfBirth
-                                ? 'Date of birth'
-                                : null,
+                            errorText: _validateDOB ? 'Date of birth' : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Date of birth",
                             prefixIcon: Icon(CupertinoIcons.calendar_today),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
-                        ),
-
-                        //====================================
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _accountHolderAdharCardNumberController,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateAccountHolderAdharCardNumber
-                                ? "Account holder name Can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Account holder adhar card number",
-                            prefixIcon: const Icon(CupertinoIcons
-                                .person_crop_circle_badge_checkmark),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),

@@ -51,7 +51,6 @@ Future<List<AccountType>> getAllAccountType() async {
   );
   if (res.statusCode == 200) {
     var data = json.decode(res.body);
-    print(data);
     var rest = data["data"] as List;
     return rest.map<AccountType>((json) => AccountType.fromJson(json)).toList();
   }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:alok/src/models/account_model.dart';
+import 'package:alok/src/ui/user/beneficiary_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,9 +10,9 @@ import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
 import 'package:alok/src/models/AccountType.dart';
+import 'package:alok/src/models/account_model.dart';
 import 'package:alok/src/network/requests.dart';
 import 'package:alok/src/ui/user/Components.dart';
-import 'package:alok/src/ui/user/beneficiary_detail_page.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 
 class CreateNewAccountPage extends StatefulWidget {
@@ -21,7 +21,6 @@ class CreateNewAccountPage extends StatefulWidget {
 }
 
 class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
-  //
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
@@ -30,19 +29,21 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   List<AccountType> selectedAccountType = new List<AccountType>();
   var mapAccounts = Map<String, int>();
   List<String> listAccountNames = new List<String>();
+
   int selectedAccountTypeInteger;
-  bool _validateIdAmount = false;
-  bool _validateDateOfBirth = false;
-  bool _validateAddress = false;
+  bool _validateAmount = false;
   bool _validateAccountHolderName = false;
+  bool _validateDateOfBirth = false;
   bool _validateAccountHolderAdharCardNumber = false;
   bool _validateMobile = false;
   bool _validateEmailId = false;
-  bool _validateCity = false;
-  bool _validatePIN = false;
+  bool _validateAddress = false;
+  bool _validateCityName = false;
+  bool _validatePINCode = false;
 
   // TextEditingController
   final _idNumberController = TextEditingController();
+  final _amountController = TextEditingController();
   final _dobController = TextEditingController();
   final _accountHolderNameController = TextEditingController();
   final _accountHolderAdharCardNumberController = TextEditingController();
@@ -52,11 +53,13 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   final _cityNameController = TextEditingController();
   final _pinNumberController = TextEditingController();
 
-  List<AccountModel> accountForList = new List<AccountModel>();
-  List<AccountModel> accountList = new List<AccountModel>();
+  List<AccountModel> listAccountFor = new List<AccountModel>();
+  List<String> listAccountForNames = new List<String>();
+  var selectedAccountForNameValue;
 
-  List accountNameList;
-  List accountForNameList;
+  List<AccountModel> listAccountModels = new List<AccountModel>();
+  List<String> listAccounts = new List<String>();
+  var selectedListAccountValue;
 
   /// Initialised the state of the view
   @override
@@ -68,47 +71,38 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   }
 
   void accountForListItems(url) async {
-    print('requested for: $url');
     var response = await fetchAccountFor(url);
     if (response == null) {
-      showToast(context, 'Failed');
-    } else {
-      accountForList = response;
-      accountForList.forEach((element) {
-        accountForNameList.add(element.getName);
-      });
-      setState(() {
-        print('accountNameList $accountForNameList');
-        accountForNameList = accountForNameList;
-      });
+      showToast(context, 'Failed to load account for Items');
     }
+    listAccountFor = response;
+    listAccountFor.forEach((element) {
+      listAccountForNames.add('${element.getName}');
+    });
+    setState(() {
+      listAccountForNames = listAccountForNames;
+      print('listAccountForNames: $listAccountForNames');
+    });
   }
 
   void accountListItems(url) async {
-    print('requested for: $url');
     var response = await fetchAccountFor(url);
     if (response == null) {
-      showToast(context, 'Failed');
-    } else {
-      accountList = response;
-      accountList.forEach((element) {
-        print(element.getName);
-        accountNameList.add(element.getName);
-      });
-
-      setState(() {
-        print('accountNameList $accountForNameList');
-        accountNameList = accountNameList;
-      });
+      showToast(context, 'Failed to load account list Items');
     }
+    listAccountModels = response;
+    listAccountModels.forEach((element) {
+      listAccounts.add(element.getName);
+    });
+
+    setState(() {
+      listAccounts = listAccounts;
+      print('listAccounts: $listAccounts');
+    });
   }
 
-  /// Makes GET resuest to get all the availabe
-  /// Account Types for the drop down field
   void getAccountTypeDropDown() async {
     selectedAccountType = await getAllAccountType();
-    var listAccount = selectedAccountType.toList();
-    print('listAccount: $listAccount');
     selectedAccountType.toList().forEach((element) {
       setState(() {
         mapAccounts[element.name] = element.id;
@@ -117,30 +111,28 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
     });
   }
 
-  /// This build makes draws the conatains the view of the Screen
   @override
   Widget build(BuildContext context) {
     void _textFiledValidator() async {
       ///
-      ///
-      ///
+      RegExp regex = new RegExp(pattern);
       setState(() {
-        _validateIdAmount = false;
-        _validateAddress = false;
+        _validateAmount = false;
         _validateAccountHolderName = false;
+        _validateDateOfBirth = false;
         _validateAccountHolderAdharCardNumber = false;
         _validateMobile = false;
-        _validateAddress = false;
         _validateEmailId = false;
-        _validateCity = false;
-        _validatePIN = false;
+        _validateAddress = false;
+        _validateCityName = false;
+        _validatePINCode = false;
       });
-      RegExp regex = new RegExp(pattern);
-      if (_idNumberController.text.length == 0) {
-        _validateIdAmount = true;
-        return;
-      } else if (_accountHolderNameController.text.isEmpty) {
+      
+      if (_accountHolderNameController.text.isEmpty) {
         _validateAccountHolderName = true;
+        return;
+      } else if (_amountController.text.isEmpty) {
+        _validateAmount = true;
         return;
       } else if (_accountHolderAdharCardNumberController.text.isEmpty) {
         _validateAccountHolderAdharCardNumber = true;
@@ -157,11 +149,11 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         _validateAddress = true;
         return;
       } else if (_cityNameController.text.isEmpty) {
-        _validateCity = true;
+        _validateCityName = true;
         return;
       } else if (_pinNumberController.text.isEmpty ||
           _pinNumberController.text.length < 6) {
-        _validatePIN = true;
+        _validatePINCode = true;
         return;
       } else {
         // clear all fields
@@ -169,12 +161,12 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         var userId = box.get(Res.aUserId);
         print('userId $userId');
         Map<String, String> credentials = {
-          'accountTypeId': selectedAccountTypeInteger.toString().trim(),
-          'accountMode': '',
-          'amount': '',
-          'accountFor': '',
-          'dateOfBirth': '',
-          'address': '',
+          'accountTypeId': selectedAccountTypeInteger.toString(),
+          'accountMode': selectedListAccountValue,
+          'amount': _amountController.text.trim().toString(),
+          'accountFor': selectedAccountForNameValue,
+          'dateOfBirth': _dobController.text.trim(),
+          'address': _addressController.text.trim(),
           'identityCardNumber': _idNumberController.text.toString().trim(),
           'accountHolderName': _accountHolderNameController.text.trim(),
           'email': _emailAddressController.text.trim(),
@@ -183,8 +175,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           'pincode': _pinNumberController.text.trim(),
           'userId': '$userId'
         };
-        // POST The fields and multipartFile
-        // await uploadFileWithFields(_scaffoldKey, credentials, multipartFileDocument);
 
         print(credentials);
         var postUri = Uri.parse(Res.createAccount);
@@ -260,9 +250,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             dropDownType: DropDownType.Button,
                             hint: Text('Account type'),
                             onChanged: (value) {
-                              print(value);
                               selectedAccountTypeInteger = mapAccounts[value];
-                              print(selectedAccountTypeInteger);
                             },
                           ),
                         ),
@@ -274,13 +262,14 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           decoration: buildBoxDecoration(),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropDown(
-                            items: ['Gullak', 'Daily', 'Monthly'],
+                            items: listAccounts,
                             isExpanded: true,
                             showUnderline: false,
                             dropDownType: DropDownType.Button,
                             hint: Text('Account mode'),
                             onChanged: (value) {
                               print(value);
+                              selectedListAccountValue = value;
                             },
                           ),
                         ),
@@ -288,19 +277,19 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         //====================================
                         SizedBox(height: 10),
                         TextField(
-                          controller: _idNumberController,
+                          controller: _amountController,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             errorText:
-                                _validateIdAmount ? 'Provide Amount' : null,
+                                _validateAmount ? 'Provide Amount' : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Amount",
-                            prefixIcon: Icon(CupertinoIcons.number_circle),
+                            prefixIcon: Icon(CupertinoIcons.money_dollar),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
                         ),
 
                         //====================================
@@ -310,24 +299,14 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           decoration: buildBoxDecoration(),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropDown(
-                            items: accountNameList,
-
-                            // [
-                            //   'self',
-                            //   'son',
-                            //   'daughter',
-                            //   'brother',
-                            //   'sister',
-                            //   'wife',
-                            //   'father',
-                            //   'mother'
-                            // ],
+                            items: listAccountForNames,
                             isExpanded: true,
                             showUnderline: false,
                             dropDownType: DropDownType.Button,
                             hint: Text('Account for'),
                             onChanged: (value) {
                               print(value);
+                              selectedAccountForNameValue = value;
                             },
                           ),
                         ),
@@ -358,7 +337,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _dobController,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.datetime,
-                          //onTap: () => print('open a calender dialog'),
                           onTap: () async {
                             DateTime date = DateTime(1900);
                             FocusScope.of(context)
@@ -470,7 +448,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                            errorText: _validateCity
+                            errorText: _validateCityName
                                 ? "City name Can\'t Be Empty"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
@@ -490,7 +468,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           textInputAction: TextInputAction.done,
                           maxLength: 6,
                           decoration: InputDecoration(
-                            errorText: _validatePIN ? "Invalid PIN" : null,
+                            errorText: _validatePINCode ? "Invalid PIN" : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
@@ -518,7 +496,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             },
                           ),
                         ),
-                        //====================================
                       ],
                     ),
                   ),
