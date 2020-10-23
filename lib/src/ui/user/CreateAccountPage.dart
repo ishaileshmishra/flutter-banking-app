@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:alok/src/models/account_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +31,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   var mapAccounts = Map<String, int>();
   List<String> listAccountNames = new List<String>();
   int selectedAccountTypeInteger;
-
   bool _validateIdAmount = false;
   bool _validateDateOfBirth = false;
   bool _validateAddress = false;
@@ -52,11 +52,55 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   final _cityNameController = TextEditingController();
   final _pinNumberController = TextEditingController();
 
+  List<AccountModel> accountForList = new List<AccountModel>();
+  List<AccountModel> accountList = new List<AccountModel>();
+
+  List accountNameList;
+  List accountForNameList;
+
   /// Initialised the state of the view
   @override
   void initState() {
     super.initState();
     getAccountTypeDropDown();
+    accountForListItems(Res.accountForAPI);
+    accountListItems(Res.accountModeAPI);
+  }
+
+  void accountForListItems(url) async {
+    print('requested for: $url');
+    var response = await fetchAccountFor(url);
+    if (response == null) {
+      showToast(context, 'Failed');
+    } else {
+      accountForList = response;
+      accountForList.forEach((element) {
+        accountForNameList.add(element.getName);
+      });
+      setState(() {
+        print('accountNameList $accountForNameList');
+        accountForNameList = accountForNameList;
+      });
+    }
+  }
+
+  void accountListItems(url) async {
+    print('requested for: $url');
+    var response = await fetchAccountFor(url);
+    if (response == null) {
+      showToast(context, 'Failed');
+    } else {
+      accountList = response;
+      accountList.forEach((element) {
+        print(element.getName);
+        accountNameList.add(element.getName);
+      });
+
+      setState(() {
+        print('accountNameList $accountForNameList');
+        accountNameList = accountNameList;
+      });
+    }
   }
 
   /// Makes GET resuest to get all the availabe
@@ -266,16 +310,18 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           decoration: buildBoxDecoration(),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropDown(
-                            items: [
-                              'self',
-                              'son',
-                              'daughter',
-                              'brother',
-                              'sister',
-                              'wife',
-                              'father',
-                              'mother'
-                            ],
+                            items: accountNameList,
+
+                            // [
+                            //   'self',
+                            //   'son',
+                            //   'daughter',
+                            //   'brother',
+                            //   'sister',
+                            //   'wife',
+                            //   'father',
+                            //   'mother'
+                            // ],
                             isExpanded: true,
                             showUnderline: false,
                             dropDownType: DropDownType.Button,
@@ -412,7 +458,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Address",
-                            prefixIcon: const Icon(Icons.add_to_drive),
+                            prefixIcon: const Icon(Icons.location_on_sharp),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
@@ -462,7 +508,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             child: Text('Submit'),
                             color: Res.primaryColor,
                             onPressed: () {
-                              //_textFiledValidator();
+                              _textFiledValidator();
 
                               Navigator.push(
                                   context,
@@ -481,24 +527,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  OutlineInputBorder buildEnabledOutlineInputBorder() {
-    return OutlineInputBorder(
-      borderSide: BorderSide(
-        color: CupertinoColors.inactiveGray,
-        width: 1.0,
-      ),
-    );
-  }
-
-  OutlineInputBorder buildFocusedOutlineInputBorder() {
-    return OutlineInputBorder(
-      borderSide: BorderSide(
-        color: CupertinoColors.inactiveGray,
-        width: 1.0,
       ),
     );
   }

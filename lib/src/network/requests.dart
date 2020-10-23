@@ -4,6 +4,7 @@ import 'package:alok/res.dart';
 import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/models/SignUpResponse.dart';
+import 'package:alok/src/models/account_model.dart';
 import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,15 @@ Future uploadFileWithFields(_scaffoldKey, data, multipartFileSign) async {
   });
 }
 
-String getCurrentTime() {
-  var now = new DateTime.now();
-  return now.millisecondsSinceEpoch.toString();
+Future fetchAccountFor(url) async {
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    Map userMap = json.decode(response.body);
+    var rest = userMap["data"] as List;
+    return userMap['success']
+        ? rest.map<AccountModel>((json) => AccountModel.fromJson(json)).toList()
+        : null;
+  } else {
+    return null;
+  }
 }

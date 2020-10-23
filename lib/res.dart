@@ -21,6 +21,9 @@ class Res {
       baseURL + 'depositAmountRequestList';
   static const String depositAmountAPI = baseURL + 'depositAmount';
 
+  static const String accountForAPI = baseURL + 'accountForList';
+  static const String accountModeAPI = baseURL + 'accountModeList';
+
   // Database Fields
   static const String aHiveDB = 'alokDB';
   static const String loggedInStatus = 'loginStatus';

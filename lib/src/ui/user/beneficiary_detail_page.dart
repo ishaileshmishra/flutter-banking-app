@@ -139,7 +139,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                            errorText: _validateAccountHolderAdharCardNumber
+                            errorText: _validateBeneficiaryName
                                 ? "Beneficiary name Can\'t Be Empty"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
