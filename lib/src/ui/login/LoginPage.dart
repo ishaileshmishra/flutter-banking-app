@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _textFieldMobile() {
     return TextField(
       controller: mobileController,
-      keyboardType: TextInputType.name,
+      keyboardType: TextInputType.phone,
       textInputAction: TextInputAction.next,
       maxLength: 10,
       decoration: InputDecoration(

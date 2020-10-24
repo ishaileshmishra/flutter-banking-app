@@ -1,24 +1,18 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
-import 'package:alok/src/ui/agent/DepositAmount.dart';
 import 'package:alok/src/ui/agent/kyc_request.dart';
 import 'package:alok/src/ui/dashboard/components.dart';
 import 'package:alok/src/ui/user/CreateAccountPage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class DashBoardScreen extends StatelessWidget {
   DashBoardScreen({Key key, this.user}) : super(key: key);
 
   final LoginResponse user;
-
-//   @override
-//   _DashBoardScreenState createState() => _DashBoardScreenState();
-// }
-
-// class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -99,11 +93,8 @@ class DashBoardScreen extends StatelessWidget {
         SizedBox(height: 10),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DepositeAmount(),
-                ));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => KYCRequestPage()));
           },
           child: Text(
             'View Details',

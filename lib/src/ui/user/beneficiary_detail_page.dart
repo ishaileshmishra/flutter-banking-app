@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
@@ -125,7 +124,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                         SizedBox(height: 10),
                         TextField(
                           controller: _nameController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             errorText: _validateBeneficiaryName
@@ -303,7 +302,8 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
         print(userMap);
         if (userMap['success']) {
           showToast(context, userMap['message']);
-          showGiffyDialog(userMap['message']);
+          //showGiffyDialog(userMap['message']);
+          showBottomDialog(userMap['message']);
         } else {
           showToastWithError(context, userMap['message']);
         }
@@ -313,30 +313,30 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
     });
   }
 
-  showGiffyDialog(message) {
-    showDialog(
-        context: context,
-        builder: (_) => NetworkGiffyDialog(
-              image: Image.network(
-                "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
-                fit: BoxFit.cover,
-              ),
-              entryAnimation: EntryAnimation.BOTTOM,
-              title: Text(
-                'Sucessful',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-              ),
-              description: Text(message),
-              onOkButtonPressed: () {
-                Navigator.pop(context);
-              },
-            ));
-  }
+  // showGiffyDialog(message) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (_) => NetworkGiffyDialog(
+  //             image: Image.network(
+  //               "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
+  //               fit: BoxFit.cover,
+  //             ),
+  //             entryAnimation: EntryAnimation.BOTTOM,
+  //             title: Text(
+  //               'Successful',
+  //               textAlign: TextAlign.center,
+  //               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+  //             ),
+  //             description: Text(message),
+  //             onOkButtonPressed: () {
+  //               Navigator.pop(context);
+  //             },
+  //           ));
+  // }
 
-  showBottomDialog(userMap) {
+  showBottomDialog(message) {
     showGeneralDialog(
-      barrierLabel: "Label",
+      barrierLabel: "Successful",
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 700),
@@ -356,11 +356,18 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                   size: 100,
                   color: Colors.green.shade300,
                 ),
+                SizedBox(height: 10),
+                Text(
+                  message,
+                  style: TextStyle(fontSize: 14, color: Colors.green.shade600),
+                ),
                 SizedBox(height: 30),
                 CupertinoButton(
                   child: Text('Done'),
                   color: Res.primaryColor,
                   onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
                     Navigator.pop(context);
                   },
                 ),
