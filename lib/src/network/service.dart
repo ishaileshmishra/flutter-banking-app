@@ -33,7 +33,15 @@ mixin Reposit {
           size: 40,
           color: Res.accentColor,
         ),
-        'View Request'));
+        'Deposite Amount'));
+
+    categories.add(new CatModel(
+        Icon(
+          Icons.supervised_user_circle_outlined,
+          size: 40,
+          color: Res.accentColor,
+        ),
+        'Recurring Deposite'));
 
     return categories;
   }

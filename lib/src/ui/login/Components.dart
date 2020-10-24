@@ -63,28 +63,11 @@ Widget showWelcomeText() {
     child: Padding(
       padding: const EdgeInsets.all(18.0),
       child: Text("Welcome\nBack",
-          style: TextStyle(fontSize: 30, color: Colors.white),
+          style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
           textAlign: TextAlign.left),
     ),
   );
 }
-
-// _waitToCheckLogin() async {
-//   var box = await Hive.openBox(constant.csHiveDB);
-//   bool loggedIn = box.get(constant.csIsLoggedIn, defaultValue: false);
-//   print('loggedIn: $loggedIn');
-//   print('username: ${box.get(constant.csLoginUsername)}');
-//   print('authtoken: ${box.get(constant.csLoginAuthToken)}');
-//   if (loggedIn) {
-//     box.get(constant.csIsLoggedIn);
-//     Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//             builder: (context) => StackPage(
-//                 authToken: box.get(constant.csLoginAuthToken),
-//                 userName: box.get(constant.csLoginUsername))));
-//   }
-// }
 
 GestureDetector btnRegistration(BuildContext context) {
   return GestureDetector(

@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:html/dom.dart';
-// import 'package:html/parser.dart' show parse;
+import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
@@ -313,12 +312,90 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
           //     MaterialPageRoute(
           //         builder: (context) => BeneficiaryDetailsPage(
           //             tempId: tempAccountNumber.toString())));
+
+          showBottomDialog(userMap['message']);
         } else {
           showToastWithError(context, userMap['message']);
+          //showBottomDialog(userMap['message']);
+          showGiffyDialog();
         }
       }
     }).catchError((error) {
       showToastWithError(context, 'FAILED ${error.toString()}');
     });
+  }
+
+  showGiffyDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => NetworkGiffyDialog(
+              image: Image.network(
+                "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
+                fit: BoxFit.cover,
+              ),
+              entryAnimation: EntryAnimation.BOTTOM,
+              title: Text(
+                'Sucessful',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+              ),
+              description: Text(
+                'Beneficiary Added Successfully, If there is any response: It will be showed here.',
+                textAlign: TextAlign.center,
+              ),
+              onOkButtonPressed: () {
+                Navigator.pop(context);
+              },
+            ));
+  }
+
+  showBottomDialog(userMap) {
+    showGeneralDialog(
+      barrierLabel: "Label",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: Duration(milliseconds: 700),
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: 300,
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.golf_course_rounded,
+                  size: 100,
+                  color: Colors.green.shade300,
+                ),
+                SizedBox(height: 30),
+                CupertinoButton(
+                  child: Text('Done'),
+                  color: Res.primaryColor,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+            margin: EdgeInsets.only(bottom: 50, left: 12, right: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position:
+              Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(anim1),
+          child: child,
+        );
+      },
+    );
   }
 }

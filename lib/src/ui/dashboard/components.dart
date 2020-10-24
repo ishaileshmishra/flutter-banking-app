@@ -111,9 +111,7 @@ ListView listView(role, categories) {
 
 _decideToViewScreen(context, role, int index) {
   if (role == 'agent') {
-    if (index == 0) {
-      viewAgentDepositScreen(context);
-    }
+    viewAgentDepositScreen(context);
   } else {
     index == 0
         ? viewUserCreateAccountScreen(context)

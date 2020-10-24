@@ -81,26 +81,34 @@ class DashBoardScreen extends StatelessWidget {
   Column buildAgentColumn(context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Recieved request : ${user.noOfDepositRequest}',
+          'KYC request : ${user.noOfDepositRequest}',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 10),
         GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DepositeAmount(),
-                  ));
-            },
-            child: btnCardView(titleTitle: "View Request"))
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DepositeAmount(),
+                ));
+          },
+          child: Text(
+            'View Details',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        )
       ],
     );
   }

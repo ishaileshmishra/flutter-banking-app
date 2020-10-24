@@ -179,9 +179,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           'userId': '$userId'
         };
 
-        print(credentials);
+        //print(credentials);
         http.post(Res.createAccount, body: credentials).then((response) {
           if (response.statusCode == 200) {
+            print(response.body);
             Map userMap = json.decode(response.body);
             if (userMap['success']) {
               showToast(context, userMap['message']);
@@ -197,6 +198,12 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           }
         }).catchError((error) {
           showToastWithError(context, 'FAILED ${error.toString()}');
+          // TODO: Remove below line
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      BeneficiaryDetailsPage(tempId: '11400')));
         });
       }
     }
