@@ -3,6 +3,7 @@ import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/agent/DepositAmount.dart';
+import 'package:alok/src/ui/agent/KYCUpdate.dart';
 import 'package:alok/src/ui/dashboard/components.dart';
 import 'package:alok/src/ui/user/CreateAccountPage.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,12 +84,16 @@ class DashBoardScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          'KYC request : ${user.noOfDepositRequest}',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+        GestureDetector(
+          onTap: () => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => KYCUpdatePage())),
+          child: Text(
+            'KYC request : ${user.noOfDepositRequest}',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
         ),
         SizedBox(height: 10),

@@ -314,10 +314,9 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
           //             tempId: tempAccountNumber.toString())));
 
           showBottomDialog(userMap['message']);
+          //showGiffyDialog();
         } else {
           showToastWithError(context, userMap['message']);
-          //showBottomDialog(userMap['message']);
-          showGiffyDialog();
         }
       }
     }).catchError((error) {

@@ -198,12 +198,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           }
         }).catchError((error) {
           showToastWithError(context, 'FAILED ${error.toString()}');
-          // TODO: Remove below line
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      BeneficiaryDetailsPage(tempId: '11400')));
         });
       }
     }
