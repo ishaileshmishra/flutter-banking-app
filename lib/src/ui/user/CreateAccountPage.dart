@@ -230,7 +230,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                   //Curved Field container
                   Container(
                     margin: EdgeInsets.only(top: 20),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
                       color: Colors.white,

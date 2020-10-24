@@ -1,11 +1,13 @@
 import 'dart:convert';
 
-import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+// import 'package:html/dom.dart';
+// import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 
 class BeneficiaryDetailsPage extends StatefulWidget {
   BeneficiaryDetailsPage({Key key, this.tempId}) : super(key: key);
@@ -109,7 +111,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                   //Curved Field container
                   Container(
                     margin: EdgeInsets.only(top: 20),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
                       color: Colors.white,
@@ -302,6 +304,8 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
         print(userMap);
         if (userMap['success']) {
           showToast(context, userMap['message']);
+          //var document = parse(userMap['message']);
+          //print(document.outerHtml);
 
           //var tempAccountNumber = userMap['data']['tempAccountNumber'];
           // Navigator.push(
