@@ -3,7 +3,7 @@ import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/agent/DepositAmount.dart';
-import 'package:alok/src/ui/agent/KYCUpdate.dart';
+import 'package:alok/src/ui/agent/kyc_request.dart';
 import 'package:alok/src/ui/dashboard/components.dart';
 import 'package:alok/src/ui/user/CreateAccountPage.dart';
 import 'package:flutter/cupertino.dart';
@@ -86,7 +86,7 @@ class DashBoardScreen extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => KYCUpdatePage())),
+              MaterialPageRoute(builder: (context) => KYCRequestPage())),
           child: Text(
             'KYC request : ${user.noOfDepositRequest}',
             style: TextStyle(

@@ -20,19 +20,17 @@ class KYCModel {
       this.city,
       this.pincode});
 
-  factory KYCModel.fromJson(Map<String, dynamic> json) => KYCModel(
-      accountNumber: json['accountNumber'],
-      accountHolderName: json['accountHolderName'],
-      accountMode: json['accountMode'],
-      amount: json['amount'],
-      accountHolderPhoneNumber: json['accountHolderPhoneNumber'],
-      identityCardNumber: json['identityCardNumber'],
-      address: json['address'],
-      city: json['city'],
-      pincode: json['pincode']);
-
-  @override
-  String toString() {
-    return '${this.accountNumber}';
+  factory KYCModel.fromJson(dynamic json) {
+    return KYCModel(
+      accountNumber: json['accountNumber'] as int,
+      accountHolderName: json['accountHolderName'] as String,
+      accountMode: json['accountMode'] as String,
+      amount: json['amount'] as double,
+      accountHolderPhoneNumber: json['accountHolderPhoneNumber'] as String,
+      identityCardNumber: json['identityCardNumber'] as String,
+      address: json['address'] as String,
+      city: json['city'] as String,
+      pincode: json['pincode'] as String,
+    );
   }
 }
