@@ -21,6 +21,7 @@ class CreateNewAccountPage extends StatefulWidget {
 }
 
 class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
+  var putOpacity = new Opacity(opacity: 0.0, child: Container());
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
@@ -42,7 +43,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   bool _validatePINCode = false;
 
   // TextEditingController
-  final _idNumberController = TextEditingController();
   final _amountController = TextEditingController();
   final _dobController = TextEditingController();
   final _accountHolderNameController = TextEditingController();
@@ -127,14 +127,16 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         _validateCityName = false;
         _validatePINCode = false;
       });
-      
+
       if (_accountHolderNameController.text.isEmpty) {
         _validateAccountHolderName = true;
         return;
-      } else if (_amountController.text.isEmpty) {
+      } else if (selectedListAccountValue != 'Gullak' &&
+          _amountController.text.isEmpty) {
         _validateAmount = true;
         return;
-      } else if (_accountHolderAdharCardNumberController.text.isEmpty) {
+      } else if (_accountHolderAdharCardNumberController.text.isEmpty ||
+          _accountHolderAdharCardNumberController.text.length < 12) {
         _validateAccountHolderAdharCardNumber = true;
         return;
       } else if (_mobileController.text.isEmpty ||
@@ -159,40 +161,39 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         // clear all fields
         var box = Hive.box(Res.aHiveDB);
         var userId = box.get(Res.aUserId);
-        print('userId $userId');
+
         Map<String, String> credentials = {
           'accountTypeId': selectedAccountTypeInteger.toString(),
           'accountMode': selectedListAccountValue,
           'amount': _amountController.text.trim().toString(),
           'accountFor': selectedAccountForNameValue,
-          'dateOfBirth': _dobController.text.trim(),
-          'address': _addressController.text.trim(),
-          'identityCardNumber': _idNumberController.text.toString().trim(),
           'accountHolderName': _accountHolderNameController.text.trim(),
-          'email': _emailAddressController.text.trim(),
+          'dateOfBirth': _dobController.text.trim(),
+          'identityCardNumber':
+              _accountHolderAdharCardNumberController.text.trim().toString(),
           'mobileNumber': _mobileController.text.trim(),
+          'email': _emailAddressController.text.trim(),
+          'address': _addressController.text.trim(),
           'city': _cityNameController.text.trim(),
           'pincode': _pinNumberController.text.trim(),
           'userId': '$userId'
         };
 
         print(credentials);
-        var postUri = Uri.parse(Res.createAccount);
-        var request = new http.MultipartRequest("POST", postUri);
-        request.fields.addAll(credentials);
-        request.files.add(multipartFileDocument);
-        request.send().then((response) {
+        http.post(Res.createAccount, body: credentials).then((response) {
           if (response.statusCode == 200) {
-            response.stream.transform(utf8.decoder).listen((value) {
-              Map userMap = json.decode(value);
-              if (userMap['success']) {
-                showToast(context, userMap['message']);
-                new Future.delayed(const Duration(seconds: 2));
-                Navigator.pop(context);
-              } else {
-                showToastWithError(context, userMap['message']);
-              }
-            });
+            Map userMap = json.decode(response.body);
+            if (userMap['success']) {
+              showToast(context, userMap['message']);
+              var tempAccountNumber = userMap['data']['tempAccountNumber'];
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BeneficiaryDetailsPage(
+                          tempId: tempAccountNumber.toString())));
+            } else {
+              showToastWithError(context, userMap['message']);
+            }
           }
         }).catchError((error) {
           showToastWithError(context, 'FAILED ${error.toString()}');
@@ -254,7 +255,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             },
                           ),
                         ),
-
                         //====================================
                         //Dropdown Field Account Mode
                         SizedBox(height: 10),
@@ -269,26 +269,34 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             hint: Text('Account mode'),
                             onChanged: (value) {
                               print(value);
-                              selectedListAccountValue = value;
+                              setState(() {
+                                selectedListAccountValue = value;
+                              });
                             },
                           ),
                         ),
 
-                        //====================================
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _amountController,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            errorText:
-                                _validateAmount ? 'Provide Amount' : null,
-                            contentPadding: EdgeInsets.all(0),
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Amount",
-                            prefixIcon: Icon(CupertinoIcons.money_dollar),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
+                        Visibility(
+                          visible: selectedListAccountValue == 'Gullak'
+                              ? false
+                              : true,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10),
+                            child: TextField(
+                              controller: _amountController,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                errorText:
+                                    _validateAmount ? 'Provide Amount' : null,
+                                contentPadding: EdgeInsets.all(0),
+                                focusedBorder: buildFocusedOutlineInputBorder(),
+                                enabledBorder: buildEnabledOutlineInputBorder(),
+                                labelText: "Amount",
+                                prefixIcon: Icon(CupertinoIcons.money_dollar),
+                                hintStyle: TextStyle(color: Colors.grey[400]),
+                              ),
+                            ),
                           ),
                         ),
 
@@ -317,6 +325,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _accountHolderNameController,
                           keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.next,
+
                           decoration: InputDecoration(
                             errorText: _validateAccountHolderName
                                 ? "Account holder name Can\'t Be Empty"
@@ -372,9 +381,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           controller: _accountHolderAdharCardNumberController,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
+                          maxLength: 12,
                           decoration: InputDecoration(
                             errorText: _validateAccountHolderAdharCardNumber
-                                ? "Account holder name Can\'t Be Empty"
+                                ? "Invalid account holder name"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
@@ -487,12 +497,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             color: Res.primaryColor,
                             onPressed: () {
                               _textFiledValidator();
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          BeneficiaryDetailsPage()));
                             },
                           ),
                         ),

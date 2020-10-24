@@ -23,6 +23,7 @@ class Res {
 
   static const String accountForAPI = baseURL + 'accountForList';
   static const String accountModeAPI = baseURL + 'accountModeList';
+  static const String addBenefciaryAPI = baseURL + 'addBeneficiary';
 
   // Database Fields
   static const String aHiveDB = 'alokDB';

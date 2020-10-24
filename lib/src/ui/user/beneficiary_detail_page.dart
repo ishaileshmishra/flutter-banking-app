@@ -1,9 +1,17 @@
-import 'package:alok/res.dart';
+import 'dart:convert';
+
+import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:alok/res.dart';
 
 class BeneficiaryDetailsPage extends StatefulWidget {
+  BeneficiaryDetailsPage({Key key, this.tempId}) : super(key: key);
+
+  final String tempId;
+
   @override
   _BeneficiaryDetailsPageState createState() => _BeneficiaryDetailsPageState();
 }
@@ -12,16 +20,18 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
-  bool _validateAdharCardNumber = false;
+  bool _validateBeneficiaryName = false;
   bool _validateDOB = false;
+  bool _validateIdNumber = false;
   bool _validateMobile = false;
   bool _validateEmailId = false;
 
   // TextEditingController
-  final _accountHolderAdharCardNumberController = TextEditingController();
+  final _nameController = TextEditingController();
   final _dobController = TextEditingController();
+  final _idCardController = TextEditingController();
   final _mobileController = TextEditingController();
-  final _emailAddressController = TextEditingController();
+  final _emailController = TextEditingController();
 
   /// Initialised the state of the view
   @override
@@ -34,59 +44,40 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
   Widget build(BuildContext context) {
     void _textFiledValidator() async {
       setState(() {
-        _validateAdharCardNumber = false;
+        _validateBeneficiaryName = false;
         _validateDOB = false;
         _validateMobile = false;
         _validateEmailId = false;
       });
-      RegExp regex = new RegExp(pattern);
 
-      if (_accountHolderAdharCardNumberController.text.isEmpty) {
-        _validateAdharCardNumber = true;
+      RegExp regex = new RegExp(pattern);
+      if (_nameController.text.isEmpty) {
+        _validateBeneficiaryName = true;
         return;
       } else if (_dobController.text.isEmpty) {
         _validateDOB = true;
+        return;
+      } else if (_idCardController.text.isEmpty) {
+        _validateIdNumber = true;
         return;
       } else if (_mobileController.text.isEmpty ||
           _mobileController.text.length < 10) {
         _validateMobile = true;
         return;
-      } else if (_emailAddressController.text.isNotEmpty &&
-          !regex.hasMatch(_emailAddressController.text)) {
+      } else if (_emailController.text.isNotEmpty &&
+          !regex.hasMatch(_emailController.text)) {
         _validateEmailId = true;
         return;
       } else {
-        // clear all fields
-        var box = Hive.box(Res.aHiveDB);
-        var userId = box.get(Res.aUserId);
-        print('userId $userId');
         Map<String, String> credentials = {
-          'accountHolderName':
-              _accountHolderAdharCardNumberController.text.trim(),
-          'email': _emailAddressController.text.trim(),
+          'tempAccountNumber': '${widget.tempId}',
+          'beneficiaryName': _nameController.text.trim(),
+          'dateOfBirth': _dobController.text.trim(),
+          'identityCardNumber': _idCardController.text.trim(),
           'mobileNumber': _mobileController.text.trim(),
-          'userId': '$userId'
+          'email': _emailController.text.trim().toString(),
         };
-        // POST The fields and multipartFile
-        // await uploadFileWithFields(_scaffoldKey, credentials, multipartFileDocument);
-
-        print(credentials);
-        // request.send().then((response) {
-        //   if (response.statusCode == 200) {
-        //     response.stream.transform(utf8.decoder).listen((value) {
-        //       Map userMap = json.decode(value);
-        //       if (userMap['success']) {
-        //         showToast(context, userMap['message']);
-        //         new Future.delayed(const Duration(seconds: 2));
-        //         Navigator.pop(context);
-        //       } else {
-        //         showToastWithError(context, userMap['message']);
-        //       }
-        //     });
-        //   }
-        // }).catchError((error) {
-        //   showToastWithError(context, 'FAILED ${error.toString()}');
-        // });
+        postCredential(credentials);
       }
     }
 
@@ -126,28 +117,31 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Baneficiary name
-                        // ================================
+                        ///
+                        /// ================================
+                        /// Baneficiary name
+                        /// ================================
                         SizedBox(height: 10),
                         TextField(
-                          controller: _accountHolderAdharCardNumberController,
+                          controller: _nameController,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                            errorText: _validateAdharCardNumber
-                                ? "Adhar card number can\'t Be Empty"
+                            errorText: _validateBeneficiaryName
+                                ? "Beneficiary name can\'t Be Empty"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Account holder adhar card number",
+                            labelText: "Beneficiary name",
                             prefixIcon: const Icon(CupertinoIcons.person_fill),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
 
-                        //====================================
-                        // Textfield Date of birth
+                        ///====================================
+                        /// beneficiary date of birth
+                        ///====================================
                         SizedBox(height: 10),
                         TextField(
                           controller: _dobController,
@@ -157,7 +151,6 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                             DateTime date = DateTime(1900);
                             FocusScope.of(context)
                                 .requestFocus(new FocusNode());
-
                             date = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
@@ -165,7 +158,6 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                                 lastDate: DateTime(2100));
                             var formattedDate =
                                 "${date.day}-${date.month}-${date.year}";
-
                             print(formattedDate);
                             _dobController.text = formattedDate;
                             // Show Date Picker Here
@@ -175,8 +167,30 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                             contentPadding: EdgeInsets.all(0),
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Date of birth",
+                            labelText: "Beneficiary date of birth",
                             prefixIcon: Icon(CupertinoIcons.calendar_today),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ), //buildInputDecoration('ID card number'),
+                        ),
+
+                        ///====================================
+                        ///Account holder account holder adhar card number
+                        ///====================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _idCardController,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          maxLength: 12,
+                          decoration: InputDecoration(
+                            errorText: _validateIdNumber
+                                ? "Invalid Adhar number"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Account holder adhar card number",
+                            prefixIcon: const Icon(CupertinoIcons.phone),
                             hintStyle: TextStyle(color: Colors.grey[400]),
                           ), //buildInputDecoration('ID card number'),
                         ),
@@ -203,7 +217,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                         //====================================
                         SizedBox(height: 10),
                         TextField(
-                          controller: _emailAddressController,
+                          controller: _emailController,
                           keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
@@ -223,7 +237,24 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Skip'),
+                              GestureDetector(
+                                  onTap: () {
+                                    Map<String, String> credentials = {
+                                      'tempAccountNumber': '${widget.tempId}',
+                                      'beneficiaryName':
+                                          _nameController.text.trim(),
+                                      'dateOfBirth': _dobController.text.trim(),
+                                      'identityCardNumber':
+                                          _idCardController.text.trim(),
+                                      'mobileNumber':
+                                          _mobileController.text.trim(),
+                                      'email': _emailController.text
+                                          .trim()
+                                          .toString(),
+                                    };
+                                    postCredential(credentials);
+                                  },
+                                  child: Text('Skip')),
                               CupertinoButton(
                                 child: Text('Create Account'),
                                 color: Res.primaryColor,
@@ -261,5 +292,29 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
         width: 1.0,
       ),
     );
+  }
+
+  void postCredential(Map<String, String> credentials) {
+    print(credentials);
+    http.post(Res.addBenefciaryAPI, body: credentials).then((response) {
+      if (response.statusCode == 200) {
+        Map userMap = json.decode(response.body);
+        print(userMap);
+        if (userMap['success']) {
+          showToast(context, userMap['message']);
+
+          //var tempAccountNumber = userMap['data']['tempAccountNumber'];
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => BeneficiaryDetailsPage(
+          //             tempId: tempAccountNumber.toString())));
+        } else {
+          showToastWithError(context, userMap['message']);
+        }
+      }
+    }).catchError((error) {
+      showToastWithError(context, 'FAILED ${error.toString()}');
+    });
   }
 }
