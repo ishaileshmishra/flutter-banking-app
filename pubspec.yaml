@@ -19,7 +19,6 @@ dependencies:
   cupertino_icons: ^1.0.0
   file_picker: ^2.0.7
   flutter_dropdown: ^0.0.8
-  # html: ^0.14.0+4
   giffy_dialog: any
 
 dev_dependencies:

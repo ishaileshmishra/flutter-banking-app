@@ -158,7 +158,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                                 firstDate: DateTime(1900),
                                 lastDate: DateTime(2100));
                             var formattedDate =
-                                "${date.day}-${date.month}-${date.year}";
+                                "${date.day}/${date.month}/${date.year}";
                             print(formattedDate);
                             _dobController.text = formattedDate;
                             // Show Date Picker Here
@@ -303,18 +303,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
         print(userMap);
         if (userMap['success']) {
           showToast(context, userMap['message']);
-          //var document = parse(userMap['message']);
-          //print(document.outerHtml);
-
-          //var tempAccountNumber = userMap['data']['tempAccountNumber'];
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => BeneficiaryDetailsPage(
-          //             tempId: tempAccountNumber.toString())));
-
-          showBottomDialog(userMap['message']);
-          //showGiffyDialog();
+          showGiffyDialog(userMap['message']);
         } else {
           showToastWithError(context, userMap['message']);
         }
@@ -324,7 +313,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
     });
   }
 
-  showGiffyDialog() {
+  showGiffyDialog(message) {
     showDialog(
         context: context,
         builder: (_) => NetworkGiffyDialog(
@@ -338,10 +327,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
               ),
-              description: Text(
-                'Beneficiary Added Successfully, If there is any response: It will be showed here.',
-                textAlign: TextAlign.center,
-              ),
+              description: Text(message),
               onOkButtonPressed: () {
                 Navigator.pop(context);
               },

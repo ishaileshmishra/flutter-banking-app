@@ -358,7 +358,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                                 firstDate: DateTime(1900),
                                 lastDate: DateTime(2100));
                             var formattedDate =
-                                "${date.day}-${date.month}-${date.year}";
+                                "${date.day}/${date.month}/${date.year}";
 
                             print(formattedDate);
                             _dobController.text = formattedDate;
