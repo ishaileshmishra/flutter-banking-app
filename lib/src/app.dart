@@ -1,6 +1,9 @@
-import 'package:alok/src/ui/login/LoginPage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+
+import 'package:alok/src/ui/login/LoginPage.dart';
 import 'package:alok/src/utils/constants.dart' as constant;
 
 class AlokApp extends StatelessWidget {
@@ -10,6 +13,12 @@ class AlokApp extends StatelessWidget {
     return MaterialApp(
       title: 'Alok',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: GoogleFonts.openSansTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
       home: FutureBuilder(
           future: Hive.openBox(constant.csHiveDB),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -20,7 +29,13 @@ class AlokApp extends StatelessWidget {
                 return LoginPage(title: 'Login');
               }
             } else {
-              return Scaffold();
+              return Scaffold(
+                body: Center(
+                    child: Icon(
+                  CupertinoIcons.money_dollar,
+                  size: 150,
+                )),
+              );
             }
           }),
     );

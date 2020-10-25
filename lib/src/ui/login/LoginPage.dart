@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:alok/src/ui/user/Components.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,7 +12,6 @@ import 'package:alok/res.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/ui/login/Components.dart';
-import 'package:alok/src/utils/widgets.dart';
 
 class LoginPage extends StatefulWidget {
   //
@@ -26,53 +27,44 @@ class _LoginPageState extends State<LoginPage> {
   //
   // Error Fields
   bool isLoading = false;
-  String errorTextMobile;
-  String errorTextPassword;
+  bool _validateMobile = false;
+  var _validatePassword = false;
 
   // EmailController
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Widget _textFieldMobile() {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
-      child: TextField(
-        controller: mobileController,
-        maxLength: 10,
-        keyboardType: TextInputType.phone,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Mobile number",
-            labelText: 'Mobile Number',
-            errorText: errorTextMobile,
-            prefixIcon: const Icon(
-              CupertinoIcons.phone,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
-      ),
+    return TextField(
+      controller: mobileController,
+      keyboardType: TextInputType.phone,
+      textInputAction: TextInputAction.next,
+      maxLength: 10,
+      decoration: InputDecoration(
+        errorText: _validateMobile ? "Please check mobile number" : null,
+        contentPadding: EdgeInsets.all(0),
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Mobile number",
+        prefixIcon: const Icon(CupertinoIcons.phone),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ), //buildInputDecoration('ID card number'),
     );
   }
 
   Widget _textFieldPassword() {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
-      child: TextField(
-        obscureText: true,
-        controller: passwordController,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: 'Password',
-            hintText: 'Password',
-            errorText: errorTextPassword,
-            prefixIcon: const Icon(
-              CupertinoIcons.lock,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
+    return TextField(
+      controller: passwordController,
+      textInputAction: TextInputAction.done,
+      obscureText: true,
+      decoration: InputDecoration(
+        errorText: _validatePassword ? "Provide password" : null,
+        contentPadding: EdgeInsets.all(0),
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Password",
+        prefixIcon: const Icon(CupertinoIcons.lock),
+        hintStyle: TextStyle(color: Colors.grey[400]),
       ),
     );
   }
@@ -123,18 +115,18 @@ class _LoginPageState extends State<LoginPage> {
   verifiyCredentials() async {
     //Validation
     setState(() {
-      errorTextMobile = null;
-      errorTextPassword = null;
+      _validateMobile = false;
+      _validatePassword = false;
     });
-    if (mobileController.text == null || mobileController.text.isEmpty) {
+    if (mobileController.text.isEmpty || mobileController.text.length < 10) {
       setState(() {
-        errorTextMobile = "Mobile number required";
+        _validateMobile = true;
       });
       return;
     }
     if (passwordController.text == null || passwordController.text.isEmpty) {
       setState(() {
-        errorTextPassword = "Provide password";
+        _validatePassword = true;
       });
       return;
     }
@@ -157,6 +149,7 @@ class _LoginPageState extends State<LoginPage> {
   fetchLoginResponse(context, credentials) async {
     await http.post(Res.loginAPI, body: credentials).then((response) {
       Map userMap = json.decode(response.body);
+      print("Json decoded: $userMap");
       if (response.statusCode == 200) {
         if (userMap['success']) {
           showToast(context, userMap['message']);
@@ -171,10 +164,12 @@ class _LoginPageState extends State<LoginPage> {
                         user: loginDetails,
                       )));
         } else {
+          print(userMap);
           showToastWithError(context, userMap['message']);
         }
       }
     }).catchError((onError) {
+      print('error: $onError');
       showToastWithError(context, 'Failed ${onError.toString()}');
     });
   }
@@ -184,7 +179,6 @@ class _LoginPageState extends State<LoginPage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
-          key: _scaffoldKey,
           backgroundColor: Res.accentColor,
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: showWelcomeText(),
                 ),
               ),
-              Flexible(
+              Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -205,20 +199,35 @@ class _LoginPageState extends State<LoginPage> {
                       topRight: Radius.circular(30),
                     ),
                   ),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        //=======================
-                        _textFieldMobile(),
-                        //=======================
-                        _textFieldPassword(),
-                        //=======================
-                        SizedBox(height: 30),
-                        _loginButton()
-                        //=======================
-                      ],
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 20),
+                          Text("Sign In",
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.left),
+
+                          //=======================
+                          SizedBox(height: 30),
+                          _textFieldMobile(),
+                          //=======================
+                          SizedBox(height: 10),
+                          _textFieldPassword(),
+                          //=======================
+                          SizedBox(height: 30),
+                          _loginButton()
+                          //=======================
+                        ],
+                      ),
                     ),
                   ),
                 ),

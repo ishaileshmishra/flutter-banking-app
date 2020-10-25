@@ -34,3 +34,31 @@ BoxDecoration buildBoxDecoration() {
     borderRadius: BorderRadius.circular(8.0),
   );
 }
+
+OutlineInputBorder buildEnabledOutlineInputBorder() {
+  return OutlineInputBorder(
+    borderSide: BorderSide(
+      color: CupertinoColors.inactiveGray,
+      width: 1.0,
+    ),
+  );
+}
+
+OutlineInputBorder buildFocusedOutlineInputBorder() {
+  return OutlineInputBorder(
+    borderSide: BorderSide(
+      color: CupertinoColors.inactiveGray,
+      width: 1.0,
+    ),
+  );
+}
+
+bool isValidMail(emailAddress) {
+  Pattern pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regex = new RegExp(pattern);
+  if (emailAddress.isNotEmpty && !regex.hasMatch(emailAddress)) {
+    return false;
+  }
+  return true;
+}
