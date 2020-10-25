@@ -70,25 +70,13 @@ class _KYCUpdatePageState extends State<KYCUpdatePage> {
     var box = Hive.box(Res.aHiveDB);
     var agentID = box.get(Res.aUserId);
     var credentials = {
-      'agentId': agentID,
-      'accountNumber': widget.accountNumber,
-      'frontPhoto': multipartFileFrontDocument,
-      'backPhoto': 'file',
-      'Amount': _amountController.text.trim(),
-      'Remark': _remarkController.text.trim(),
+      'agentId': '$agentID',
+      'accountNumber': '${widget.accountNumber}',
+      'amount': _amountController.text.trim().toString(),
+      'remark': _remarkController.text.trim().toString(),
     };
 
-    // final response = await http.post(Res.updateKycAPI, body: credentials);
-    // if (response.statusCode == 200) {
-    //   Map userMap = json.decode(response.body);
-    //   if (userMap['success']) {
-    //     showToast(context, userMap['message']);
-    //   }
-    //   showToastWithError(context, userMap['message']);
-    // } else {
-    //   showToastWithError(context, 'Failed to create KYC');
-    // }
-
+    print('credentials: $credentials');
     var postUri = Uri.parse(Res.updateKycAPI);
     var request = new http.MultipartRequest("POST", postUri);
     request.fields.addAll(credentials);
@@ -240,7 +228,7 @@ class _KYCUpdatePageState extends State<KYCUpdatePage> {
             SizedBox(height: 15),
             TextField(
               keyboardType: TextInputType.name,
-              textInputAction: TextInputAction.next,
+              textInputAction: TextInputAction.done,
               controller: _remarkController,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(0),

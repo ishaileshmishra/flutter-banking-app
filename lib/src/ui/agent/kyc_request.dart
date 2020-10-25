@@ -44,6 +44,7 @@ class _KYCRequestPageState extends State<KYCRequestPage> {
     final response = await http.get(kycAPI);
     if (response.statusCode == 200) {
       Map userMap = json.decode(response.body);
+      print(userMap);
       if (userMap['success']) {
         var elements = userMap["data"] as List;
         kycObjList =
@@ -52,6 +53,7 @@ class _KYCRequestPageState extends State<KYCRequestPage> {
           elements.forEach((element) {
             listAccounts.add(element['accountNumber']);
           });
+          print('listAccounts: $listAccounts');
         });
       }
     }

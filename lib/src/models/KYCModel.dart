@@ -2,7 +2,7 @@ class KYCModel {
   int accountNumber;
   String accountHolderName;
   String accountMode;
-  double amount;
+  String amount;
   String accountHolderPhoneNumber;
   String identityCardNumber;
   String address;
@@ -25,7 +25,7 @@ class KYCModel {
       accountNumber: json['accountNumber'] as int,
       accountHolderName: json['accountHolderName'] as String,
       accountMode: json['accountMode'] as String,
-      amount: json['amount'] as double,
+      amount: json['amount'] as String,
       accountHolderPhoneNumber: json['accountHolderPhoneNumber'] as String,
       identityCardNumber: json['identityCardNumber'] as String,
       address: json['address'] as String,
