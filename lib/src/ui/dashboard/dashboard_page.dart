@@ -21,6 +21,7 @@ class DashBoardScreen extends StatelessWidget {
     final username = "${user.firstName} ${user.lastName}";
     final depositBalance = user.noOfDepositRequest.toDouble();
     final availBalance = user.availableBalance;
+    print('availBalance: $availBalance');
 
     return Scaffold(
       backgroundColor: Res.primaryColor,
@@ -116,7 +117,7 @@ class DashBoardScreen extends StatelessWidget {
       children: [
         user.isAccountCreated == 0
             ? Text(
-                'Available balance : $depositBalance',
+                'Available balance : $availBalance',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

@@ -1,14 +1,15 @@
 import 'dart:convert';
 
-import 'package:alok/src/models/KYCModel.dart';
 import 'package:alok/src/ui/agent/compontents.dart';
-import 'package:alok/src/ui/agent/kyc_update.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:alok/res.dart';
+import 'package:alok/src/models/KYCModel.dart';
+import 'package:alok/src/ui/agent/kyc_update.dart';
 import 'package:alok/src/ui/user/Components.dart';
 
 class KYCRequestPage extends StatefulWidget {
@@ -19,17 +20,14 @@ class KYCRequestPage extends StatefulWidget {
 class _KYCRequestPageState extends State<KYCRequestPage> {
   List<KYCModel> kycObjList = new List<KYCModel>();
   List listAccounts = new List();
+  var renderDetail = [];
 
   /// TextFields
   var accountNumber;
   var accountMode;
-  var name;
-  var amount;
-  var phoneNo;
   var idCardNo;
-  var address;
-  var city;
-  var pin;
+  var amount;
+  bool isDropDownSelected = false;
 
   @override
   void initState() {
@@ -57,145 +55,131 @@ class _KYCRequestPageState extends State<KYCRequestPage> {
         });
       }
     }
-    return null;
+  }
+
+  setKYVDetail(element) {
+    accountNumber = element.accountNumber;
+    accountMode = 'Account Mode: ' + element.accountMode;
+    var name = 'Name: ' + element.accountHolderName;
+    amount = element.amount.toString();
+    var phoneNo = 'Phone Number: ' + element.accountHolderPhoneNumber;
+    idCardNo = 'Identity Card Number: ' + element.identityCardNumber;
+    var address = 'Address: ' + element.address;
+    var city = 'City: ' + element.city;
+    var pin = 'Pincode: ' + element.pincode;
+    renderDetail = [
+      'AccountNumber: $accountNumber',
+      accountMode,
+      name,
+      'Amount: $amount',
+      idCardNo,
+      address,
+      phoneNo,
+      city,
+      pin
+    ].toList();
+    return renderDetail;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Res.accentColor,
-        centerTitle: true,
-        title: Text('KYC Request'),
-      ),
-      body: ListView(
-        children: [
-          //==================================
-          Container(
-            decoration: buildBoxDecoration(),
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: DropDown(
-              items: listAccounts,
-              isExpanded: true,
-              showUnderline: false,
-              dropDownType: DropDownType.Button,
-              hint: Text('Account number'),
-              onChanged: (accountNo) {
-                kycObjList.forEach((element) {
-                  if (element.accountNumber == accountNo) {
-                    setState(() {
-                      accountNumber = element.accountNumber;
-                      accountMode = 'Account Mode: ' + element.accountMode;
-                      name = 'Name: ' + element.accountHolderName;
-                      amount = element.amount.toString();
-                      phoneNo =
-                          'Phone Number: ' + element.accountHolderPhoneNumber;
-                      idCardNo =
-                          'Identity Card Number: ' + element.identityCardNumber;
-                      address = 'Address: ' + element.address;
-                      city = 'City: ' + element.city;
-                      pin = 'Pincode: ' + element.pincode;
-                    });
-                  }
-                });
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
+        appBar: buildAppBar('KYC Request'),
+        body: Stack(
+          children: [
+            /// primary color background
+            buildColoredContainer(),
 
-                // kycObjList = kycObjList.where(
-                //     (element) => element.accountNumber.toString() == accountNo);
-                // print('kycModel: $kycObjList');
-              },
+            /// Place for widget
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 50,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(40),
+              ),
             ),
-          ),
-          //==================================
 
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(20),
-              margin: EdgeInsets.all(20),
+            Container(
+              margin: EdgeInsets.only(top: 30),
+              padding: EdgeInsets.all(30),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  accountNumber != null
-                      ? Text(
-                          'Account Number: $accountNumber',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  accountMode != null
-                      ? Text(
-                          '$accountMode',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  name != null
-                      ? Text(
-                          '$name',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  amount != null
-                      ? Text(
-                          'Amount: $amount',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  phoneNo != null
-                      ? Text(
-                          '$phoneNo',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  idCardNo != null
-                      ? Text(
-                          '$idCardNo',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  address != null
-                      ? Text(
-                          '$address',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  city != null
-                      ? Text(
-                          '$city',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
-                  pin != null
-                      ? Text(
-                          '$pin',
-                          style: buildTextStyle(),
-                        )
-                      : Container(),
+                  /// Widget DropDown
+                  Container(
+                    decoration: buildBoxDecoration(),
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: DropDown(
+                      items: listAccounts,
+                      isExpanded: true,
+                      showUnderline: false,
+                      dropDownType: DropDownType.Button,
+                      hint: Text('Account number'),
+                      onChanged: (accountNo) {
+                        kycObjList.forEach((element) {
+                          if (element.accountNumber == accountNo) {
+                            setState(() {
+                              renderDetail = setKYVDetail(element);
+                              isDropDownSelected = true;
+                              print(renderDetail);
+                            });
+                          }
+                        });
+                      },
+                    ),
+                  ),
+
+                  Expanded(
+                    child: ListView.builder(
+                        padding: const EdgeInsets.all(10),
+                        itemCount: renderDetail.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            height: 40,
+                            color: Colors.grey.shade200,
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              '${renderDetail[index]}',
+                              style: buildTextStyle(),
+                            ),
+                          );
+                        }),
+                  ),
+
+                  Visibility(
+                    visible: isDropDownSelected ? true : false,
+                    child: Container(
+                      margin: EdgeInsets.all(20),
+                      child: CupertinoButton(
+                        child: Text('Process'),
+                        color: Res.primaryColor,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => KYCUpdatePage(
+                                        accountNumber: accountNumber.toString(),
+                                        accountMode: accountMode,
+                                        adharCardNumber: idCardNo,
+                                        amount: amount,
+                                      )));
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-          ),
-
-          Container(
-            margin: EdgeInsets.all(20),
-            child: CupertinoButton(
-              child: Text('Process'),
-              color: Res.primaryColor,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => KYCUpdatePage(
-                              accountNumber: accountNumber.toString(),
-                              accountMode: accountMode,
-                              adharCardNumber: idCardNo,
-                              amount: amount,
-                            )));
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
