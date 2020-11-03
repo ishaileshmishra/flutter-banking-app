@@ -1,3 +1,4 @@
+import 'package:alok/res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,7 @@ class AlokApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Hive.openBox(constant.csHiveDB);
     return MaterialApp(
+      color: Res.primaryColor,
       title: 'Alok',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -30,11 +32,7 @@ class AlokApp extends StatelessWidget {
               }
             } else {
               return Scaffold(
-                body: Center(
-                    child: Icon(
-                  CupertinoIcons.money_dollar,
-                  size: 150,
-                )),
+                body: Center(child: Image.asset('assets/images/header.png')),
               );
             }
           }),

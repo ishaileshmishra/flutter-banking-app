@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:alok/src/ui/user/Components.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +13,6 @@ import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/ui/login/Components.dart';
 
 class LoginPage extends StatefulWidget {
-  //
   LoginPage({Key key, this.title}) : super(key: key);
 
   final String title;
@@ -26,13 +24,18 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   //
   // Error Fields
-  bool isLoading = false;
+  bool isLoading = true;
   bool _validateMobile = false;
   var _validatePassword = false;
 
   // EmailController
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Widget _textFieldMobile() {
     return TextField(
@@ -41,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
       textInputAction: TextInputAction.next,
       maxLength: 10,
       decoration: InputDecoration(
+        fillColor: Res.accentColor,
+        filled: true,
         errorText: _validateMobile ? "Please check mobile number" : null,
         contentPadding: EdgeInsets.all(0),
         focusedBorder: buildFocusedOutlineInputBorder(),
@@ -58,6 +63,8 @@ class _LoginPageState extends State<LoginPage> {
       textInputAction: TextInputAction.done,
       obscureText: true,
       decoration: InputDecoration(
+        fillColor: Res.accentColor,
+        filled: true,
         errorText: _validatePassword ? "Provide password" : null,
         contentPadding: EdgeInsets.all(0),
         focusedBorder: buildFocusedOutlineInputBorder(),
@@ -81,14 +88,14 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         RaisedButton(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(8.0),
               side: BorderSide(color: Res.accentColor)),
           onPressed: () {
             FocusScope.of(context).requestFocus(new FocusNode());
             verifiyCredentials();
           },
           color: Res.accentColor,
-          textColor: Colors.white,
+          textColor: Colors.black,
           child: Row(
             children: [
               Container(
@@ -96,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                   'Sign In',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -104,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: 10,
               ),
-              Icon(CupertinoIcons.chevron_forward)
+              Image.asset('assets/images/trending.png'),
             ],
           ),
         ),
@@ -135,20 +142,21 @@ class _LoginPageState extends State<LoginPage> {
       "password": passwordController.text.trim(),
     };
 
-    fetchLoginResponse(context, credentials);
-  }
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
 
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      isLoading = false;
-    });
+    fetchLoginResponse(context, credentials);
   }
 
   fetchLoginResponse(context, credentials) async {
     await http.post(Res.loginAPI, body: credentials).then((response) {
       Map userMap = json.decode(response.body);
+      Navigator.pop(context);
       print("Json decoded: $userMap");
       if (response.statusCode == 200) {
         if (userMap['success']) {
@@ -164,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                         user: loginDetails,
                       )));
         } else {
-          print(userMap);
+          //Navigator.pop(context);
           showToastWithError(context, userMap['message']);
         }
       }
@@ -193,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Res.primaryColor, //Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),

@@ -24,14 +24,14 @@ get greeting {
 
 var textStyleGreeting = TextStyle(
   fontSize: 14,
-  color: Colors.grey.shade300,
+  color: Colors.black,
   fontWeight: FontWeight.bold,
 );
 
 var textStyleUser = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.bold,
-  color: Colors.white,
+  color: Colors.black,
 );
 
 Container renderActionbar(context, username) {

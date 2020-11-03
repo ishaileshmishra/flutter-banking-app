@@ -296,7 +296,7 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
 
   void postCredential(Map<String, String> credentials) {
     print(credentials);
-    http.post(Res.addBenefciaryAPI, body: credentials).then((response) {
+    http.post(Res.addBeneficiaryAPI, body: credentials).then((response) {
       if (response.statusCode == 200) {
         Map userMap = json.decode(response.body);
         print(userMap);

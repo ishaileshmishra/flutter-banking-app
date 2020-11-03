@@ -1,4 +1,5 @@
-import 'package:alok/res.dart';
+import 'dart:ui';
+
 import 'package:alok/src/ui/registration/SignUpPage.dart';
 import 'package:alok/src/utils/anims.dart';
 import 'package:flutter/material.dart';
@@ -59,12 +60,20 @@ showSnackbarSuccess(scaffoldKey, message) {
 
 Widget showWelcomeText() {
   return Align(
-    alignment: Alignment.centerLeft,
+    //alignment: Alignment.centerLeft,
     child: Padding(
       padding: const EdgeInsets.all(18.0),
-      child: Text("Welcome\nBack",
-          style: TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left),
+      child: Image.asset('assets/images/header.png'),
+
+      // Text(
+      //   "Welcome\nBack",
+      //   style: TextStyle(
+      //     fontSize: 30,
+      //     color: Colors.black,
+      //     fontWeight: FontWeight.bold,
+      //   ),
+      //   textAlign: TextAlign.left,
+      // ),
     ),
   );
 }
@@ -83,8 +92,8 @@ GestureDetector btnRegistration(BuildContext context) {
         'Sign Up',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 18.0,
-          color: Res.accentColor,
+          fontSize: 16.0,
+          color: Colors.black,
         ),
       ),
     ),

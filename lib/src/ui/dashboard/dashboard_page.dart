@@ -24,7 +24,7 @@ class DashBoardScreen extends StatelessWidget {
     print('availBalance: $availBalance');
 
     return Scaffold(
-      backgroundColor: Res.primaryColor,
+      backgroundColor: Res.accentColor,
       body: Container(
         padding: EdgeInsets.only(top: 20),
         child: Column(
@@ -45,7 +45,7 @@ class DashBoardScreen extends StatelessWidget {
     return Expanded(
         child: Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
+        color: Res.primaryColor,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30.0),
           topLeft: Radius.circular(30.0),
@@ -62,7 +62,7 @@ class DashBoardScreen extends StatelessWidget {
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Res.primaryColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Container(

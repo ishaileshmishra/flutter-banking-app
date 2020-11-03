@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class Res {
   // UI Resources
   static const String logo = "assets/images/logo.png";
-  static const Color accentColor = Color.fromRGBO(167, 96, 222, 1);
-  static const Color primaryColor = Color.fromRGBO(148, 94, 217, 1);
+  static const Color accentColor = Color.fromRGBO(248, 223, 68, 1);
+  static const Color primaryColor = Color.fromRGBO(255, 247, 178, 1);
   static const gradient = LinearGradient(colors: [accentColor, primaryColor]);
   static const Color white54 = Color(0x8AFFFFFF);
 
@@ -23,7 +23,7 @@ class Res {
 
   static const String accountForAPI = baseURL + 'accountForList';
   static const String accountModeAPI = baseURL + 'accountModeList';
-  static const String addBenefciaryAPI = baseURL + 'addBeneficiary';
+  static const String addBeneficiaryAPI = baseURL + 'addBeneficiary';
   static const String requestKycAPI = baseURL + 'kycRequestList?agentId=';
   static const String updateKycAPI = baseURL + 'updateKyc';
 
