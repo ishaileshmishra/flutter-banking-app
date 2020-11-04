@@ -151,7 +151,7 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: Text('Deposit'),
-          backgroundColor: Res.primaryColor,
+          backgroundColor: Res.accentColor,
           elevation: 0,
           actions: [
             Padding(
@@ -168,7 +168,7 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
               Stack(
                 children: [
                   Container(
-                    color: Res.primaryColor,
+                    color: Res.accentColor,
                     height: 200,
                   ),
 
@@ -216,7 +216,7 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                           SizedBox(height: 40),
                           CupertinoButton(
                             child: Text('Submit'),
-                            color: Res.primaryColor,
+                            color: Res.accentColor,
                             onPressed: () async {
                               _validateDepositeFields();
                             },

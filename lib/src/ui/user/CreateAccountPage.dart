@@ -209,7 +209,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
         appBar: AppBar(
           centerTitle: true,
           title: Text('Create Account'),
-          backgroundColor: Res.primaryColor,
+          backgroundColor: Res.accentColor,
           elevation: 0,
           actions: [
             Padding(
@@ -223,12 +223,10 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
             children: [
               Stack(
                 children: [
-                  // Colored container
                   Container(
-                    color: Res.primaryColor,
+                    color: Res.accentColor,
                     height: 200,
                   ),
-                  //Curved Field container
                   Container(
                     margin: EdgeInsets.only(top: 20),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
@@ -239,8 +237,6 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //====================================
-                        //Dropdown Field Account type
                         SizedBox(height: 20),
                         Container(
                           decoration: buildBoxDecoration(),
@@ -495,7 +491,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           width: double.infinity,
                           child: CupertinoButton(
                             child: Text('Submit'),
-                            color: Res.primaryColor,
+                            color: Res.accentColor,
                             onPressed: () {
                               _textFiledValidator();
                             },

@@ -36,7 +36,7 @@ var textStyleUser = TextStyle(
 
 Container renderActionbar(context, username) {
   return Container(
-    padding: EdgeInsets.all(20),
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [abColumn(username), abRow()],
