@@ -44,8 +44,9 @@ class _LoginPageState extends State<LoginPage> {
       textInputAction: TextInputAction.next,
       maxLength: 10,
       decoration: InputDecoration(
-        fillColor: Res.accentColor,
+        fillColor: Colors.grey.shade200,
         filled: true,
+        counterText: "",
         errorText: _validateMobile ? "Please check mobile number" : null,
         contentPadding: EdgeInsets.all(0),
         focusedBorder: buildFocusedOutlineInputBorder(),
@@ -63,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
       textInputAction: TextInputAction.done,
       obscureText: true,
       decoration: InputDecoration(
-        fillColor: Res.accentColor,
+        fillColor: Colors.grey.shade200,
         filled: true,
         errorText: _validatePassword ? "Provide password" : null,
         contentPadding: EdgeInsets.all(0),
@@ -201,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Res.primaryColor, //Colors.white,
+                    color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
@@ -231,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(height: 10),
                           _textFieldPassword(),
                           //=======================
-                          SizedBox(height: 30),
+                          SizedBox(height: 20),
                           _loginButton()
                           //=======================
                         ],

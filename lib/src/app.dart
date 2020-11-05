@@ -28,10 +28,15 @@ class AlokApp extends StatelessWidget {
               if (snapshot.hasError) {
                 return Text(snapshot.error.toString());
               } else {
+                new Future.delayed(const Duration(seconds: 3), () {
+                  return LoginPage(title: 'Login');
+                });
+
                 return LoginPage(title: 'Login');
               }
             } else {
               return Scaffold(
+                backgroundColor: Res.accentColor,
                 body: Center(child: Image.asset('assets/images/header.png')),
               );
             }

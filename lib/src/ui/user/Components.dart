@@ -1,4 +1,3 @@
-import 'package:alok/res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +38,7 @@ BoxDecoration buildBoxDecoration() {
 OutlineInputBorder buildEnabledOutlineInputBorder() {
   return OutlineInputBorder(
     borderSide: BorderSide(
-      color: Res.accentColor,
+      color: Colors.white,
       width: 1.0,
     ),
   );
@@ -48,7 +47,7 @@ OutlineInputBorder buildEnabledOutlineInputBorder() {
 OutlineInputBorder buildFocusedOutlineInputBorder() {
   return OutlineInputBorder(
     borderSide: BorderSide(
-      color: Res.accentColor,
+      color: Colors.white,
       width: 1.0,
     ),
   );

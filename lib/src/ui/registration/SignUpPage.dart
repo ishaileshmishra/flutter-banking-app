@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:alok/src/ui/login/Components.dart';
+import 'package:alok/src/ui/user/Components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,8 +32,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String errorPassword;
 
   //emailController
-  final TextEditingController idProofController = TextEditingController();
-  final TextEditingController idProodNumberController = TextEditingController();
+  // final TextEditingController idProofController = TextEditingController();
+  // final TextEditingController idProodNumberController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
@@ -45,7 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Text("Create\nAccount",
             style: TextStyle(
               fontSize: 30,
-              color: Colors.white,
+              color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.left),
@@ -53,64 +55,71 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _textFieldIDProof() {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
-      child: TextField(
-        controller: idProofController,
-        enabled: false,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Adhar card",
-            labelText: "ID Proof (Adhar card only)",
-            errorText: errorIdProof,
-            prefixIcon: const Icon(
-              CupertinoIcons.person,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
-      ),
-    );
-  }
+  // Widget _textFieldIDProof() {
+  //   return Container(
+  //     padding: EdgeInsets.all(8.0),
+  //     decoration: textFieldDec(),
+  //     child: TextField(
+  //       controller: idProofController,
+  //       enabled: false,
+  //       decoration: InputDecoration(
+  //           border: InputBorder.none,
+  //           counterText: "",
+  //           hintText: "Adhar card",
+  //           labelText: "ID Proof (Adhar card only)",
+  //           errorText: errorIdProof,
+  //           prefixIcon: const Icon(
+  //             CupertinoIcons.person,
+  //             color: Res.accentColor,
+  //           ),
+  //           hintStyle: TextStyle(color: Colors.grey[400])),
+  //     ),
+  //   );
+  // }
 
-  Widget _textFieldIDProofNumber() {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
-      child: TextField(
-        controller: idProodNumberController,
-        maxLength: 12,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Adhar card number",
-            labelText: 'Adhar card number',
-            prefixIcon: const Icon(
-              CupertinoIcons.person,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
-      ),
-    );
-  }
+  // Widget _textFieldIDProofNumber() {
+  //   return Container(
+  //     padding: EdgeInsets.all(8.0),
+  //     decoration: textFieldDec(),
+  //     child: TextField(
+  //       controller: idProodNumberController,
+  //       maxLength: 12,
+  //       keyboardType: TextInputType.number,
+  //       decoration: InputDecoration(
+  //           border: InputBorder.none,
+  //           hintText: "Adhar card number",
+  //           labelText: 'Adhar card number',
+  //           prefixIcon: const Icon(
+  //             CupertinoIcons.person,
+  //             color: Res.accentColor,
+  //           ),
+  //           hintStyle: TextStyle(color: Colors.grey[400])),
+  //     ),
+  //   );
+  // }
 
   Widget _textFieldFirstName() {
     return Container(
       padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
+      //decoration: textFieldDec(),
       child: TextField(
         controller: firstNameController,
         decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "First name",
-            labelText: 'First name',
-            errorText: errorFirstname,
-            prefixIcon: const Icon(
-              CupertinoIcons.person,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
+          fillColor: Colors.grey.shade200,
+          filled: true,
+          counterText: "",
+          errorText: errorFirstname,
+          contentPadding: EdgeInsets.all(0),
+          focusedBorder: buildFocusedOutlineInputBorder(),
+          enabledBorder: buildEnabledOutlineInputBorder(),
+          labelText: "First name",
+          hintText: "First name",
+          prefixIcon: const Icon(
+            CupertinoIcons.person,
+            color: Res.accentColor,
+          ),
+          hintStyle: TextStyle(color: Colors.grey[400]),
+        ),
       ),
     );
   }
@@ -118,19 +127,24 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _textFieldLastName() {
     return Container(
       padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
+      //decoration: textFieldDec(),
       child: TextField(
         controller: lastNameController,
         decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Last name",
-            labelText: 'Last name',
-            errorText: errorLastname,
-            prefixIcon: const Icon(
-              CupertinoIcons.person,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
+          fillColor: Colors.grey.shade200,
+          filled: true,
+          errorText: errorLastname,
+          contentPadding: EdgeInsets.all(0),
+          focusedBorder: buildFocusedOutlineInputBorder(),
+          enabledBorder: buildEnabledOutlineInputBorder(),
+          labelText: "Last name",
+          hintText: "Last name",
+          prefixIcon: const Icon(
+            CupertinoIcons.person,
+            color: Res.accentColor,
+          ),
+          hintStyle: TextStyle(color: Colors.grey[400]),
+        ),
       ),
     );
   }
@@ -138,20 +152,26 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _textFieldMobileNumber() {
     return Container(
       padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
+      //decoration: textFieldDec(),
       child: TextField(
         controller: mobileNumberController,
         maxLength: 10,
         decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Mobile number",
-            labelText: 'Mobile number',
-            errorText: errorMobileNumber,
-            prefixIcon: const Icon(
-              CupertinoIcons.phone,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
+          fillColor: Colors.grey.shade200,
+          filled: true,
+          counterText: "",
+          errorText: errorMobileNumber,
+          contentPadding: EdgeInsets.all(0),
+          focusedBorder: buildFocusedOutlineInputBorder(),
+          enabledBorder: buildEnabledOutlineInputBorder(),
+          labelText: "Mobile number",
+          hintText: "Mobile number",
+          prefixIcon: const Icon(
+            CupertinoIcons.phone,
+            color: Res.accentColor,
+          ),
+          hintStyle: TextStyle(color: Colors.grey[400]),
+        ),
       ),
     );
   }
@@ -159,20 +179,25 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _textFieldPassword() {
     return Container(
       padding: EdgeInsets.all(8.0),
-      decoration: textFieldDec(),
       child: TextField(
         obscureText: true,
         controller: passwordController,
         decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: 'Password',
-            hintText: 'Password',
-            errorText: errorPassword,
-            prefixIcon: const Icon(
-              CupertinoIcons.lock,
-              color: Res.accentColor,
-            ),
-            hintStyle: TextStyle(color: Colors.grey[400])),
+          fillColor: Colors.grey.shade200,
+          filled: true,
+          counterText: "",
+          errorText: errorPassword,
+          contentPadding: EdgeInsets.all(0),
+          focusedBorder: buildFocusedOutlineInputBorder(),
+          enabledBorder: buildEnabledOutlineInputBorder(),
+          labelText: "Password",
+          hintText: "Password",
+          prefixIcon: const Icon(
+            CupertinoIcons.lock,
+            color: Res.accentColor,
+          ),
+          hintStyle: TextStyle(color: Colors.grey[400]),
+        ),
       ),
     );
   }
@@ -180,7 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _loginButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [_gestureDetectorSignup(), _btnSignUp()],
+      children: [_gestureDetectorSignup(context), _btnSignUp(context)],
     );
   }
 
@@ -222,7 +247,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     var credentials = {
-      "idProofNumber": idProodNumberController.text.trim(),
+      //"idProofNumber": idProodNumberController.text.trim(),
       "firstName": firstNameController.text.trim(),
       "email": '',
       "lastName": lastNameController.text.trim(),
@@ -259,95 +284,38 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      idProofController.text = "Adhar card";
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  GestureDetector _gestureDetectorSignup(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: Scaffold(
-          backgroundColor: Res.accentColor,
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //
-                // Welcome test with background
-                Container(
-                  height: 300,
-                  width: double.infinity,
-                  child: Center(
-                    child: _showWelcomeText(),
-                  ),
-                ),
-
-                //
-                // Flexible listview
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
-                    ),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //Sign Up
-                        Text("Sign Up",
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.left),
-
-                        SizedBox(height: 20),
-                        //mobile textField
-                        _textFieldIDProof(),
-                        _textFieldIDProofNumber(),
-                        _textFieldFirstName(),
-                        _textFieldLastName(),
-                        _textFieldMobileNumber(),
-                        _textFieldPassword(),
-
-                        //space
-                        SizedBox(height: 30),
-                        //login button
-                        _loginButton()
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: EdgeInsets.all(8),
+        child: Text(
+          'Back',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18.0,
+            color: Colors.black,
+          ),
+        ),
+      ),
     );
   }
 
-  Row _btnSignUp() {
+  Row _btnSignUp(context) {
     return Row(
       children: [
         RaisedButton(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(8.0),
               side: BorderSide(color: Res.accentColor)),
           onPressed: () {
             FocusScope.of(context).requestFocus(new FocusNode());
             _onBtnPressed();
           },
           color: Res.accentColor,
-          textColor: Colors.white,
+          textColor: dColors.black,
           child: Row(
             children: [
               Container(
@@ -362,7 +330,7 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(
                 width: 10,
               ),
-              Icon(CupertinoIcons.chevron_forward)
+              Image.asset('assets/images/trending.png'),
             ],
           ),
         ),
@@ -370,22 +338,61 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  GestureDetector _gestureDetectorSignup() {
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.all(8),
-        child: Text(
-          'Back',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18.0,
-            color: Res.accentColor,
-            //fontWeight: FontWeight.bold
+      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+      child: Scaffold(
+        backgroundColor: Res.accentColor,
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            height: 300,
+            width: double.infinity,
+            child: Center(
+              child: showWelcomeText(),
+            ),
           ),
-        ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20),
+
+                  Text("Sign Up",
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.left),
+
+                  SizedBox(height: 20),
+                  //mobile textField
+                  //_textFieldIDProof(),
+                  //_textFieldIDProofNumber(),
+                  _textFieldFirstName(),
+                  _textFieldLastName(),
+                  _textFieldMobileNumber(),
+                  _textFieldPassword(),
+                  //space
+                  SizedBox(height: 30),
+                  //login button
+                  _loginButton()
+                ],
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }
