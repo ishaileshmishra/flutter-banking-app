@@ -23,85 +23,20 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  //
-  // Error fields
+
   String errorIdProof;
   String errorFirstname;
   String errorLastname;
   String errorMobileNumber;
   String errorPassword;
-
-  //emailController
-  // final TextEditingController idProofController = TextEditingController();
-  // final TextEditingController idProodNumberController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Widget _showWelcomeText() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Text("Create\nAccount",
-            style: TextStyle(
-              fontSize: 30,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.left),
-      ),
-    );
-  }
-
-  // Widget _textFieldIDProof() {
-  //   return Container(
-  //     padding: EdgeInsets.all(8.0),
-  //     decoration: textFieldDec(),
-  //     child: TextField(
-  //       controller: idProofController,
-  //       enabled: false,
-  //       decoration: InputDecoration(
-  //           border: InputBorder.none,
-  //           counterText: "",
-  //           hintText: "Adhar card",
-  //           labelText: "ID Proof (Adhar card only)",
-  //           errorText: errorIdProof,
-  //           prefixIcon: const Icon(
-  //             CupertinoIcons.person,
-  //             color: Res.accentColor,
-  //           ),
-  //           hintStyle: TextStyle(color: Colors.grey[400])),
-  //     ),
-  //   );
-  // }
-
-  // Widget _textFieldIDProofNumber() {
-  //   return Container(
-  //     padding: EdgeInsets.all(8.0),
-  //     decoration: textFieldDec(),
-  //     child: TextField(
-  //       controller: idProodNumberController,
-  //       maxLength: 12,
-  //       keyboardType: TextInputType.number,
-  //       decoration: InputDecoration(
-  //           border: InputBorder.none,
-  //           hintText: "Adhar card number",
-  //           labelText: 'Adhar card number',
-  //           prefixIcon: const Icon(
-  //             CupertinoIcons.person,
-  //             color: Res.accentColor,
-  //           ),
-  //           hintStyle: TextStyle(color: Colors.grey[400])),
-  //     ),
-  //   );
-  // }
-
   Widget _textFieldFirstName() {
     return Container(
       padding: EdgeInsets.all(8.0),
-      //decoration: textFieldDec(),
       child: TextField(
         controller: firstNameController,
         decoration: InputDecoration(
@@ -116,7 +51,6 @@ class _SignUpPageState extends State<SignUpPage> {
           hintText: "First name",
           prefixIcon: const Icon(
             CupertinoIcons.person,
-            color: Res.accentColor,
           ),
           hintStyle: TextStyle(color: Colors.grey[400]),
         ),
@@ -127,7 +61,6 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _textFieldLastName() {
     return Container(
       padding: EdgeInsets.all(8.0),
-      //decoration: textFieldDec(),
       child: TextField(
         controller: lastNameController,
         decoration: InputDecoration(
@@ -141,7 +74,6 @@ class _SignUpPageState extends State<SignUpPage> {
           hintText: "Last name",
           prefixIcon: const Icon(
             CupertinoIcons.person,
-            color: Res.accentColor,
           ),
           hintStyle: TextStyle(color: Colors.grey[400]),
         ),
@@ -168,7 +100,6 @@ class _SignUpPageState extends State<SignUpPage> {
           hintText: "Mobile number",
           prefixIcon: const Icon(
             CupertinoIcons.phone,
-            color: Res.accentColor,
           ),
           hintStyle: TextStyle(color: Colors.grey[400]),
         ),
@@ -194,7 +125,6 @@ class _SignUpPageState extends State<SignUpPage> {
           hintText: "Password",
           prefixIcon: const Icon(
             CupertinoIcons.lock,
-            color: Res.accentColor,
           ),
           hintStyle: TextStyle(color: Colors.grey[400]),
         ),
@@ -315,7 +245,7 @@ class _SignUpPageState extends State<SignUpPage> {
             _onBtnPressed();
           },
           color: Res.accentColor,
-          textColor: dColors.black,
+          textColor: Colors.black,
           child: Row(
             children: [
               Container(
