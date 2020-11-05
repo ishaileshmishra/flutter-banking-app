@@ -5,7 +5,7 @@ import 'package:alok/src/models/AccountType.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/models/SignUpResponse.dart';
 import 'package:alok/src/models/account_model.dart';
-import 'package:alok/src/ui/dashboard/dashboard_page.dart';
+import 'package:alok/src/ui/account/AccountPage.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +21,7 @@ fetchLoginResponse(context, credentials) async {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => DashBoardScreen(
+                builder: (context) => AccountMngntScreen(
                       user: loginDetails,
                     )));
       }

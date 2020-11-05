@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:alok/src/ui/account/AccountPage.dart';
 import 'package:alok/src/ui/login/Components.dart';
 import 'package:alok/src/ui/user/Components.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,10 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:alok/res.dart';
 import 'package:alok/src/models/LoginResponse.dart';
-import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -23,7 +22,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
   String errorIdProof;
   String errorFirstname;
   String errorLastname;
@@ -177,7 +175,6 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     var credentials = {
-      //"idProofNumber": idProodNumberController.text.trim(),
       "firstName": firstNameController.text.trim(),
       "email": '',
       "lastName": lastNameController.text.trim(),
@@ -185,13 +182,21 @@ class _SignUpPageState extends State<SignUpPage> {
       "password": passwordController.text.trim(),
     };
 
-    fetchLoginResponse(context, credentials);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+    fetchSignupResponse(context, credentials);
   }
 
-  fetchLoginResponse(context, credentials) async {
+  fetchSignupResponse(context, credentials) async {
     await http.post(Res.registerAPI, body: credentials).then((response) {
       Map userMap = json.decode(response.body);
-      print(userMap);
+      Navigator.pop(context);
       if (response.statusCode == 200) {
         if (userMap['success']) {
           showToast(context, userMap['message']);
@@ -202,7 +207,7 @@ class _SignUpPageState extends State<SignUpPage> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => DashBoardScreen(
+                  builder: (context) => AccountMngntScreen(
                         user: loginDetails,
                       )));
         } else {

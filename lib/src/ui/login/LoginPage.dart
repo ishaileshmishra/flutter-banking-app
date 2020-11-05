@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:alok/src/ui/account/AccountPage.dart';
+import 'package:alok/src/ui/dashboard/Dashboard.dart';
 import 'package:alok/src/ui/user/Components.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,7 +11,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
 import 'package:alok/src/models/LoginResponse.dart';
-import 'package:alok/src/ui/dashboard/dashboard_page.dart';
 import 'package:alok/src/ui/login/Components.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,13 +23,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //
-  // Error Fields
-  bool isLoading = true;
   bool _validateMobile = false;
   var _validatePassword = false;
-
-  // EmailController
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -54,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: "Mobile number",
         prefixIcon: const Icon(CupertinoIcons.phone),
         hintStyle: TextStyle(color: Colors.grey[400]),
-      ), //buildInputDecoration('ID card number'),
+      ),
     );
   }
 
@@ -169,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => DashBoardScreen(
+                  builder: (context) => AccountMngntScreen(
                         user: loginDetails,
                       )));
         } else {
@@ -233,8 +229,25 @@ class _LoginPageState extends State<LoginPage> {
                           _textFieldPassword(),
                           //=======================
                           SizedBox(height: 20),
-                          _loginButton()
+                          _loginButton(),
                           //=======================
+
+                          //TODO: Delete this code on production
+                          SizedBox(height: 20),
+                          Center(
+                            child: FlatButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DashBoardPage()));
+                              },
+                              child: Text(
+                                'View Dashboard',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),

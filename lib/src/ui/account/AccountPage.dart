@@ -1,3 +1,4 @@
+import 'package:alok/src/ui/account/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,11 +7,10 @@ import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
 import 'package:alok/src/ui/agent/kyc_request.dart';
-import 'package:alok/src/ui/dashboard/components.dart';
 import 'package:alok/src/ui/user/CreateAccountPage.dart';
 
-class DashBoardScreen extends StatelessWidget {
-  DashBoardScreen({Key key, this.user}) : super(key: key);
+class AccountMngntScreen extends StatelessWidget {
+  AccountMngntScreen({Key key, this.user}) : super(key: key);
 
   final LoginResponse user;
 

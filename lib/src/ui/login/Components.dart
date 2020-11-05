@@ -60,20 +60,9 @@ showSnackbarSuccess(scaffoldKey, message) {
 
 Widget showWelcomeText() {
   return Align(
-    //alignment: Alignment.centerLeft,
     child: Padding(
       padding: const EdgeInsets.all(18.0),
       child: Image.asset('assets/images/header.png'),
-
-      // Text(
-      //   "Welcome\nBack",
-      //   style: TextStyle(
-      //     fontSize: 30,
-      //     color: Colors.black,
-      //     fontWeight: FontWeight.bold,
-      //   ),
-      //   textAlign: TextAlign.left,
-      // ),
     ),
   );
 }
