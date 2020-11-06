@@ -1,4 +1,3 @@
-// dashboard components
 import 'package:alok/res.dart';
 import 'package:alok/src/ui/agent/DepositAmount.dart';
 import 'package:alok/src/ui/user/CreateAccountPage.dart';
@@ -7,8 +6,6 @@ import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-///show logout dialog when user icon tapped
-///
 showAlertConfirmLogout(context) async {}
 
 get greeting {
@@ -73,7 +70,7 @@ class UserIcon extends StatelessWidget {
       backgroundColor: Res.accentColor,
       child: Icon(
         CupertinoIcons.person,
-        color: Colors.white,
+        color: Colors.black,
         size: 25,
       ),
     );
@@ -87,6 +84,7 @@ ListView listView(role, categories) {
         return GestureDetector(
           onTap: () => _decideToViewScreen(context, role, index),
           child: Card(
+            color: Res.accentColor,
             margin: EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 3,
@@ -153,7 +151,7 @@ Card btnCardView({titleTitle: String}) {
         children: [
           Icon(
             Icons.supervised_user_circle_outlined,
-            color: Res.accentColor,
+            color: Colors.black,
           ),
           SizedBox(width: 6),
           Text(

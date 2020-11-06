@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:alok/src/ui/account/AccountPage.dart';
 import 'package:alok/src/ui/dashboard/Dashboard.dart';
 import 'package:alok/src/ui/user/Components.dart';
 import 'package:alok/src/utils/global_widgets.dart';
@@ -165,11 +164,10 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => AccountMngntScreen(
+                  builder: (context) => DashBoardPage(
                         user: loginDetails,
                       )));
         } else {
-          //Navigator.pop(context);
           showToastWithError(context, userMap['message']);
         }
       }
@@ -212,6 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          //=======================
                           SizedBox(height: 20),
                           Text("Sign In",
                               style: TextStyle(
@@ -231,23 +230,6 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(height: 20),
                           _loginButton(),
                           //=======================
-
-                          //TODO: Delete this code on production
-                          SizedBox(height: 20),
-                          Center(
-                            child: FlatButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DashBoardPage()));
-                              },
-                              child: Text(
-                                'View Dashboard',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          )
                         ],
                       ),
                     ),

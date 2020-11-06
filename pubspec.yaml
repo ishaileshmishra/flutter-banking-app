@@ -21,6 +21,7 @@ dependencies:
   flutter_dropdown: ^0.0.8
   giffy_dialog: any
   provider: ^4.3.2+2
+  flutter_images_slider: ^0.0.2
   
 
 dev_dependencies:
@@ -34,3 +35,4 @@ flutter:
   uses-material-design: true
   assets:
    - assets/images/
+   - assets/icons/

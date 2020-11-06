@@ -1,4 +1,3 @@
-import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
 import 'package:flutter/material.dart';
 
@@ -10,14 +9,14 @@ mixin Reposit {
         Icon(
           Icons.supervised_user_circle_outlined,
           size: 40,
-          color: Res.accentColor,
+          color: Colors.black,
         ),
         'Create Account'));
     categories.add(new CatModel(
         Icon(
           Icons.money,
           size: 40,
-          color: Res.accentColor,
+          color: Colors.black,
         ),
         'Deposit Amount'));
 
@@ -31,7 +30,7 @@ mixin Reposit {
         Icon(
           Icons.supervised_user_circle_outlined,
           size: 40,
-          color: Res.accentColor,
+          color: Colors.black,
         ),
         'Deposite Amount'));
 
@@ -39,7 +38,7 @@ mixin Reposit {
         Icon(
           Icons.supervised_user_circle_outlined,
           size: 40,
-          color: Res.accentColor,
+          color: Colors.black,
         ),
         'Recurring Deposite'));
 

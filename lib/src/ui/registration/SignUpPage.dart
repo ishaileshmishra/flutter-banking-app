@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:alok/src/ui/account/AccountPage.dart';
+import 'package:alok/src/ui/dashboard/Dashboard.dart';
 import 'package:alok/src/ui/login/Components.dart';
 import 'package:alok/src/ui/user/Components.dart';
 import 'package:flutter/cupertino.dart';
@@ -207,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => AccountMngntScreen(
+                  builder: (context) => DashBoardPage(
                         user: loginDetails,
                       )));
         } else {

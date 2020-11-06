@@ -29,7 +29,6 @@ class AccountMngntScreen extends StatelessWidget {
         padding: EdgeInsets.only(top: 20),
         child: Column(
           children: [
-            // container appbar
             renderActionbar(context, username),
             buildAccountStrip(context, availBalance, depositBalance),
             SizedBox(height: 30),
@@ -45,7 +44,7 @@ class AccountMngntScreen extends StatelessWidget {
     return Expanded(
         child: Container(
       decoration: BoxDecoration(
-        color: Res.primaryColor,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30.0),
           topLeft: Radius.circular(30.0),
