@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:alok/src/ui/account/AccountPage.dart';
 import 'package:alok/src/ui/dashboard/Dashboard.dart';
 import 'package:alok/src/ui/login/Components.dart';
 import 'package:alok/src/ui/user/Components.dart';

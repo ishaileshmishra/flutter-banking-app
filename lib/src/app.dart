@@ -1,9 +1,10 @@
-import 'package:alok/res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:splashscreen/splashscreen.dart';
 
+import 'package:alok/res.dart';
 import 'package:alok/src/ui/login/LoginPage.dart';
 import 'package:alok/src/utils/constants.dart' as constant;
 
@@ -28,17 +29,26 @@ class AlokApp extends StatelessWidget {
               if (snapshot.hasError) {
                 return Text(snapshot.error.toString());
               } else {
-                new Future.delayed(const Duration(seconds: 3), () {
-                  return LoginPage(title: 'Login');
-                });
+                return LoginPage();
 
-                return LoginPage(title: 'Login');
+                // SplashScreen(
+                //   seconds: 14,
+                //   navigateAfterSeconds: LoginPage(),
+                //   title: new Text(
+                //     'Welcome In SplashScreen',
+                //     style: new TextStyle(
+                //       fontWeight: FontWeight.bold,
+                //       fontSize: 20.0,
+                //     ),
+                //   ),
+                //   image: new Image.network(
+                //       'https://flutter.io/images/catalog-widget-placeholder.png'),
+                //   backgroundColor: Colors.white,
+                //   loaderColor: Colors.red,
+                // );
               }
             } else {
-              return Scaffold(
-                backgroundColor: Res.accentColor,
-                body: Center(child: Image.asset('assets/images/header.png')),
-              );
+              return Scaffold();
             }
           }),
     );
