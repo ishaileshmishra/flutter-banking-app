@@ -56,18 +56,19 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
   List<AccountModel> listAccountFor = new List<AccountModel>();
   List<String> listAccountForNames = new List<String>();
   var selectedAccountForNameValue;
+  var selectedGender;
 
   List<AccountModel> listAccountModels = new List<AccountModel>();
   List<String> listAccounts = new List<String>();
   var selectedListAccountValue;
 
-  /// Initialised the state of the view
   @override
   void initState() {
     super.initState();
     getAccountTypeDropDown();
     accountForListItems(Res.accountForAPI);
     accountListItems(Res.accountModeAPI);
+    _amountController.text = '500';
   }
 
   void accountForListItems(url) async {
@@ -167,6 +168,7 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
           'accountMode': selectedListAccountValue,
           'amount': _amountController.text.trim().toString(),
           'accountFor': selectedAccountForNameValue,
+          //'gender': selectedGender,
           'accountHolderName': _accountHolderNameController.text.trim(),
           'dateOfBirth': _dobController.text.trim(),
           'identityCardNumber':
@@ -207,14 +209,28 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          centerTitle: true,
-          title: Text('Create Account'),
+          leading: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
+          title: Text(
+            'Create Account',
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
           backgroundColor: Res.accentColor,
           elevation: 0,
           actions: [
             Padding(
               padding: EdgeInsets.all(10),
-              child: Icon(Icons.more_vert),
+              child: Icon(
+                Icons.more_vert,
+                color: Colors.black,
+              ),
             )
           ],
         ),
@@ -225,11 +241,14 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                 children: [
                   Container(
                     color: Res.accentColor,
-                    height: 200,
+                    height: 130,
+                    child: Container(
+                      child: Image.asset('assets/images/dashboard.png'),
+                    ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 20),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                    margin: EdgeInsets.only(top: 100),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
                       color: Colors.white,
@@ -287,6 +306,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                                 errorText:
                                     _validateAmount ? 'Provide Amount' : null,
                                 contentPadding: EdgeInsets.all(0),
+                                fillColor: Colors.grey.shade200,
+                                filled: true,
+                                counterText: "",
                                 focusedBorder: buildFocusedOutlineInputBorder(),
                                 enabledBorder: buildEnabledOutlineInputBorder(),
                                 labelText: "Amount",
@@ -317,27 +339,49 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         ),
 
                         //====================================
+                        // Dropdown
+                        SizedBox(height: 10),
+                        Container(
+                          decoration: buildBoxDecoration(),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: DropDown(
+                            items: ['Male', 'Female'],
+                            isExpanded: true,
+                            showUnderline: false,
+                            dropDownType: DropDownType.Button,
+                            hint: Text('Gender'),
+                            onChanged: (value) {
+                              print(value);
+                              selectedGender = value;
+                            },
+                          ),
+                        ),
+
+                        //====================================
                         SizedBox(height: 10),
                         TextField(
                           controller: _accountHolderNameController,
                           keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.next,
-
                           decoration: InputDecoration(
                             errorText: _validateAccountHolderName
                                 ? "Account holder name Can\'t Be Empty"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: '',
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Account holder name",
                             prefixIcon: const Icon(CupertinoIcons.person_2_alt),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
                         ),
 
                         //====================================
                         // Textfield Date of birth
+                        //====================================
                         SizedBox(height: 10),
                         TextField(
                           controller: _dobController,
@@ -358,21 +402,25 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
 
                             print(formattedDate);
                             _dobController.text = formattedDate;
-                            // Show Date Picker Here
                           },
                           decoration: InputDecoration(
                             errorText:
                                 _validateDateOfBirth ? 'Date of birth' : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Date of birth",
                             prefixIcon: Icon(CupertinoIcons.calendar_today),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
                         ),
 
                         //====================================
+                        //====================================
+
                         SizedBox(height: 10),
                         TextField(
                           controller: _accountHolderAdharCardNumberController,
@@ -384,6 +432,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                                 ? "Invalid account holder name"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Account holder adhar card number",
@@ -394,6 +445,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                         ),
 
                         //====================================
+
+                        //====================================
+
                         SizedBox(height: 10),
                         TextField(
                           controller: _mobileController,
@@ -404,15 +458,21 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             errorText:
                                 _validateMobile ? "Invalid Mobile" : null,
                             contentPadding: EdgeInsets.all(0),
+                            counterText: "",
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Mobile number",
                             prefixIcon: const Icon(CupertinoIcons.phone),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
                         ),
 
                         //====================================
+
+                        //====================================
+
                         SizedBox(height: 10),
                         TextField(
                           controller: _emailAddressController,
@@ -422,6 +482,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             errorText:
                                 _validateEmailId ? "Invalid EmailId" : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Email Id",
@@ -440,6 +503,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                             errorText:
                                 _validateAddress ? "Invalid Address" : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Address",
@@ -459,6 +525,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                                 ? "City name Can\'t Be Empty"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "City name",
@@ -477,6 +546,9 @@ class _CreateNewAccountPageState extends State<CreateNewAccountPage> {
                           decoration: InputDecoration(
                             errorText: _validatePINCode ? "Invalid PIN" : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
                             labelText: "Pincode",

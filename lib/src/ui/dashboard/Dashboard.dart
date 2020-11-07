@@ -1,6 +1,7 @@
 import 'package:alok/res.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/ui/account/AccountPage.dart';
+import 'package:alok/src/ui/account/Components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_images_slider/flutter_images_slider.dart';
@@ -47,6 +48,19 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final username = "${widget.user.firstName}";
+
+    Row rowUsername() {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(greeting, style: textStyleGreeting),
+          SizedBox(width: 10),
+          Text(username, style: textStyleUser)
+        ],  
+      );
+    }
+
     // double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return GestureDetector(
@@ -61,15 +75,20 @@ class _DashBoardPageState extends State<DashBoardPage> {
                   width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                         child: Align(
                           alignment: Alignment.topCenter,
                           child: Image.asset('assets/images/dashboard.png'),
                         ),
                       ),
+                      SizedBox(height: 20),
+                      Padding(
+                          padding: EdgeInsets.only(left: 30),
+                          child: rowUsername()),
                       SizedBox(height: 20),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 30),

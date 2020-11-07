@@ -33,11 +33,13 @@ var textStyleUser = TextStyle(
 
 Container renderActionbar(context, username) {
   return Container(
-    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [abColumn(username), abRow()],
+    padding: EdgeInsets.symmetric(
+      horizontal: 20,
     ),
+    // child: Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [abColumn(username), abRow()],
+    // ),
   );
 }
 
@@ -144,6 +146,7 @@ viewUserCreateAccountScreen(context) {
 Card btnCardView({titleTitle: String}) {
   return Card(
     elevation: 0,
+    color: Colors.yellow,
     child: Container(
       padding: EdgeInsets.all(10),
       child: Row(

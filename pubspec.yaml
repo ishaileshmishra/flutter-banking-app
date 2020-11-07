@@ -22,8 +22,9 @@ dependencies:
   giffy_dialog: any
   provider: ^4.3.2+2
   flutter_images_slider: ^0.0.2
-  splashscreen:
+  flare_splash_screen: ^3.0.1
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

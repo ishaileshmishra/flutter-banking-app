@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:splashscreen/splashscreen.dart';
+//import 'package:flare_splash_screen/flare_splash_screen.dart';
 
 import 'package:alok/res.dart';
 import 'package:alok/src/ui/login/LoginPage.dart';
@@ -46,6 +46,7 @@ class AlokApp extends StatelessWidget {
                 //   backgroundColor: Colors.white,
                 //   loaderColor: Colors.red,
                 // );
+
               }
             } else {
               return Scaffold();

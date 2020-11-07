@@ -102,8 +102,6 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
   Widget build(BuildContext context) {
     Widget _textFieldAmount() {
       return Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: textFieldDec(),
         child: TextField(
           controller: _amountController,
           keyboardType: TextInputType.number,
@@ -112,10 +110,13 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
               hintText: "Amount",
               labelText: 'Amount',
               errorText: errorTextAmount,
-              prefixIcon: const Icon(
-                Icons.money,
-                color: Res.accentColor,
-              ),
+              fillColor: Colors.grey.shade200,
+              filled: true,
+              counterText: '',
+              contentPadding: EdgeInsets.all(0),
+              focusedBorder: buildFocusedOutlineInputBorder(),
+              enabledBorder: buildEnabledOutlineInputBorder(),
+              prefixIcon: const Icon(Icons.money),
               hintStyle: TextStyle(color: Colors.grey[400])),
         ),
       );
@@ -123,8 +124,6 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
 
     Widget _textFieldRemark() {
       return Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: textFieldDec(),
         child: TextField(
           controller: _remarkController,
           keyboardType: TextInputType.name,
@@ -132,11 +131,14 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
               border: InputBorder.none,
               hintText: "Remark",
               labelText: 'Remark',
+              contentPadding: EdgeInsets.all(0),
               errorText: errorTextRemark,
-              prefixIcon: const Icon(
-                Icons.text_fields,
-                color: Res.accentColor,
-              ),
+              fillColor: Colors.grey.shade200,
+              filled: true,
+              counterText: '',
+              focusedBorder: buildFocusedOutlineInputBorder(),
+              enabledBorder: buildEnabledOutlineInputBorder(),
+              prefixIcon: const Icon(Icons.spellcheck),
               hintStyle: TextStyle(color: Colors.grey[400])),
         ),
       );
@@ -145,12 +147,21 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
-        //
-        // Applicationbar
         key: _scaffoldKey,
         appBar: AppBar(
-          centerTitle: true,
-          title: Text('Deposit'),
+          leading: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
+          title: Text(
+            'Deposit',
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
           backgroundColor: Res.accentColor,
           elevation: 0,
           actions: [
@@ -202,20 +213,24 @@ class _DepositeAmountScreenState extends State<DepositeAmountScreen> {
                                 setState(() {
                                   accountNumber = accountNumber;
                                 });
-
                               },
                             ),
                           ),
                           //====================================
-                          SizedBox(height: 10),
+                          SizedBox(height: 20),
                           _textFieldAmount(),
                           //====================================
                           SizedBox(height: 10),
                           _textFieldRemark(),
                           //====================================
-                          SizedBox(height: 40),
+                          SizedBox(height: 20),
                           CupertinoButton(
-                            child: Text('Submit'),
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
                             color: Res.accentColor,
                             onPressed: () async {
                               _validateDepositeFields();

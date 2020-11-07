@@ -25,6 +25,40 @@ class AccountMngntScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Res.accentColor,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Res.accentColor,
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+        ),
+        title: Text(
+          'Accounts',
+          style: TextStyle(
+            //fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: Icon(
+              CupertinoIcons.bell,
+              color: Colors.black,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: Icon(
+              CupertinoIcons.person,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
       body: Container(
         padding: EdgeInsets.only(top: 20),
         child: Column(
@@ -43,6 +77,7 @@ class AccountMngntScreen extends StatelessWidget {
       List<CatModel> categories, List<CatModel> agentCategories) {
     return Expanded(
         child: Container(
+      padding: EdgeInsets.only(top: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(

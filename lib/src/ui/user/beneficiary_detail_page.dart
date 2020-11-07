@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -21,12 +20,13 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
   bool _validateBeneficiaryName = false;
-  bool _validateDOB = false;
+  bool _validateMembershipNo = false;
   bool _validateIdNumber = false;
   bool _validateMobile = false;
   bool _validateEmailId = false;
 
   // TextEditingController
+  final _membershipNumberController = TextEditingController();
   final _nameController = TextEditingController();
   final _dobController = TextEditingController();
   final _idCardController = TextEditingController();
@@ -45,7 +45,6 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
     void _textFiledValidator() async {
       setState(() {
         _validateBeneficiaryName = false;
-        _validateDOB = false;
         _validateMobile = false;
         _validateEmailId = false;
       });
@@ -53,9 +52,6 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
       RegExp regex = new RegExp(pattern);
       if (_nameController.text.isEmpty) {
         _validateBeneficiaryName = true;
-        return;
-      } else if (_dobController.text.isEmpty) {
-        _validateDOB = true;
         return;
       } else if (_idCardController.text.isEmpty) {
         _validateIdNumber = true;
@@ -85,14 +81,26 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: Text('Beneficiary Details'),
-          backgroundColor: Res.primaryColor,
+          leading: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
+          ),
+          title: Text(
+            'Beneficiary Details',
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Res.accentColor,
           elevation: 0,
           actions: [
             Padding(
               padding: EdgeInsets.all(10),
-              child: Icon(Icons.more_vert),
+              child: Icon(
+                Icons.more_vert,
+                color: Colors.black,
+              ),
             )
           ],
         ),
@@ -103,13 +111,16 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                 children: [
                   // Colored container
                   Container(
-                    color: Res.primaryColor,
-                    height: 200,
+                    color: Res.accentColor,
+                    height: 130,
+                    child: Container(
+                      child: Image.asset('assets/images/dashboard.png'),
+                    ),
                   ),
                   //Curved Field container
                   Container(
-                    margin: EdgeInsets.only(top: 20),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                    margin: EdgeInsets.only(top: 100),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
                       color: Colors.white,
@@ -117,8 +128,42 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ///
-                        /// ================================
+                        //========================
+                        //Personal details block
+                        //========================
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Personal Details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        //Membership number
+                        TextField(
+                          controller: _membershipNumberController,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          maxLength: 12,
+                          decoration: InputDecoration(
+                            errorText: _validateMembershipNo
+                                ? "Invalid Membership Number"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Membership number",
+                            prefixIcon: const Icon(Icons.card_membership),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ), //buildInputDecoration('ID card number'),
+                        ),
+
                         /// Baneficiary name
                         /// ================================
                         SizedBox(height: 10),
@@ -128,50 +173,184 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             errorText: _validateBeneficiaryName
-                                ? "Beneficiary name can\'t Be Empty"
+                                ? "Name can\'t Be Empty"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Beneficiary name",
+                            labelText: "Name",
                             prefixIcon: const Icon(CupertinoIcons.person_fill),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
+                        ),
+
+                        //====================================
+                        // Email Id
+                        //====================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            errorText:
+                                _validateEmailId ? "Invalid EmailId" : null,
+                            contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Email Id",
+                            prefixIcon: const Icon(CupertinoIcons.mail),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ),
+                        ),
+
+                        /// Address
+                        /// ================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _nameController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            errorText: _validateBeneficiaryName
+                                ? "Address can\'t Be Empty"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Full address",
+                            prefixIcon: const Icon(CupertinoIcons.location),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ),
+                        ),
+
+                        /// PINCODE
+                        /// ================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _nameController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            errorText: _validateBeneficiaryName
+                                ? "Pindcode can\'t Be Empty"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Pincode",
+                            prefixIcon: const Icon(Icons.fiber_pin),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ),
+                        ),
+
+                        /// Address
+                        /// ================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _nameController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            errorText: _validateBeneficiaryName
+                                ? "City can\'t Be Empty"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "City",
+                            prefixIcon: const Icon(Icons.location_city),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ),
+                        ),
+
+                        /// Address
+                        /// ================================
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _nameController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            errorText: _validateBeneficiaryName
+                                ? "State can\'t Be Empty"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "State",
+                            prefixIcon: const Icon(Icons.location_city_rounded),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ),
                         ),
 
                         ///====================================
-                        /// beneficiary date of birth
+                        /// KYC Details
                         ///====================================
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: _dobController,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.datetime,
-                          onTap: () async {
-                            DateTime date = DateTime(1900);
-                            FocusScope.of(context)
-                                .requestFocus(new FocusNode());
-                            date = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2100));
-                            var formattedDate =
-                                "${date.day}/${date.month}/${date.year}";
-                            print(formattedDate);
-                            _dobController.text = formattedDate;
-                            // Show Date Picker Here
-                          },
-                          decoration: InputDecoration(
-                            errorText: _validateDOB ? 'Date of birth' : null,
-                            contentPadding: EdgeInsets.all(0),
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Beneficiary date of birth",
-                            prefixIcon: Icon(CupertinoIcons.calendar_today),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                        ///
+                        ///
+                        ///
+                        SizedBox(height: 40),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'KYC Details',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
+
+                        // TextField(
+                        //   controller: _dobController,
+                        //   textInputAction: TextInputAction.next,
+                        //   keyboardType: TextInputType.datetime,
+                        //   onTap: () async {
+                        //     DateTime date = DateTime(1900);
+                        //     FocusScope.of(context)
+                        //         .requestFocus(new FocusNode());
+                        //     date = await showDatePicker(
+                        //         context: context,
+                        //         initialDate: DateTime.now(),
+                        //         firstDate: DateTime(1900),
+                        //         lastDate: DateTime(2100));
+                        //     var formattedDate =
+                        //         "${date.day}/${date.month}/${date.year}";
+                        //     print(formattedDate);
+                        //     _dobController.text = formattedDate;
+                        //   },
+                        //   decoration: InputDecoration(
+                        //     errorText: _validateDOB ? 'Date of birth' : null,
+                        //     contentPadding: EdgeInsets.all(0),
+                        //     fillColor: Colors.grey.shade200,
+                        //     filled: true,
+                        //     counterText: "",
+                        //     focusedBorder: buildFocusedOutlineInputBorder(),
+                        //     enabledBorder: buildEnabledOutlineInputBorder(),
+                        //     labelText: "Beneficiary date of birth",
+                        //     prefixIcon: Icon(CupertinoIcons.calendar_today),
+                        //     hintStyle: TextStyle(color: Colors.grey[400]),
+                        //   ),
+                        // ),
 
                         ///====================================
                         ///Account holder account holder adhar card number
@@ -187,12 +366,37 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                                 ? "Invalid Adhar number"
                                 : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Account holder adhar card number",
-                            prefixIcon: const Icon(CupertinoIcons.phone),
+                            labelText: "Adhar number",
+                            prefixIcon: const Icon(Icons.subtitles),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
+                        ),
+
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _idCardController,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          maxLength: 12,
+                          decoration: InputDecoration(
+                            errorText: _validateIdNumber
+                                ? "Name Can't be empty"
+                                : null,
+                            contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
+                            focusedBorder: buildFocusedOutlineInputBorder(),
+                            enabledBorder: buildEnabledOutlineInputBorder(),
+                            labelText: "Name ( which is on adharcard )",
+                            prefixIcon: const Icon(CupertinoIcons.person_alt),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                          ),
                         ),
 
                         //====================================
@@ -206,30 +410,37 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                             errorText:
                                 _validateMobile ? "Invalid Mobile" : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Mobile number",
-                            prefixIcon: const Icon(CupertinoIcons.phone),
+                            labelText: "PAN number",
+                            prefixIcon: const Icon(Icons.subtitles),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
                         ),
 
                         //====================================
                         SizedBox(height: 10),
                         TextField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.name,
+                          controller: _mobileController,
+                          keyboardType: TextInputType.phone,
                           textInputAction: TextInputAction.next,
+                          maxLength: 10,
                           decoration: InputDecoration(
                             errorText:
-                                _validateEmailId ? "Invalid EmailId" : null,
+                                _validateMobile ? "Invalid Mobile" : null,
                             contentPadding: EdgeInsets.all(0),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            counterText: "",
                             focusedBorder: buildFocusedOutlineInputBorder(),
                             enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Email Id",
-                            prefixIcon: const Icon(CupertinoIcons.mail),
+                            labelText: "PAN card font copy",
+                            prefixIcon: const Icon(Icons.attach_file),
                             hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
+                          ),
                         ),
 
                         //====================================
@@ -256,8 +467,13 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                                   },
                                   child: Text('Skip')),
                               CupertinoButton(
-                                child: Text('Create Account'),
-                                color: Res.primaryColor,
+                                child: Text(
+                                  'Create Account',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                color: Res.accentColor,
                                 onPressed: () {
                                   _textFiledValidator();
                                 },
