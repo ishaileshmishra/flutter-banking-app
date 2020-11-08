@@ -206,26 +206,14 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          //=======================
                           SizedBox(height: 20),
-                          Text("Sign In",
-                              style: TextStyle(
-                                fontSize: 22,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.left),
-
-                          //=======================
+                          buildTextSignIn(),
                           SizedBox(height: 30),
                           _textFieldMobile(),
-                          //=======================
                           SizedBox(height: 10),
                           _textFieldPassword(),
-                          //=======================
                           SizedBox(height: 20),
                           _loginButton(),
-                          //=======================
                         ],
                       ),
                     ),
@@ -235,5 +223,15 @@ class _LoginPageState extends State<LoginPage> {
             ],
           )),
     );
+  }
+
+  Text buildTextSignIn() {
+    return Text("Sign In",
+        style: TextStyle(
+          fontSize: 22,
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+        textAlign: TextAlign.left);
   }
 }

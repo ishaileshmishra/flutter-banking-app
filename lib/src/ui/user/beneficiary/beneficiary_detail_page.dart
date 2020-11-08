@@ -1,9 +1,11 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
+import 'package:alok/src/ui/user/Components.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 
 class BeneficiaryDetailsPage extends StatefulWidget {
@@ -19,59 +21,101 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
-  bool _validateBeneficiaryName = false;
   bool _validateMembershipNo = false;
-  bool _validateIdNumber = false;
-  bool _validateMobile = false;
+  bool _validateName = false;
   bool _validateEmailId = false;
+  bool _validateFullAddress = false;
+  bool _validatePIN = false;
+  bool _validateCity = false;
+  bool _validateState = false;
+  bool _validateAdharNo = false;
+  bool _validateAdharName = false;
+  bool _validatePanNo = false;
+  bool _validatePanAttachement = false;
 
   // TextEditingController
   final _membershipNumberController = TextEditingController();
   final _nameController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _idCardController = TextEditingController();
-  final _mobileController = TextEditingController();
   final _emailController = TextEditingController();
-
-  /// Initialised the state of the view
-  @override
-  void initState() {
-    super.initState();
-  }
+  final _fullAddresssController = TextEditingController();
+  final _pincodeController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _stateController = TextEditingController();
+  final _adharNoController = TextEditingController();
+  final _nameOnAdharController = TextEditingController();
+  final _panNoController = TextEditingController();
+  final _panFrontAttachmentController = TextEditingController();
 
   /// This build makes draws the conatains the view of the Screen
   @override
   Widget build(BuildContext context) {
     void _textFiledValidator() async {
+      // Reset all the fields
       setState(() {
-        _validateBeneficiaryName = false;
-        _validateMobile = false;
+        _validateMembershipNo = false;
+        _validateName = false;
         _validateEmailId = false;
+        _validateFullAddress = false;
+        _validatePIN = false;
+        _validateCity = false;
+        _validateState = false;
+        _validateAdharNo = false;
+        _validateAdharName = false;
+        _validatePanNo = false;
+        _validatePanAttachement = false;
       });
 
       RegExp regex = new RegExp(pattern);
-      if (_nameController.text.isEmpty) {
-        _validateBeneficiaryName = true;
+      if (_membershipNumberController.text.isEmpty) {
+        _validateMembershipNo = true;
         return;
-      } else if (_idCardController.text.isEmpty) {
-        _validateIdNumber = true;
-        return;
-      } else if (_mobileController.text.isEmpty ||
-          _mobileController.text.length < 10) {
-        _validateMobile = true;
+      } else if (_nameController.text.isEmpty) {
+        _validateName = true;
         return;
       } else if (_emailController.text.isNotEmpty &&
           !regex.hasMatch(_emailController.text)) {
         _validateEmailId = true;
         return;
+      } else if (_fullAddresssController.text.isNotEmpty) {
+        _validateFullAddress = true;
+        return;
+      } else if (_pincodeController.text.isNotEmpty) {
+        _validatePIN = true;
+        return;
+      } else if (_cityController.text.isNotEmpty) {
+        _validateCity = true;
+        return;
+      } else if (_stateController.text.isNotEmpty) {
+        _validateState = true;
+        return;
+      } else if (_adharNoController.text.isNotEmpty &&
+          _adharNoController.text.length != 12) {
+        _validateAdharNo = true;
+        return;
+      } else if (_nameOnAdharController.text.isNotEmpty) {
+        _validateAdharName = true;
+        return;
+      } else if (_panNoController.text.isNotEmpty &&
+          _panNoController.text.length != 10) {
+        _validatePanNo = true;
+        return;
+      } else if (_panFrontAttachmentController.text.isNotEmpty) {
+        _validatePanAttachement = true;
+        return;
       } else {
         Map<String, String> credentials = {
           'tempAccountNumber': '${widget.tempId}',
-          'beneficiaryName': _nameController.text.trim(),
-          'dateOfBirth': _dobController.text.trim(),
-          'identityCardNumber': _idCardController.text.trim(),
-          'mobileNumber': _mobileController.text.trim(),
+          'membershipNumber': _membershipNumberController.text.trim(),
+          'name': _nameController.text.trim(),
           'email': _emailController.text.trim().toString(),
+          'fullAddress': _fullAddresssController.text.trim(),
+          'pincode': _pincodeController.text.trim(),
+          'city': _cityController.text.trim(),
+          'state': _stateController.text.trim(),
+          'adharCardNumber': _adharNoController.text.trim(),
+          'adharcardName': _nameOnAdharController.text.trim(),
+          'panNumber': _panNoController.text.trim(),
+          'panCardName': _panNoController.text.trim(),
         };
         postCredential(credentials);
       }
@@ -80,44 +124,13 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
-        appBar: AppBar(
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-          ),
-          title: Text(
-            'Beneficiary Details',
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Res.accentColor,
-          elevation: 0,
-          actions: [
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Icon(
-                Icons.more_vert,
-                color: Colors.black,
-              ),
-            )
-          ],
-        ),
+        appBar: buildAppBar(context),
         body: SingleChildScrollView(
           child: Column(
             children: [
               Stack(
                 children: [
-                  // Colored container
-                  Container(
-                    color: Res.accentColor,
-                    height: 130,
-                    child: Container(
-                      child: Image.asset('assets/images/dashboard.png'),
-                    ),
-                  ),
-                  //Curved Field container
+                  buildYellowContainer(),
                   Container(
                     margin: EdgeInsets.only(top: 100),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -131,355 +144,37 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
                         //========================
                         //Personal details block
                         //========================
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Personal Details',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
+                        buildAlignPersonalDetails(),
                         SizedBox(height: 10),
-                        //Membership number
-                        TextField(
-                          controller: _membershipNumberController,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          maxLength: 12,
-                          decoration: InputDecoration(
-                            errorText: _validateMembershipNo
-                                ? "Invalid Membership Number"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Membership number",
-                            prefixIcon: const Icon(Icons.card_membership),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ), //buildInputDecoration('ID card number'),
-                        ),
-
-                        /// Baneficiary name
-                        /// ================================
+                        buildTextFieldMembershipNumber(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _nameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateBeneficiaryName
-                                ? "Name can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Name",
-                            prefixIcon: const Icon(CupertinoIcons.person_fill),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        //====================================
-                        // Email Id
-                        //====================================
+                        buildTextFieldName(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText:
-                                _validateEmailId ? "Invalid EmailId" : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Email Id",
-                            prefixIcon: const Icon(CupertinoIcons.mail),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        /// Address
-                        /// ================================
+                        buildTextFieldEmail(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _nameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateBeneficiaryName
-                                ? "Address can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Full address",
-                            prefixIcon: const Icon(CupertinoIcons.location),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        /// PINCODE
-                        /// ================================
+                        buildTextFieldFullAddress(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _nameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateBeneficiaryName
-                                ? "Pindcode can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Pincode",
-                            prefixIcon: const Icon(Icons.fiber_pin),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        /// Address
-                        /// ================================
+                        buildTextFieldPincode(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _nameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateBeneficiaryName
-                                ? "City can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "City",
-                            prefixIcon: const Icon(Icons.location_city),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        /// Address
-                        /// ================================
+                        buildTextFieldCity(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _nameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            errorText: _validateBeneficiaryName
-                                ? "State can\'t Be Empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "State",
-                            prefixIcon: const Icon(Icons.location_city_rounded),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
+                        buildTextFieldState(),
 
                         ///====================================
                         /// KYC Details
                         ///====================================
-                        ///
-                        ///
-                        ///
                         SizedBox(height: 40),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'KYC Details',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-
-                        // TextField(
-                        //   controller: _dobController,
-                        //   textInputAction: TextInputAction.next,
-                        //   keyboardType: TextInputType.datetime,
-                        //   onTap: () async {
-                        //     DateTime date = DateTime(1900);
-                        //     FocusScope.of(context)
-                        //         .requestFocus(new FocusNode());
-                        //     date = await showDatePicker(
-                        //         context: context,
-                        //         initialDate: DateTime.now(),
-                        //         firstDate: DateTime(1900),
-                        //         lastDate: DateTime(2100));
-                        //     var formattedDate =
-                        //         "${date.day}/${date.month}/${date.year}";
-                        //     print(formattedDate);
-                        //     _dobController.text = formattedDate;
-                        //   },
-                        //   decoration: InputDecoration(
-                        //     errorText: _validateDOB ? 'Date of birth' : null,
-                        //     contentPadding: EdgeInsets.all(0),
-                        //     fillColor: Colors.grey.shade200,
-                        //     filled: true,
-                        //     counterText: "",
-                        //     focusedBorder: buildFocusedOutlineInputBorder(),
-                        //     enabledBorder: buildEnabledOutlineInputBorder(),
-                        //     labelText: "Beneficiary date of birth",
-                        //     prefixIcon: Icon(CupertinoIcons.calendar_today),
-                        //     hintStyle: TextStyle(color: Colors.grey[400]),
-                        //   ),
-                        // ),
-
-                        ///====================================
-                        ///Account holder account holder adhar card number
-                        ///====================================
+                        kycDetailsText(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _idCardController,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          maxLength: 12,
-                          decoration: InputDecoration(
-                            errorText: _validateIdNumber
-                                ? "Invalid Adhar number"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Adhar number",
-                            prefixIcon: const Icon(Icons.subtitles),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
+                        buildTextFieldAdharNumber(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _idCardController,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          maxLength: 12,
-                          decoration: InputDecoration(
-                            errorText: _validateIdNumber
-                                ? "Name Can't be empty"
-                                : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "Name ( which is on adharcard )",
-                            prefixIcon: const Icon(CupertinoIcons.person_alt),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        //====================================
+                        buildTextFieldAdharcardName(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _mobileController,
-                          keyboardType: TextInputType.phone,
-                          textInputAction: TextInputAction.next,
-                          maxLength: 10,
-                          decoration: InputDecoration(
-                            errorText:
-                                _validateMobile ? "Invalid Mobile" : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "PAN number",
-                            prefixIcon: const Icon(Icons.subtitles),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        //====================================
+                        buildTextFieldPanNo(),
                         SizedBox(height: 10),
-                        TextField(
-                          controller: _mobileController,
-                          keyboardType: TextInputType.phone,
-                          textInputAction: TextInputAction.next,
-                          maxLength: 10,
-                          decoration: InputDecoration(
-                            errorText:
-                                _validateMobile ? "Invalid Mobile" : null,
-                            contentPadding: EdgeInsets.all(0),
-                            fillColor: Colors.grey.shade200,
-                            filled: true,
-                            counterText: "",
-                            focusedBorder: buildFocusedOutlineInputBorder(),
-                            enabledBorder: buildEnabledOutlineInputBorder(),
-                            labelText: "PAN card font copy",
-                            prefixIcon: const Icon(Icons.attach_file),
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                          ),
-                        ),
-
-                        //====================================
+                        buildPanAttachmentTextField(),
                         SizedBox(height: 30),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                  onTap: () {
-                                    Map<String, String> credentials = {
-                                      'tempAccountNumber': '${widget.tempId}',
-                                      'beneficiaryName':
-                                          _nameController.text.trim(),
-                                      'dateOfBirth': _dobController.text.trim(),
-                                      'identityCardNumber':
-                                          _idCardController.text.trim(),
-                                      'mobileNumber':
-                                          _mobileController.text.trim(),
-                                      'email': _emailController.text
-                                          .trim()
-                                          .toString(),
-                                    };
-                                    postCredential(credentials);
-                                  },
-                                  child: Text('Skip')),
-                              CupertinoButton(
-                                child: Text(
-                                  'Create Account',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                color: Res.accentColor,
-                                onPressed: () {
-                                  _textFiledValidator();
-                                },
-                              ),
-                            ]),
-                        //====================================
+                        buildBtnRow(_textFiledValidator),
                       ],
                     ),
                   ),
@@ -492,22 +187,322 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
     );
   }
 
-  OutlineInputBorder buildEnabledOutlineInputBorder() {
-    return OutlineInputBorder(
-      borderSide: BorderSide(
-        color: CupertinoColors.inactiveGray,
-        width: 1.0,
+  Container buildYellowContainer() {
+    return Container(
+      color: Res.accentColor,
+      height: 130,
+      child: Container(
+        child: Image.asset('assets/images/dashboard.png'),
       ),
     );
   }
 
-  OutlineInputBorder buildFocusedOutlineInputBorder() {
-    return OutlineInputBorder(
-      borderSide: BorderSide(
-        color: CupertinoColors.inactiveGray,
-        width: 1.0,
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+      leading: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Icon(
+          Icons.arrow_back,
+          color: Colors.black,
+        ),
+      ),
+      title: Text(
+        'Beneficiary Details',
+        style: TextStyle(color: Colors.black),
+      ),
+      backgroundColor: Res.accentColor,
+      elevation: 0,
+      actions: [
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: Icon(
+            Icons.more_vert,
+            color: Colors.black,
+          ),
+        )
+      ],
+    );
+  }
+
+  Align buildAlignPersonalDetails() {
+    return Align(
+      alignment: Alignment.center,
+      child: Text(
+        'Personal Details',
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.black,
+        ),
       ),
     );
+  }
+
+  TextField buildTextFieldMembershipNumber() {
+    return TextField(
+      controller: _membershipNumberController,
+      keyboardType: TextInputType.number,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText:
+            _validateMembershipNo ? "Please provide membership number" : null,
+        contentPadding: EdgeInsets.all(0),
+        filled: true,
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Membership number",
+        prefixIcon: const Icon(Icons.card_membership),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldName() {
+    return TextField(
+      controller: _nameController,
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText: _validateName ? "Name can\'t Be Empty" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Name",
+        prefixIcon: const Icon(CupertinoIcons.person_fill),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldEmail() {
+    return TextField(
+      controller: _emailController,
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText: _validateEmailId ? "Invalid EmailId" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Email Id",
+        prefixIcon: const Icon(CupertinoIcons.mail),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldFullAddress() {
+    return TextField(
+      controller: _fullAddresssController,
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        errorText: _validateFullAddress ? "Address can\'t Be Empty" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Full address",
+        prefixIcon: const Icon(CupertinoIcons.location),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldPincode() {
+    return TextField(
+      controller: _pincodeController,
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText: _validatePIN ? "Pindcode can\'t Be Empty" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Pincode",
+        prefixIcon: const Icon(Icons.fiber_pin),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldCity() {
+    return TextField(
+      controller: _cityController,
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText: _validateCity ? "City can\'t Be Empty" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "City",
+        prefixIcon: const Icon(Icons.location_city),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldState() {
+    return TextField(
+      controller: _stateController,
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText: _validateState ? "State can\'t Be Empty" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "State",
+        prefixIcon: const Icon(Icons.location_city_rounded),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  Align kycDetailsText() {
+    return Align(
+      alignment: Alignment.center,
+      child: Text(
+        'KYC Details',
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  TextField buildTextFieldAdharNumber() {
+    return TextField(
+      controller: _adharNoController,
+      keyboardType: TextInputType.number,
+      textInputAction: TextInputAction.next,
+      maxLength: 12,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText: _validateAdharNo ? "Invalid Adhar number" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Adhar number",
+        prefixIcon: const Icon(Icons.subtitles),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldAdharcardName() {
+    return TextField(
+      controller: _nameOnAdharController,
+      keyboardType: TextInputType.number,
+      textInputAction: TextInputAction.next,
+      maxLength: 12,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        errorText: _validateAdharName ? "Name on adhar can't be empty" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "Name ( which is on adharcard )",
+        prefixIcon: const Icon(CupertinoIcons.person_alt),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildTextFieldPanNo() {
+    return TextField(
+      controller: _panNoController,
+      keyboardType: TextInputType.phone,
+      textInputAction: TextInputAction.next,
+      maxLength: 10,
+      decoration: InputDecoration(
+        errorText: _validatePanNo ? "Invalid Mobile" : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "PAN number",
+        prefixIcon: const Icon(Icons.subtitles),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  TextField buildPanAttachmentTextField() {
+    return TextField(
+      controller: _panFrontAttachmentController,
+      keyboardType: TextInputType.phone,
+      textInputAction: TextInputAction.next,
+      maxLength: 10,
+      decoration: InputDecoration(
+        errorText: _validatePanAttachement
+            ? "Pls provide PAN front copy as attachment"
+            : null,
+        contentPadding: EdgeInsets.all(0),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        counterText: "",
+        focusedBorder: buildFocusedOutlineInputBorder(),
+        enabledBorder: buildEnabledOutlineInputBorder(),
+        labelText: "PAN card font copy",
+        prefixIcon: const Icon(Icons.attach_file),
+        hintStyle: TextStyle(color: Colors.grey[400]),
+      ),
+    );
+  }
+
+  Row buildBtnRow(void _textFiledValidator()) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      GestureDetector(
+          onTap: () {
+            // postCredential(credentials);
+          },
+          child: Text('Skip')),
+      CupertinoButton(
+        child: Text(
+          'Create Account',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        color: Res.accentColor,
+        onPressed: () {
+          _textFiledValidator();
+        },
+      ),
+    ]);
   }
 
   void postCredential(Map<String, String> credentials) {
@@ -528,27 +523,6 @@ class _BeneficiaryDetailsPageState extends State<BeneficiaryDetailsPage> {
       showToastWithError(context, 'FAILED ${error.toString()}');
     });
   }
-
-  // showGiffyDialog(message) {
-  //   showDialog(
-  //       context: context,
-  //       builder: (_) => NetworkGiffyDialog(
-  //             image: Image.network(
-  //               "https://raw.githubusercontent.com/Shashank02051997/FancyGifDialog-Android/master/GIF's/gif14.gif",
-  //               fit: BoxFit.cover,
-  //             ),
-  //             entryAnimation: EntryAnimation.BOTTOM,
-  //             title: Text(
-  //               'Successful',
-  //               textAlign: TextAlign.center,
-  //               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-  //             ),
-  //             description: Text(message),
-  //             onOkButtonPressed: () {
-  //               Navigator.pop(context);
-  //             },
-  //           ));
-  // }
 
   showBottomDialog(message) {
     showGeneralDialog(

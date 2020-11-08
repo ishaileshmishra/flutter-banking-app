@@ -1,11 +1,9 @@
+import 'package:alok/src/ui/ImageSplashScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-//import 'package:flare_splash_screen/flare_splash_screen.dart';
-
 import 'package:alok/res.dart';
-import 'package:alok/src/ui/login/LoginPage.dart';
 import 'package:alok/src/utils/constants.dart' as constant;
 
 class AlokApp extends StatelessWidget {
@@ -22,36 +20,21 @@ class AlokApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      home: FutureBuilder(
-          future: Hive.openBox(constant.csHiveDB),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                return Text(snapshot.error.toString());
-              } else {
-                return LoginPage();
+      home: ImageSplashScreen(),
 
-                // SplashScreen(
-                //   seconds: 14,
-                //   navigateAfterSeconds: LoginPage(),
-                //   title: new Text(
-                //     'Welcome In SplashScreen',
-                //     style: new TextStyle(
-                //       fontWeight: FontWeight.bold,
-                //       fontSize: 20.0,
-                //     ),
-                //   ),
-                //   image: new Image.network(
-                //       'https://flutter.io/images/catalog-widget-placeholder.png'),
-                //   backgroundColor: Colors.white,
-                //   loaderColor: Colors.red,
-                // );
-
-              }
-            } else {
-              return Scaffold();
-            }
-          }),
+      // FutureBuilder(
+      //     future: Hive.openBox(constant.csHiveDB),
+      //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+      //       if (snapshot.connectionState == ConnectionState.done) {
+      //         if (snapshot.hasError) {
+      //           return Text(snapshot.error.toString());
+      //         } else {
+      //           return LoginPage();
+      //         }
+      //       } else {
+      //         return Scaffold();
+      //       }
+      //     }),
     );
   }
 }
