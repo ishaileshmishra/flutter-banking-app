@@ -6,8 +6,8 @@ import 'package:alok/res.dart';
 import 'package:alok/src/models/DashboardModel.dart';
 import 'package:alok/src/models/LoginResponse.dart';
 import 'package:alok/src/network/service.dart';
-import 'package:alok/src/ui/agent/kyc_request.dart';
-import 'package:alok/src/ui/user/CreateAccountPage.dart';
+import 'package:alok/src/ui/agent/kyc/kyc_request.dart';
+import 'package:alok/src/ui/user/create/CreateAccountPage.dart';
 
 class AccountMngntScreen extends StatelessWidget {
   AccountMngntScreen({Key key, this.user}) : super(key: key);

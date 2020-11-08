@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:alok/src/ui/user/beneficiary_detail_page.dart';
+import 'package:alok/src/ui/user/beneficiary/beneficiary_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

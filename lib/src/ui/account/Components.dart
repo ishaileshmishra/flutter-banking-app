@@ -1,7 +1,7 @@
 import 'package:alok/res.dart';
-import 'package:alok/src/ui/agent/DepositAmount.dart';
-import 'package:alok/src/ui/user/CreateAccountPage.dart';
-import 'package:alok/src/ui/user/DepositAmount.dart';
+import 'package:alok/src/ui/agent/deposite/DepositAmount.dart';
+import 'package:alok/src/ui/user/create/CreateAccountPage.dart';
+import 'package:alok/src/ui/user/deposite/DepositAmount.dart';
 import 'package:alok/src/utils/global_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

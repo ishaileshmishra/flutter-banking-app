@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
 import 'package:alok/src/models/KYCModel.dart';
-import 'package:alok/src/ui/agent/kyc_update.dart';
+import 'package:alok/src/ui/agent/kyc/kyc_update.dart';
 import 'package:alok/src/ui/user/Components.dart';
 
 class KYCRequestPage extends StatefulWidget {
