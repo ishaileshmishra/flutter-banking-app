@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'package:alok/src/ui/dashboard/Dashboard.dart';
-import 'package:alok/src/ui/user/Components.dart';
-import 'package:alok/src/utils/global_widgets.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,7 +8,10 @@ import 'package:http/http.dart' as http;
 
 import 'package:alok/res.dart';
 import 'package:alok/src/models/LoginResponse.dart';
+import 'package:alok/src/ui/dashboard/Dashboard.dart';
 import 'package:alok/src/ui/login/Components.dart';
+import 'package:alok/src/ui/user/Components.dart';
+import 'package:alok/src/utils/global_widgets.dart';
 
 class LoginPage extends StatefulWidget {
   @override

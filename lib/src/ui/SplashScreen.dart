@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:alok/src/ui/login/LoginPage.dart';
-import 'package:flutter/services.dart';
 
 class ImageSplashScreen extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class ImageSplashScreen extends StatefulWidget {
 
 class SplashScreenState extends State<ImageSplashScreen> {
   startTime() async {
-    var _duration = new Duration(seconds: 8);
+    var _duration = new Duration(seconds: 3);
     return new Timer(_duration, navigationPage);
   }
 
@@ -33,10 +33,11 @@ class SplashScreenState extends State<ImageSplashScreen> {
     var scrnWidth = MediaQuery.of(context).size.width;
     var scrnHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+        backgroundColor: Colors.yellow,
         body: Container(
-      height: scrnHeight,
-      width: scrnWidth,
-      child: Image.asset('assets/images/splash.png'),
-    ));
+          height: scrnHeight,
+          width: scrnWidth,
+          child: Image.asset('assets/images/splash.png'),
+        ));
   }
 }
