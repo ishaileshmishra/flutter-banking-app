@@ -19,6 +19,13 @@ mixin Reposit {
           color: Colors.black,
         ),
         'Deposit Amount'));
+    categories.add(new CatModel(
+        Icon(
+          Icons.payments_sharp,
+          size: 40,
+          color: Colors.black,
+        ),
+        'Passbook'));
 
     return categories;
   }

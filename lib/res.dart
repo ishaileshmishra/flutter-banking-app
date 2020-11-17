@@ -20,12 +20,12 @@ class Res {
   static const String depositAmountListAPI =
       baseURL + 'depositAmountRequestList';
   static const String depositAmountAPI = baseURL + 'depositAmount';
-
   static const String accountForAPI = baseURL + 'accountForList';
   static const String accountModeAPI = baseURL + 'accountModeList';
   static const String addBeneficiaryAPI = baseURL + 'addBeneficiary';
   static const String requestKycAPI = baseURL + 'kycRequestList?agentId=';
   static const String updateKycAPI = baseURL + 'updateKyc';
+  static const String dashboard = baseURL + 'dashboard?userId=';
 
   // Database Fields
   static const String aHiveDB = 'alokDB';

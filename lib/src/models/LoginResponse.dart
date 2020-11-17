@@ -6,6 +6,7 @@ class LoginResponse {
   int isAccountCreated;
   int noOfDepositRequest;
   int availableBalance;
+  List<String> bannerImages;
 
   LoginResponse(
       {this.userId,
@@ -14,7 +15,8 @@ class LoginResponse {
       this.role,
       this.isAccountCreated,
       this.noOfDepositRequest,
-      this.availableBalance});
+      this.availableBalance,
+      this.bannerImages});
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
         userId: json["userId"],
@@ -24,5 +26,6 @@ class LoginResponse {
         isAccountCreated: json["isAccountCreated"],
         noOfDepositRequest: json["noOfDepositRequest"],
         availableBalance: json["availableBalance"],
+        bannerImages: json['bannerImages'],
       );
 }

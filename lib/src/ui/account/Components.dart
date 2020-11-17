@@ -36,10 +36,6 @@ Container renderActionbar(context, username) {
     padding: EdgeInsets.symmetric(
       horizontal: 20,
     ),
-    // child: Row(
-    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //   children: [abColumn(username), abRow()],
-    // ),
   );
 }
 
@@ -84,7 +80,7 @@ ListView listView(role, categories) {
       itemCount: categories.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => _decideToViewScreen(context, role, index),
+          onTap: () => _decideToNavigateScreen(context, role, index),
           child: Card(
             color: Res.accentColor,
             margin: EdgeInsets.symmetric(
@@ -109,13 +105,24 @@ ListView listView(role, categories) {
       });
 }
 
-_decideToViewScreen(context, role, int index) {
+_decideToNavigateScreen(context, role, int index) {
   if (role == 'agent') {
     viewAgentDepositScreen(context);
   } else {
-    index == 0
-        ? viewUserCreateAccountScreen(context)
-        : viewUserDepositScreen(context);
+    switch (index) {
+      case 0:
+        viewUserCreateAccountScreen(context);
+        break;
+      case 1:
+        viewUserDepositScreen(context);
+        break;
+      case 2:
+        print('Passbook not implemented yet !');
+        break;
+    }
+    // index == 0
+    //     ? viewUserCreateAccountScreen(context)
+    //     : viewUserDepositScreen(context);
   }
 }
 

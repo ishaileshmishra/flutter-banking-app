@@ -163,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
               MaterialPageRoute(
                   builder: (context) => DashBoardPage(
                         user: loginDetails,
+                        userId: loginDetails.userId.toString(),
                       )));
         } else {
           showToastWithError(context, userMap['message']);
