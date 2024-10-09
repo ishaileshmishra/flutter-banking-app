@@ -1,4 +1,4 @@
-# alok
+# Sample Skeleton of banking application for learning : working on local env
 
 A new Flutter project.
 
